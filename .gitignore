@@ -478,3 +478,6 @@ $RECYCLE.BIN/
 
 # VS Code
 .vscode/
+
+# Mac Stuff
+**/.DS_Store
