@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <UserSecretsId>aspnet-Gamification.UI-DA3EA21C-1442-4570-B459-E6FF75868348</UserSecretsId>
+    <!-- <UserSecretsId>aspnet-Gamification.UI-DA3EA21C-1442-4570-B459-E6FF75868348</UserSecretsId> -->
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>

@@ -1,6 +1,6 @@
-﻿using Gamification.UI.Data;
+﻿using Tulip.Data;
 
-namespace Gamification.UI.Models
+namespace Tulip.Models
 {
 	public class TaskResponseVM
 	{

@@ -1,6 +1,6 @@
-using Gamification.UI.Data;
-using Gamification.UI.Services.Implementations;
-using Gamification.UI.Services.Interfaces;
+using Tulip.Data;
+using Tulip.Services.Implementations;
+using Tulip.Services.Interfaces;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +32,7 @@ builder.Services
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
+//builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
 /* Configure Routes */

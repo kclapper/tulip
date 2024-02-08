@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 
-[assembly: HostingStartup(typeof(Gamification.UI.Areas.Identity.IdentityHostingStartup))]
-namespace Gamification.UI.Areas.Identity
+[assembly: HostingStartup(typeof(Tulip.Areas.Identity.IdentityHostingStartup))]
+namespace Tulip.Areas.Identity
 {
 	public class IdentityHostingStartup : IHostingStartup
 	{

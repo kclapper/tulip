@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace Gamification.UI.Areas.Identity.Pages.Account
+namespace Tulip.Areas.Identity.Pages.Account
 {
 	[AllowAnonymous]
 	public class LogoutModel : PageModel

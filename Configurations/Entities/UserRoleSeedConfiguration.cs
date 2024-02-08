@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Gamification.UI.Configurations.Entities
+namespace Tulip.Configurations.Entities
 {
 	public class UserRoleSeedConfiguration : IEntityTypeConfiguration<IdentityUserRole<string>>
 	{

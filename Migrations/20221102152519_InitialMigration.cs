@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Gamification.UI.Migrations
+namespace Tulip.Migrations
 {
     public partial class InitialMigration : Migration
     {

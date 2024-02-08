@@ -1,4 +1,4 @@
-﻿namespace Gamification.UI
+﻿namespace Tulip
 {
     public class SD
     {

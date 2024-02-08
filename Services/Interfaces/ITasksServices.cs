@@ -1,9 +1,9 @@
-﻿using Gamification.UI.Data;
+﻿using Tulip.Data;
+using Tulip.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Gamification.UI.Models;
 
-namespace Gamification.UI.Services.Interfaces
+namespace Tulip.Services.Interfaces
 {
   public interface ITasksServices
   {

@@ -1,12 +1,12 @@
-﻿using Gamification.UI.Data;
-using Gamification.UI.Models;
-using Gamification.UI.Services.Interfaces;
+﻿using Tulip.Data;
+using Tulip.Models;
+using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Gamification.UI.Services.Implementations
+namespace Tulip.Services.Implementations
 {
     public class AuthService : IAuthService
     {

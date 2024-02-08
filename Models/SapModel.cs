@@ -1,4 +1,4 @@
-﻿namespace Gamification.UI.Models
+﻿namespace Tulip.Models
 {
 	public class SapModel
 	{

@@ -1,6 +1,6 @@
-﻿using Gamification.UI.Data;
-using Gamification.UI.Models;
-using Gamification.UI.Services.Interfaces;
+﻿using Tulip.Data;
+using Tulip.Models;
+using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,12 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
+//using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gamification.UI.Controllers
+namespace Tulip.Controllers
 {
     [Authorize]
     public class HomeController : Controller
@@ -72,6 +73,10 @@ namespace Gamification.UI.Controllers
                 // _db.SaveChanges();
 
                 var userInfo = new ApplicationUser();
+
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                _logger.LogInformation($"userId: {userId}");
+
 
                 var userList = _db.ApplicationUsers.ToList().Where(q => q.UserId == HttpContext.User.Identity.Name.ToUpper());
                 foreach (var data in userList)

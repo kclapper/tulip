@@ -1,7 +1,7 @@
-﻿using Gamification.UI.Models;
+﻿using Tulip.Models;
 using System.Threading.Tasks;
 
-namespace Gamification.UI.Services.Interfaces
+namespace Tulip.Services.Interfaces
 {
     public interface IAuthService
     {

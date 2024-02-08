@@ -1,10 +1,10 @@
-﻿using Gamification.UI.Data;
+﻿using Tulip.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 
-namespace Gamification.UI.Models
+namespace Tulip.Models
 {
 
     public static class SeedData

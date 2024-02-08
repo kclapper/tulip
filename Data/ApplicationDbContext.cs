@@ -1,9 +1,9 @@
-﻿using Gamification.UI.Configurations.Entities;
-using Gamification.UI.Models;
+﻿using Tulip.Configurations.Entities;
+using Tulip.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gamification.UI.Data
+namespace Tulip.Data
 {
   public class ApplicationDbContext : IdentityDbContext
   {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gamification.UI.Models
+namespace Tulip.Models
 {
     public class UserLogin
     {

@@ -1,11 +1,11 @@
 ﻿using System.Data;
 using System.Linq;
-using Gamification.UI.Data;
+using Tulip.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gamification.UI.Controllers
+namespace Tulip.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class RolesController : Controller

@@ -1,9 +1,9 @@
-﻿using Gamification.UI.Models;
+﻿using Tulip.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Gamification.UI.Configurations.Entities
+namespace Tulip.Configurations.Entities
 {
 	public class UserSeedConfiguration : IEntityTypeConfiguration<ApplicationUser>
 	{

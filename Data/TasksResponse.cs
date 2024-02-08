@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Gamification.UI.Data
+namespace Tulip.Data
 {
 	public class TasksResponse
 	{

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Gamification.UI.Areas.Identity.Pages.Account
+namespace Tulip.Areas.Identity.Pages.Account
 {
     public class AccessDeniedModel : PageModel
     {

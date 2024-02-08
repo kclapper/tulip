@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Gamification.UI.Models
+namespace Tulip.Models
 {
     public class ResetPasswordViewModel
     {

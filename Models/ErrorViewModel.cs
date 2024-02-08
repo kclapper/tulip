@@ -1,6 +1,6 @@
 using System;
 
-namespace Gamification.UI.Models
+namespace Tulip.Models
 {
 	public class ErrorViewModel
 	{

@@ -5,18 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using Gamification.UI.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
-using Gamification.UI.Data;
+using Tulip.Models;
+using Tulip.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Gamification.UI.Controllers
+namespace Tulip.Controllers
 {
     public class AccountController : Controller
     {

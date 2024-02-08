@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gamification.UI.Data
+namespace Tulip.Data
 {
 	public class Tasks
 	{
