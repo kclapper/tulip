@@ -23,7 +23,10 @@ The SAP gamification web app.
 
 6. Run database migrations 
 
-        dotnet dotnet-ef --project Tulip database update
+        dotnet dotnet-ef --project Tulip database update -- --environment Development
+
+> CAUTION: running this command without specifying the `Development` environment
+> may cause the application to connect to the production database.
    
 ## Development
 1. `cd` to the repository root directory
@@ -40,7 +43,7 @@ The SAP gamification web app.
 
 > NOTE: Any time the .Net data models change, the local database will need
 > to be updated to reflect the new schema. To do this, run:
-> `dotnet dotnet-ef database update`
+> `dotnet dotnet-ef --project Tulip database update -- --environment Development`
 
 ## Shutdown
 1. Use Cntl-C to stop the development server 
@@ -53,7 +56,7 @@ The SAP gamification web app.
 # Deployment
 When this application is deployed to production, it should be started 
 with the `Production` environment. This can be achieved with the
-command `dotnet run --environment Production`.
+command `dotnet run --environment Production --project Tulip`.
 
 Some systems may do this automatically. The default environment is
 `Production`. 
