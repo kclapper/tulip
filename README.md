@@ -33,7 +33,10 @@ The SAP gamification web app.
 
 2. Start the ASP.NET application
        
-       dotnet watch run --environment Development
+       dotnet watch run --environment Development --project Tulip
+
+> CAUTION: running the `watch` command without specifying the `Development` environment
+> will cause the application to connect to the production database.
 
 > NOTE: Any time the .Net data models change, the local database will need
 > to be updated to reflect the new schema. To do this, run:
