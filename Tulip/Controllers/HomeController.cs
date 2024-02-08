@@ -47,8 +47,9 @@ namespace Tulip.Controllers
                     //return $"https://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_SRV/MM_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
                 }
                 */
-        public String GetUrl(int clientId = 111, string userId = "LEARN-30", string applicationServer = "e45z.4.ucc.md/sap", string caseStudy = "MM")
+        public String GetUrl(int clientId = 111, string userId = "LEARN-30", string applicationServer = "e45z.4.ucc.md", string caseStudy = "MM")
         {
+            _logger.LogInformation($"GetUrl(clientId = {clientId}, userId={userId}, applicationServer={applicationServer}, caseStudy={caseStudy})");
             _caseStudy = caseStudy;
             return $"http://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_GM_SRV/{caseStudy}_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
             //return $"https://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_SRV/MM_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
@@ -105,8 +106,8 @@ namespace Tulip.Controllers
                 var userName = "TEACH-003";
                 var passwd = "Naqiya99";
 
-                //var url = GetUrl(userInfo.ClientId, userInfo.UserId, userInfo.ApplicationServer, caseStudy);
-                var url = $"http://{userInfo.ApplicationServer.Trim()}/opu/odata/sap/ZUCC_GBM_GM_SRV/{caseStudy}_FSet(Id=2,User='{userInfo.UserId.ToUpper().Trim()}')?$format=json&sap-client={userInfo.ClientId}";
+                var url = GetUrl(userInfo.ClientId, userInfo.UserId, userInfo.ApplicationServer, caseStudy);
+                // var url = $"http://{userInfo.ApplicationServer.Trim()}/opu/odata/sap/ZUCC_GBM_GM_SRV/{caseStudy}_FSet(Id=2,User='{userInfo.UserId.ToUpper().Trim()}')?$format=json&sap-client={userInfo.ClientId}";
 
                 _logger.LogInformation($"SAP URL: {url}");
 

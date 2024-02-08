@@ -20,8 +20,8 @@ namespace Tulip.Configurations.Entities
 					LastName = "Admin",
 					UserName = "admin",
 					NormalizedUserName = "ADMIN",
-					ApplicationServer = "e45z.4.ucc.md",
-					ClientId = 111,
+					ApplicationServer = "trek.ucc.uwm.edu",
+					ClientId = 101,
 					UserId = "Learn-031",
 					PasswordHash = hasher.HashPassword(null, "Password@1")
 				},
@@ -34,8 +34,8 @@ namespace Tulip.Configurations.Entities
 					LastName = "User",
 					UserName = "user",
 					NormalizedUserName = "USER",
-					ApplicationServer = "e45z.4.ucc.md",
-					ClientId = 111,
+					ApplicationServer = "trek.ucc.uwm.edu",
+					ClientId = 101,
 					UserId = "Learn-031",
 					PasswordHash = hasher.HashPassword(null, "User@123")
 				}
