@@ -67,3 +67,10 @@ A CSV file can be used to bulk create users.
 An Excel file can be used to bulk create users.
 
 ## 5. [Browser Extension](#extension)
+
+## 6. [Development Environment](#dev-environment)
+
+### 6.1. [Local Database](#dev-db)
+The development environment shall have a local database that is
+used by the app during development. The development environment 
+shall not connect to the production database.
