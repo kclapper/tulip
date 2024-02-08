@@ -70,18 +70,6 @@ namespace Tulip.Controllers
         {
             try
             {
-                // Delete all the records in the leaderboard, COMMENTED THIS OUT AS DISCUSSED WITH PROFESSOR.
-                // var rows = from o in _db.LeaderBoaders
-                //            select o;
-                // foreach (var row in rows)
-                // {
-                //     _db.LeaderBoaders.Remove(row);
-                // }
-                // _db.SaveChanges();
-
-                //var userInfo = new ApplicationUser();
-
-                //var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var userInfo = getCurrentUser();
 
                 _logger.LogInformation($"Dashboard for user: {userInfo.UserName}\n" 
@@ -91,23 +79,11 @@ namespace Tulip.Controllers
                     + $"\tcaseStudy: {caseStudy}\n"
                 );
 
-                // var userList = _db.ApplicationUsers.ToList().Where(q => q.UserId == HttpContext.User.Identity.Name.ToUpper());
-                // foreach (var data in userList)
-                // {
-                //     userInfo = new ApplicationUser()
-                //     {
-                //         ApplicationServer = data.ApplicationServer,
-                //         ClientId = data.ClientId,
-                //         UserId = data.UserId
-                //     };
-                // }
-
                 // TODO: Hardcoded credentials have to go.
                 var userName = "TEACH-003";
                 var passwd = "Naqiya99";
 
                 var url = GetUrl(userInfo.ClientId, userInfo.UserId, userInfo.ApplicationServer, caseStudy);
-                // var url = $"http://{userInfo.ApplicationServer.Trim()}/opu/odata/sap/ZUCC_GBM_GM_SRV/{caseStudy}_FSet(Id=2,User='{userInfo.UserId.ToUpper().Trim()}')?$format=json&sap-client={userInfo.ClientId}";
 
                 _logger.LogInformation($"SAP URL: {url}");
 
@@ -895,18 +871,8 @@ namespace Tulip.Controllers
         {
             try
             {
-                var userInfo = new ApplicationUser();
+                var userInfo = getCurrentUser();
 
-                var userList = _db.ApplicationUsers.ToList().Where(q => q.UserId == HttpContext.User.Identity.Name.ToUpper());
-                foreach (var data in userList)
-                {
-                    userInfo = new ApplicationUser()
-                    {
-                        ApplicationServer = data.ApplicationServer,
-                        ClientId = data.ClientId,
-                        UserId = data.UserId
-                    };
-                }
                 var userName = "TEACH-003";
                 var passwd = "Naqiya99";
 
