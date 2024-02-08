@@ -23,7 +23,7 @@ The SAP gamification web app.
 
 6. Run database migrations 
 
-        dotnet dotnet-ef database update
+        dotnet dotnet-ef --project Tulip database update
    
 ## Development
 1. `cd` to the repository root directory

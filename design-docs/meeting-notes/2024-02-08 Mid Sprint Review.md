@@ -19,15 +19,31 @@ Our plans moving forward are to:
 - Set up a meeting with Professor Fletcher
   to flesh out the project requirements
 
+## Meeting Notes
+- Kyle explained how to setup the local development database
+  and environment
+  - There appeared to be a bug, he will fix and submit a PR
+    tonight with a fix
+- Paul pointed out that it would be better if the default
+  environment was the `Development` environment
+  - He pulled an issue for it that he will work on this sprint
+- We decided on a git workflow
+  - Everyone will work out of the repository `kclapper/tulip`
+  - `main` is protected so that you can only add commits to 
+    it through pull requrests
+  - When everyone works on an issue, they'll create their own 
+    branch and push it to the repository
+  - When they're finished with that work, they submit a PR
+  - The other two group members will review it. Just skimming
+    the code, not an in-depth review
+    - Purpose being to make sure we all understand what is changing
+      in the codebase
+  - Once a PR is approved, the person who opened it will do a squash 
+    merge and delete their branch
+- We reviewed open issues we can work on this week and assigned them
+  to the group 
+- We set up a "project" in GitHub to track our current and next sprints
+
 <!-- ## Review of Version X.X
 - There are no released versions yet
 - ... -->
-
-## Update from Kyle
-- 
-
-## Update from Paul
-- ...
-
-## Update from Ramsey
-- ...
