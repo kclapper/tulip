@@ -19,15 +19,8 @@ namespace Tulip.Models
 
                 AddAdminUser(context);
                 AddNormalUser(context);
+                AddTasks(context);
 
-                context.Tasks.AddRange(
-                    new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 1" },
-                     new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 2" },
-                      new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 3" },
-                       new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 4" },
-                        new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 5" }
-
-                );
                 context.SaveChanges();
             }
         }
@@ -89,6 +82,18 @@ namespace Tulip.Models
 					RoleId = "cac43a6e-f7bb-4448-baaf-1add431ccbbf",
 					UserId = "9e224968-33e4-4652-b7b7-8574d048cdb9"
 				}
+            );
+        }
+
+        private static void AddTasks(ApplicationDbContext context)
+        {
+            context.Tasks.AddRange(
+                new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 1" },
+                new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 2" },
+                new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 3" },
+                new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 4" },
+                new Tasks { Description = "click on complete for 5 points double click for 10 points", StepNumber = "Step 5" }
+
             );
         }
     }
