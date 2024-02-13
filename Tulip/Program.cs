@@ -1,11 +1,9 @@
 using Tulip.Data;
+using Tulip.Models;
 using Tulip.Services.Implementations;
 using Tulip.Services.Interfaces;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Tulip.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,24 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
 /* Add Services */
-// if (builder.Environment.IsDevelopment())
-// {
-//     builder.Services.AddDbContext<ApplicationDbContext, DevelopmentDbContext>(
-//         options => options.UseSqlServer(
-//             builder.Configuration.GetConnectionString("DefaultConnection")
-//         )
-//     );
-// }
-// else
-// {
-    builder.Services.AddDbContext<ApplicationDbContext>(
-        options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection")
-        )
-    );
-
-
-// }
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -40,16 +25,8 @@ builder.Services.AddScoped(sp => new HttpClient {
     BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIKey"))
 });
 
-var identityService = builder.Services.AddIdentity<IdentityUser, IdentityRole>();
-// if (builder.Environment.IsDevelopment())
-// {
-//     identityService.AddEntityFrameworkStores<DevelopmentDbContext>();
-// }
-// else
-// {
-    identityService.AddEntityFrameworkStores<ApplicationDbContext>();
-// }
-identityService
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
