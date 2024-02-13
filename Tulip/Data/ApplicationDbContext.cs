@@ -1,9 +1,7 @@
-﻿using Tulip.Configurations.Entities;
-using Tulip.Models;
+﻿using Tulip.Models;
+using Tulip.Configurations.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
 
 namespace Tulip.Data
 {
@@ -20,6 +18,13 @@ namespace Tulip.Data
     public DbSet<Scores> Scores { get; set; }
     public DbSet<LeaderBoader> LeaderBoaders { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+      base.OnModelCreating(builder);
+
+      builder.ApplyConfiguration(new RoleSeedConfiguration());
+    }
 
   }
 

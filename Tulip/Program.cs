@@ -4,6 +4,8 @@ using Tulip.Services.Interfaces;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Tulip.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,22 +13,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
 /* Add Services */
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<ApplicationDbContext, DevelopmentDbContext>(
-        options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection")
-        )
-    );
-}
-else
-{
+// if (builder.Environment.IsDevelopment())
+// {
+//     builder.Services.AddDbContext<ApplicationDbContext, DevelopmentDbContext>(
+//         options => options.UseSqlServer(
+//             builder.Configuration.GetConnectionString("DefaultConnection")
+//         )
+//     );
+// }
+// else
+// {
     builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseSqlServer(
             builder.Configuration.GetConnectionString("DefaultConnection")
         )
     );
-}
+
+
+// }
 
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -37,14 +41,14 @@ builder.Services.AddScoped(sp => new HttpClient {
 });
 
 var identityService = builder.Services.AddIdentity<IdentityUser, IdentityRole>();
-if (builder.Environment.IsDevelopment())
-{
-    identityService.AddEntityFrameworkStores<DevelopmentDbContext>();
-}
-else
-{
+// if (builder.Environment.IsDevelopment())
+// {
+//     identityService.AddEntityFrameworkStores<DevelopmentDbContext>();
+// }
+// else
+// {
     identityService.AddEntityFrameworkStores<ApplicationDbContext>();
-}
+// }
 identityService
     .AddDefaultTokenProviders()
     .AddDefaultUI();
@@ -57,6 +61,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        DevelopmentData.Initialize(scope.ServiceProvider);
+    }
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 } 

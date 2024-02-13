@@ -2,6 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+/* 
+This seed is used for a fresh database that needs admin and a user credential 
+pre added. This should not be used after initial launch. See ApplicationDbContext.cs
+for configuration.
+*/
+
 namespace Tulip.Configurations.Entities
 {
 	public class UserRoleSeedConfiguration : IEntityTypeConfiguration<IdentityUserRole<string>>
