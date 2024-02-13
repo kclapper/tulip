@@ -1,5 +1,4 @@
 ﻿using Tulip.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Tulip.Models
 {
