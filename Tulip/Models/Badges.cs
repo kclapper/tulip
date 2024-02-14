@@ -4,6 +4,15 @@ namespace Tulip.Models
 {
 	public class Badges
 	{
-		public string Badge { get; set; }
+	    public string Badge { get; set; }
+
+	    public Badges(){
+
+	    }
+	    
+	    public Badges(string b){
+		Badge = b;
+	    }
+
 	}
 }
