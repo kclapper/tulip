@@ -77,3 +77,6 @@ shall not connect to the production database.
 
 ### 6.1.1. [Local Data Replica](#local-data)
 The development database shall have a copy of the production data
+
+### 6.2. [Single UI Framework](#ui-framework)
+The codebase shall use a single ASP.NET UI framework (MVC, Razor pages, Blazor, etc.). 
