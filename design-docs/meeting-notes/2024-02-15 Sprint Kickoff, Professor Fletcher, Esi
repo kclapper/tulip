@@ -108,18 +108,26 @@ give users a score and badges
     - Create reports by student
     - Create aggregate user reports?
 - The word "Total" instead of "Progress"
+- [YouTube Video](https://www.youtube.com/watch?v=ExJ2yrwE0VY)
 
 ## Sprint Kickoff Meeting
 ### Agenda
-- [ ] Review issues closed during the last sprint
-- [ ] Review issues left open from last sprint
+- [ ] ~~Review issues closed during the last sprint~~
+- [x] Review issues left open from last sprint
     - Remove from last sprint and possibly move to this sprint
-- [ ] Review product requirements and add new issues as necessary
-- [ ] Assign issues for this sprint
+- [ ] ~~Review product requirements and add new issues as necessary~~
+- [x] Assign issues for this sprint
 
 ### Notes
-- For PRs, instead of requiring reviews before merging them, perhaps
-we should just request the reviews and then merge either when everyone
-reviewed it or when after two days
-    - We want to make sure changes are merged in a timely fashion so 
-    everyone gets the enhancements
+- For PRs, instead of requiring reviews from everyone before merging,
+just merge after ~1 day, whenever it feels right. Request reviews from
+everyone but just as a way to let them know the code base is changing.
+    - No need to slow down your progress to get reviews
+- Use MVC Views for new UI we build
+- Paul will take the admin panel work
+    - Bulk user creation from CSV
+    - Fix user password field on user creation
+- Ramsey will take the leaderboard summary on dashboard
+- Kyle will work on the SAP interface and development database setup 
+- Kyle will update our requirements document with information from Esi's 
+meeting
