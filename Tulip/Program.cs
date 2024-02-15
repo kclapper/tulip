@@ -1,10 +1,9 @@
 using Tulip.Data;
+using Tulip.Models;
 using Tulip.Services.Implementations;
 using Tulip.Services.Interfaces;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +25,7 @@ builder.Services.AddScoped(sp => new HttpClient {
     BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIKey"))
 });
 
-builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
@@ -40,6 +38,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        DevelopmentData.Initialize(scope.ServiceProvider);
+    }
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 } 

@@ -1,8 +1,4 @@
 ﻿using Tulip.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
 
 namespace Tulip.Models
 {
@@ -11,8 +7,7 @@ namespace Tulip.Models
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
-            using (var context = new ApplicationDbContext(
-                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+            using (var context = serviceProvider.GetRequiredService<ApplicationDbContext>())
             {
                 // Look for any Tasks.
                 if (context.Tasks.Any())

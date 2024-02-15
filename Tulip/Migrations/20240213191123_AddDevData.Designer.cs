@@ -12,8 +12,8 @@ using Tulip.Data;
 namespace Tulip.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240208190938_NameChangeAndSeedData")]
-    partial class NameChangeAndSeedData
+    [Migration("20240213191123_AddDevData")]
+    partial class AddDevData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,18 +225,6 @@ namespace Tulip.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            RoleId = "cbc43a8e-f7bb-4445-baaf-1add431ffbbf"
-                        },
-                        new
-                        {
-                            UserId = "9e224968-33e4-4652-b7b7-8574d048cdb9",
-                            RoleId = "cac43a6e-f7bb-4448-baaf-1add431ccbbf"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -375,50 +363,6 @@ namespace Tulip.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "d9b15b09-bb21-493c-b67a-0af79ee4d759",
-                            Email = "admin@localhost.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOTAxua1e2Q70FRGMqRXBvRiWFA6tZDfWFk8VMjeaepuPeIgmZMbRWtQke8C14jPzg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "0bade5e0-2d57-4e81-9c82-c6602099a99c",
-                            TwoFactorEnabled = false,
-                            UserName = "admin",
-                            ApplicationServer = "trek.ucc.uwm.edu",
-                            ClientId = 101,
-                            FirstName = "System",
-                            LastName = "Admin",
-                            UserId = "Learn-031"
-                        },
-                        new
-                        {
-                            Id = "9e224968-33e4-4652-b7b7-8574d048cdb9",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "fa08800c-1cdb-4c2e-aaeb-ffe94072c4eb",
-                            Email = "user@localhost.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER@LOCALHOST.COM",
-                            NormalizedUserName = "USER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHKbXT0s/f0QLYjPbSWl3A1ULJGkdsC02PP3aGgO4jdss0samA07/IsPBYC7SvYVtw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "ca2d833b-7e3f-4a49-bb26-cce69538d086",
-                            TwoFactorEnabled = false,
-                            UserName = "user",
-                            ApplicationServer = "trek.ucc.uwm.edu",
-                            ClientId = 101,
-                            FirstName = "System",
-                            LastName = "User",
-                            UserId = "Learn-031"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
