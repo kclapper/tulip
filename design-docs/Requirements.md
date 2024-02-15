@@ -74,3 +74,6 @@ An Excel file can be used to bulk create users.
 The development environment shall have a local database that is
 used by the app during development. The development environment 
 shall not connect to the production database.
+
+### 6.1.1. [Local Data Replica](#local-data)
+The development database shall have a copy of the production data
