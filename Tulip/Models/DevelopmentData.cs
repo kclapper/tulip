@@ -10,7 +10,6 @@ namespace Tulip.Models
         {
             using (var context = serviceProvider.GetRequiredService<ApplicationDbContext>())
             {
-                    Console.WriteLine("GETS HERE");
                 // Look for existing data.
                 if (context.ApplicationUsers.Any())
                 {
