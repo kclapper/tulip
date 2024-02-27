@@ -12,9 +12,18 @@ builder.Logging.AddConsole();
 
 /* Add Services */
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
+    options => {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        if (builder.Environment.IsProduction())
+        {
+            options.UseSqlServer(connectionString);
+        }
+        else 
+        {
+            options.UseSqlite(connectionString);
+        }
+    }
 );
 
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();

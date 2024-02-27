@@ -9,6 +9,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tulip</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

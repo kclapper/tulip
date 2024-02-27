@@ -6,7 +6,7 @@ namespace Tulip.CLI
     {
         public static string Name { get; }
         public static string Help { get; }
-        public ICommand Configure(List<string> args);
+        public ICommand Configure(List<string> args, Dictionary<string, string> kwargs);
         public void Execute();
     }
 }

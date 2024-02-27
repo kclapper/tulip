@@ -1,10 +1,8 @@
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Tulip.Data;
-using Tulip.Models;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Tulip.CLI
 {
@@ -14,15 +12,18 @@ namespace Tulip.CLI
         public static string Help { get; } = "";
 
         private DbContext productionDb;
+
+        private string developmentDbPathString;
         private DbContext developmentDb;
 
-        public DBSetup()
+        private ILogger logger;
+
+        public DBSetup(ILoggerFactory loggerFactory)
         {
-            productionDb = getProdDbContext();
-            developmentDb = getDevDbContext();
+            this.logger = loggerFactory.CreateLogger("DBSetup");
         }
 
-        private static DbContext getProdDbContext()
+        private DbContext getProdDbContext()
         {
             string productionAppSettingsFilePath = "./Tulip/appsettings.Production.json";
             string jsonString = File.ReadAllText(productionAppSettingsFilePath);
@@ -35,11 +36,9 @@ namespace Tulip.CLI
             return new ApplicationDbContext(sqlServerOptions.Options);
         }
 
-        private static DbContext getDevDbContext()
+        private DbContext getDevDbContext()
         {
-            string developmentAppSettingsFilePath = "./Tulip/appsettings.Development.json";
-            string jsonString = File.ReadAllText(developmentAppSettingsFilePath);
-            string developmentConnectionString = JsonNode.Parse(jsonString)!["ConnectionStrings"]!["DefaultConnection"]!.GetValue<string>();
+            string developmentConnectionString = $"Data Source={developmentDbPathString}";
 
             DbContextOptionsBuilder sqliteOptions = new DbContextOptionsBuilder();
             sqliteOptions.UseSqlite(developmentConnectionString);
@@ -47,21 +46,57 @@ namespace Tulip.CLI
             return new ApplicationDbContext(sqliteOptions.Options);
         }
 
-        public ICommand Configure(List<string> args)
+        public ICommand Configure(List<string> args, Dictionary<string, string> kwargs)
         {
+            if (args.Count == 0)
+            {
+                throw new ArgumentException(
+                    "No output path provided!\n"
+                    + "Please specify where to put the development database\n"
+                    + "Ex: dotnet tulip db-setup Tulip/Tulip.db\n"
+                );
+            }
+
+            if (args.Count != 1)
+            {
+                throw new ArgumentException(
+                    "Too many arguments provided!"
+                );
+            }
+
+            developmentDbPathString = args.First();
+
+            productionDb = getProdDbContext();
+            developmentDb = getDevDbContext();
+
             return this;
+        }
+
+        private void prepareDevDb() 
+        {
+            developmentDb.Database.EnsureDeleted();
+            developmentDb.Database.EnsureCreated();
+        }
+
+        private IEnumerable<object> getDbEntitiesOfType(IEntityType entity)
+        {
+            var type = entity.ClrType;
+            return (IEnumerable<object>)productionDb.GetType()
+                                .GetMethod("Set", [])?
+                                .MakeGenericMethod(type)
+                                .Invoke(productionDb, [])!;
         }
 
         public void Execute()
         {
+            prepareDevDb();
+
+            int successfulTransactions = 0;
+
             var productionEntities = productionDb.Model.GetEntityTypes();    
             foreach (var entity in productionEntities)
             {
-                var type = entity.ClrType;
-                var dbSet = (IEnumerable<object>)productionDb.GetType()
-                                    .GetMethod("Set", [])?
-                                    .MakeGenericMethod(type)
-                                    .Invoke(productionDb, [])!;
+                var dbSet = getDbEntitiesOfType(entity);
 
                 if (dbSet == null)
                 {
@@ -70,12 +105,33 @@ namespace Tulip.CLI
 
                 foreach (var entry in dbSet)
                 {
-                    Console.WriteLine(entry);
-                    developmentDb.Add(entry);
+                    try {
+                        developmentDb.Add(entry);
+                        developmentDb.SaveChanges();
+                        successfulTransactions++;
+                    }
+                    catch (Exception e) {
+                        developmentDb = getDevDbContext(); // Reset the DB context
+
+                        var innerExceptionMessage = e.InnerException == null ? "" : e.InnerException.Message;
+
+                        logger.LogWarning(
+                            $"Could not save entry: {entry} \n"
+                            + $"{e.Message}\n"
+                            + $"{innerExceptionMessage}"
+                        );
+                    }
                 }
             }
 
-            developmentDb.SaveChanges();
+            logger.LogInformation(
+                "Development database setup complete\n"
+                + $"Successful transactions: {successfulTransactions}\n"
+                + """
+                  Note: Some transactions may have failed due to duplicate data or incompatibility between
+                  the development database and production database. This is to be expected.  
+                  """
+            );
         } 
     }
 }
