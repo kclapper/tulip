@@ -47,10 +47,6 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        DevelopmentData.Initialize(scope.ServiceProvider);
-    }
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 } 
