@@ -188,7 +188,6 @@ namespace Tulip.Controllers
                 //ful, remove "%" if exists in the string.
                 string aa = fulfill.Contains("%") ? fulfill.Remove(fulfill.IndexOf('%')) : fulfill;
                 ViewBag.Fulfillment = int.Parse(aa);
-
                 ViewBag.Point = point;
                 ViewBag.Levels = level;
                 ViewBag.Badge = badge;
@@ -198,7 +197,13 @@ namespace Tulip.Controllers
                 ViewBag.StepsCount = Steps.Count;
 
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == _caseStudy);
+                var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == _caseStudy);
+                var sorted = leaders.OrderByDescending(lb => lb.Point);
+                ViewBag.TopThree = sorted.Take(3);
+                ViewBag.LeaderTotal = sorted.Count();
 
+                LeaderBoardText(_caseStudy);//get correct casestudy text for dash leaderboard
+  
                 if (existingRecord != null)
                 {
                     // if record exists, update the points
@@ -219,7 +224,6 @@ namespace Tulip.Controllers
                     _db.LeaderBoaders.Add(records);
                     _db.SaveChanges();
                 }
-
                 return View();
             }
             catch (Exception e)
@@ -228,7 +232,28 @@ namespace Tulip.Controllers
                 throw;
             }
         }
-
+        private void LeaderBoardText(string caseStudy){
+            switch (caseStudy)
+            {
+                case "FI":
+                    ViewBag.LeaderBoardText = "FI - Accounts Payable";
+                    break;
+                case "FI_AR":
+                    ViewBag.LeaderBoardText = "FI - Accounts Receivable";
+                    break;
+                case "MM":
+                    ViewBag.LeaderBoardText = "Material Management";
+                    break;
+                case "SD":
+                    ViewBag.LeaderBoardText = "Sales and Distribution";
+                    break;
+                case "PP":
+                    ViewBag.LeaderBoardText = "Production Planning";
+                    break;
+                default:
+                    break;
+            }
+        }
         public async Task<ActionResult> CaseStudy(string caseStudy)
         {
             try
@@ -336,6 +361,7 @@ namespace Tulip.Controllers
                 ViewBag.StepsList = Steps;
                 ViewBag.StepsCount = Steps.Count;
                 ViewBag.Badge = badge;
+
 
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == _caseStudy);
 
