@@ -481,3 +481,6 @@ $RECYCLE.BIN/
 
 # Mac Stuff
 **/.DS_Store
+
+# Development Database
+**/Tulip.db

@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tulip", "Tulip\Tulip.csproj", "{189A3660-2CF4-4980-8D05-3A41D0F65636}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tulip.CLI", "Tulip.CLI\Tulip.CLI.csproj", "{F7B2B16B-0EFC-4BE0-9B4E-C610488A5878}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E912B4DE-E6E0-425D-8B59-C8393BE9C9C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{189A3660-2CF4-4980-8D05-3A41D0F65636}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{189A3660-2CF4-4980-8D05-3A41D0F65636}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{189A3660-2CF4-4980-8D05-3A41D0F65636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B2B16B-0EFC-4BE0-9B4E-C610488A5878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B2B16B-0EFC-4BE0-9B4E-C610488A5878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B2B16B-0EFC-4BE0-9B4E-C610488A5878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B2B16B-0EFC-4BE0-9B4E-C610488A5878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E912B4DE-E6E0-425D-8B59-C8393BE9C9C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E912B4DE-E6E0-425D-8B59-C8393BE9C9C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E912B4DE-E6E0-425D-8B59-C8393BE9C9C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E912B4DE-E6E0-425D-8B59-C8393BE9C9C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
