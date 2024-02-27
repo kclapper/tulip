@@ -69,13 +69,13 @@ namespace Tulip.Controllers
                 ViewBag.StepsList = sap.GetStepsList();
                 ViewBag.StepsCount = sap.GetStepsList().Count;
                 
-                var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == _caseStudy);
-                var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == _caseStudy);
+                var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == caseStudy);
+                var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == caseStudy);
                 var sorted = leaders.OrderByDescending(lb => lb.Point);
                 ViewBag.TopThree = sorted.Take(3);
                 ViewBag.LeaderTotal = sorted.Count();
 
-                LeaderBoardText(_caseStudy);//get correct casestudy text for dash leaderboard
+                LeaderBoardText(caseStudy);//get correct casestudy text for dash leaderboard
   
                 if (existingRecord != null)
                 {
