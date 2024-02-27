@@ -3,11 +3,8 @@ using Tulip.Models;
 using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 
 namespace Tulip.Controllers
 {
@@ -16,36 +13,18 @@ namespace Tulip.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ITasksServices _tasksServices;
-        private readonly HttpClient _client;
-        private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _db;
         private string _badge { get; set; }
         public string _caseStudy { get; set; }
+        private ISAPBuilder _sapBuilder;
 
-        public HomeController(ILogger<HomeController> logger, ITasksServices tasksServices, HttpClient client,
-            IConfiguration configuration, ApplicationDbContext db)
+        public HomeController(ILogger<HomeController> logger, ITasksServices tasksServices, 
+             ApplicationDbContext db, ISAPBuilder sapBuilder)
         {
             _tasksServices = tasksServices;
-            _client = client;
-            _configuration = configuration;
             _db = db;
-            //_caseStudy = caseStudy;
             _logger = logger;
-        }
-        /*
-                public String GetUrl(int clientId, String userId, String applicationServer)
-                {
-                    _caseStudy = "MM";
-                    return $"https://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_GM_SRV/MM_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
-                    //return $"https://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_SRV/MM_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
-                }
-                */
-        public String GetUrl(int clientId = 111, string userId = "LEARN-30", string applicationServer = "e45z.4.ucc.md", string caseStudy = "MM")
-        {
-            _logger.LogInformation($"GetUrl(clientId = {clientId}, userId={userId}, applicationServer={applicationServer}, caseStudy={caseStudy})");
-            _caseStudy = caseStudy;
-            return $"http://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_GM_SRV/{caseStudy}_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
-            //return $"https://{applicationServer.Trim()}/sap/opu/odata/sap/ZUCC_GBM_SRV/MM_FSet(Id=2,User='{userId.ToUpper().Trim()}')?$format=json&sap-client={clientId}";
+            _sapBuilder = sapBuilder;
         }
 
         public ActionResult Index()
@@ -69,133 +48,27 @@ namespace Tulip.Controllers
                     + $"\tUserId: {userInfo.UserId}\n"
                     + $"\tClientId: {userInfo.ClientId}\n"
                     + $"\tApplicationServer: {userInfo.ApplicationServer}\n"
-                    + $"\tcaseStudy: {caseStudy}\n"
+                    + $"\tcaseStudy: {caseStudy}"
                 );
 
-                // TODO: Hardcoded credentials have to go.
-                var userName = "TEACH-003";
-                var passwd = "Naqiya99";
+                ISAP sap = await _sapBuilder
+                    .SetUsername(userInfo.UserId)
+                    .SetClientId(userInfo.ClientId)
+                    .SetApplicationServer(userInfo.ApplicationServer)
+                    .SetCaseStudy(caseStudy)
+                    .Build();
 
-                var url = GetUrl(userInfo.ClientId, userInfo.UserId, userInfo.ApplicationServer, caseStudy);
 
-                _logger.LogInformation($"SAP URL: {url}");
+                ViewBag.Fulfillment = sap.GetFulfillment();
 
-                // Use this handler to allow untrusted SSL Certificates
-                var handler = new HttpClientHandler();
-                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                handler.ServerCertificateCustomValidationCallback =
-                    (httpRequestMessage, cert, certChain, policyErrors) =>
-                    {
-                        return true;
-                    };
-
-                using var client = new HttpClient(handler);
-
-                var authToken = Encoding.ASCII.GetBytes($"{userName}:{passwd}");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                    Convert.ToBase64String(authToken));
-
-                var result = await client.GetAsync(url);
-
-                _logger.LogInformation($"SAP query result: {result}");
-
-                var content = await result.Content.ReadAsStringAsync();
-
-                var dictionaryList = new List<DictionaryModel>();
-                var jObject = JObject.Parse(content);
-                var jToken = jObject["d"];
-        /*  Logic change on calculating StepsCount progress, 
-            if atleast one step is accomplished from 
-            StepCount out of total Steps, then ViewBag.StepCount on Dashboard
-            Score GrowthChart and Congratulation Card text.
-            will consider it as 100% 
-        */
-                var PointsDictionary = new Dictionary<string, int>()
-        {
-            {"@08@10", 10},
-            {"@09@7", 8},
-            {"@0A@5", 7 },
-            {"@0A@", 7 },
-            {"0", 0}
-        };
-
-                // Initialize fulfill to "0" by default
-                string fulfill = "0";
-
-                // Dictionary to track whether at least one step has been completed for each StepsCount
-                Dictionary<string, bool> stepsCompletedDictionary = new Dictionary<string, bool>();
-
-                foreach (var property in jToken.Children<JProperty>())
-                {
-                    var dictionaryModel = new DictionaryModel
-                    {
-                        Key = property.Name,
-                        Value = property.Value.ToString()
-                    };
-                    dictionaryList.Add(dictionaryModel);
-                }
-
-                // Get points for that specific learn id
-                int point = 0;
-                int level = 0;
-                string badge = "";
-                List<int> Points = new List<int>();
-                List<string> Steps = new List<string>();
-                foreach (var item in dictionaryList)
-                {
-                    if (item.Key.Contains("Step"))
-                    {
-                        Points.Add(PointsDictionary[item.Value]);
-                        Steps.Add(item.Key);
-
-                        // Check if the step value is not "0"
-                        if (item.Value != "0")
-                        {
-                            fulfill = "100"; //if step value not 0, update progress on congrats card as 100%
-                            stepsCompletedDictionary[item.Key] = true;
-                        }
-                        else
-                        {
-                            stepsCompletedDictionary[item.Key] = false;
-                        }
-                    }
-
-                    if (item.Key.Equals("FulfillmentAll"))
-                    {
-                        fulfill = item.Value;
-                    }
-
-                    if (item.Key.Equals("Points"))
-                    {
-                        point = int.Parse(item.Value);
-                    }
-                    if (item.Key.Equals("Level"))
-                    {
-                        level = int.Parse(item.Value);
-                    }
-                    if (item.Key.Equals("Badge"))
-                    {
-                        badge = item.Value;
-                    }
-                }
-
-                // Check if at least one step has been completed for each StepsCount
-                if (stepsCompletedDictionary.All(entry => entry.Value))
-                {
-                    fulfill = "100";
-                }
-
-                //ful, remove "%" if exists in the string.
-                string aa = fulfill.Contains("%") ? fulfill.Remove(fulfill.IndexOf('%')) : fulfill;
-                ViewBag.Fulfillment = int.Parse(aa);
-                ViewBag.Point = point;
-                ViewBag.Levels = level;
-                ViewBag.Badge = badge;
-                _badge = badge;
-                ViewBag.PointsList = Points;
-                ViewBag.StepsList = Steps;
-                ViewBag.StepsCount = Steps.Count;
-
+                ViewBag.Point = sap.GetPoint();
+                ViewBag.Levels = sap.GetLevel();
+                ViewBag.Badge = sap.GetBadge();
+                _badge = sap.GetBadge();
+                ViewBag.PointsList = sap.GetPointsList();
+                ViewBag.StepsList = sap.GetStepsList();
+                ViewBag.StepsCount = sap.GetStepsList().Count;
+                
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == _caseStudy);
                 var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == _caseStudy);
                 var sorted = leaders.OrderByDescending(lb => lb.Point);
@@ -207,7 +80,7 @@ namespace Tulip.Controllers
                 if (existingRecord != null)
                 {
                     // if record exists, update the points
-                    existingRecord.Point = point;
+                    existingRecord.Point = sap.GetPoint();
                     _db.SaveChanges();
                 }
                 else
@@ -217,7 +90,7 @@ namespace Tulip.Controllers
                     {
                         CaseStudy = _caseStudy,
                         Username = userInfo.UserId,
-                        Point = point
+                        Point = sap.GetPoint()
                     };
 
                     // add the record to the database
@@ -270,97 +143,21 @@ namespace Tulip.Controllers
                         UserId = data.UserId
                     };
                 }
-                var userName = "TEACH-003";
-                var passwd = "Naqiya99";
 
-                var url = GetUrl(userInfo.ClientId, userInfo.UserId, userInfo.ApplicationServer, caseStudy);
+                ISAP sap = await _sapBuilder
+                    .SetUsername(userInfo.UserId)
+                    .SetClientId(userInfo.ClientId)
+                    .SetApplicationServer(userInfo.ApplicationServer)
+                    .SetCaseStudy(caseStudy)
+                    .Build();
 
-                // use this handler to allow untrusted SSL Certificates
-                var handler = new HttpClientHandler();
-                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                handler.ServerCertificateCustomValidationCallback =
-                    (httpRequestMessage, cert, cetChain, policyErrors) =>
-                    {
-                        return true;
-                    };
-
-                using var client = new HttpClient(handler);
-
-                var authToken = Encoding.ASCII.GetBytes($"{userName}:{passwd}");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                    Convert.ToBase64String(authToken));
-
-                var result = await client.GetAsync(url);
-                var content = await result.Content.ReadAsStringAsync();
-
-                var dictionaryList = new List<DictionaryModel>();
-                var jObject = JObject.Parse(content);
-                var jToken = jObject["d"];
-
-
-                var PiontsDictionary = new Dictionary<string, int>()
-            {
-                {"@08@10", 10},
-                {"@09@7", 8},
-                {"@0A@5", 7 },
-                {"@0A@", 7 },
-                {"0", 0}
-            };
-
-                foreach (var property in jToken.Children<JProperty>())
-                {
-                    var dictionaryModel = new DictionaryModel
-                    {
-                        Key = property.Name,
-                        Value = property.Value.ToString()
-                    };
-                    dictionaryList.Add(dictionaryModel);
-                }
-
-                // Get points for that specific learn id
-                int point = 0;
-                int level = 0;
-                string fulfill = "";
-                string badge = "";
-                List<int> Points = new List<int>();
-                List<string> Steps = new List<string>();
-                foreach (var item in dictionaryList)
-                {
-                    if (item.Key.Contains("Step"))
-                    {
-                        Points.Add(PiontsDictionary[item.Value]);
-                        Steps.Add(item.Key);
-                    }
-
-                    if (item.Key.Equals("FulfillmentAll"))
-                    {
-                        fulfill = item.Value;
-                    }
-
-                    if (item.Key.Equals("Points"))
-                    {
-                        point = int.Parse(item.Value);
-                    }
-                    if (item.Key.Equals("Level"))
-                    {
-                        level = int.Parse(item.Value);
-                    }
-                    if (item.Key.Equals("Badge"))
-                    {
-                        badge = item.Value;
-                    }
-                }
-
-                // ful
-                string aa = fulfill.Remove(fulfill.IndexOf('%'));
-                ViewBag.Fulfillment = int.Parse(aa);
-                //ViewBag.Point = Points.Sum();
-                ViewBag.Point = point;
-                ViewBag.Levels = level;
-                ViewBag.PointsList = Points;
-                ViewBag.StepsList = Steps;
-                ViewBag.StepsCount = Steps.Count;
-                ViewBag.Badge = badge;
+                ViewBag.Fulfillment = sap.GetFulfillment();
+                ViewBag.Point = sap.GetPoint();
+                ViewBag.Levels = sap.GetLevel();
+                ViewBag.PointsList = sap.GetPointsList();
+                ViewBag.StepsList = sap.GetStepsList();
+                ViewBag.StepsCount = sap.GetStepsList().Count;
+                ViewBag.Badge = sap.GetBadge();
 
 
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == _caseStudy);
@@ -368,7 +165,7 @@ namespace Tulip.Controllers
                 if (existingRecord != null)
                 {
                     // if record exists, update the points
-                    existingRecord.Point = point;
+                    existingRecord.Point = sap.GetPoint();
                     _db.SaveChanges();
                 }
                 else
@@ -378,7 +175,7 @@ namespace Tulip.Controllers
                     {
                         CaseStudy = _caseStudy,
                         Username = userInfo.UserId,
-                        Point = point
+                        Point = sap.GetPoint()
                     };
 
                     _db.LeaderBoaders.Add(records);
@@ -392,71 +189,7 @@ namespace Tulip.Controllers
                 throw;
             }
         }
-        public static List<DictionaryModel> ParseJson(string jsonString)
-        {
-            var dictionaryList = new List<DictionaryModel>();
-            var jObject = JObject.Parse(jsonString);
-            var jToken = jObject["d"];
 
-            foreach (var property in jToken.Children<JProperty>())
-            {
-                var dictionaryModel = new DictionaryModel
-                {
-                    Key = property.Name,
-                    Value = property.Value.ToString()
-                };
-                dictionaryList.Add(dictionaryModel);
-            }
-
-            return dictionaryList;
-        }
-        public class DictionaryModel
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        /*
-                [HttpPost]
-                public async Task<IActionResult> Index(string username)
-                {
-
-                    var p = 0;
-                    var b = 0;
-                    var c = 0;
-
-                    var points = 0;
-                    var data = await _tasksServices.GetResponsePoint(username);
-                    foreach (var item in data)
-                    {
-                        points += item.Score;
-                    }
-                    if (points > 30)
-                    {
-                        p = points;
-                        b = 2;
-                        c = 1;
-                    }
-
-                    else if (points >= 15 && points < 30)
-                    {
-                        p = points;
-                        b = 1;
-                    }
-                    else
-                    {
-                        p = points;
-                    }
-
-                    var dataa = new
-                    {
-                        p,
-                        b,
-                        c
-                    };
-
-                    return Ok(dataa);
-                }
-        */
         public async Task<IActionResult> LeaderBoard(string caseStudy = "MM")
         {
             
@@ -491,11 +224,11 @@ namespace Tulip.Controllers
             var data = await _tasksServices.GetTasks();
             return View(data);
         }
+
         [HttpPost]
         public async Task<IActionResult> TaskResponse(TasksResponse taskResponse)
         {
             var data = await _tasksServices.CreateResponse(taskResponse);
-            //await Index(taskResponse.RespondantName);
             return Ok(data);
         }
 
@@ -885,71 +618,20 @@ namespace Tulip.Controllers
             return View(badge);
         }
 
-
         public async Task<string> getBatch(string caseStudy)
         {
             try
             {
                 var userInfo = getCurrentUser();
 
-                var userName = "TEACH-003";
-                var passwd = "Naqiya99";
+                ISAP sap = await _sapBuilder
+                    .SetUsername(userInfo.UserId)
+                    .SetClientId(userInfo.ClientId)
+                    .SetApplicationServer(userInfo.ApplicationServer)
+                    .SetCaseStudy(caseStudy)
+                    .Build();
 
-                var url = GetUrl(userInfo.ClientId, userInfo.UserId, userInfo.ApplicationServer, caseStudy);
-
-                // use this handler to allow untrusted SSL Certificates
-                var handler = new HttpClientHandler();
-                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                handler.ServerCertificateCustomValidationCallback =
-                    (httpRequestMessage, cert, cetChain, policyErrors) =>
-                    {
-                        return true;
-                    };
-
-                using var client = new HttpClient(handler);
-
-                var authToken = Encoding.ASCII.GetBytes($"{userName}:{passwd}");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                    Convert.ToBase64String(authToken));
-
-                var result = await client.GetAsync(url);
-                var content = await result.Content.ReadAsStringAsync();
-
-
-                var dictionaryList = new List<DictionaryModel>();
-                var jObject = JObject.Parse(content);
-                var jToken = jObject["d"];
-
-
-                var PiontsDictionary = new Dictionary<string, int>()
-            {
-                {"@08@10", 10},
-                {"@09@7", 8},
-                {"@0A@5", 7 },
-                {"@0A@", 7 },
-                {"0", 0}
-            };
-
-                foreach (var property in jToken.Children<JProperty>())
-                {
-                    var dictionaryModel = new DictionaryModel
-                    {
-                        Key = property.Name,
-                        Value = property.Value.ToString()
-                    };
-                    dictionaryList.Add(dictionaryModel);
-                }
-
-                string badge = "";
-                foreach (var item in dictionaryList)
-                {
-
-                    if (item.Key.Equals("Badge"))
-                    {
-                        badge = item.Value;
-                    }
-                }
-                _badge = badge;
+                _badge = sap.GetBadge();
             }
             catch (Exception e)
             {

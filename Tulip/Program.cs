@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 );
 
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+builder.Services.AddScoped<ISAPBuilder, SAPBuilder>();
 builder.Services.AddScoped<ITasksServices, TasksService>();
 
 builder.Services.AddScoped(sp => new HttpClient { 
