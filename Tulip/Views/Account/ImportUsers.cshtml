@@ -1,0 +1,44 @@
+﻿@model ImportUsersViewModel
+
+@{
+    Layout = "_MiniLayoutTwo";
+}
+
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <!-- Register Card -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">
+                        <a href="index.html" class="app-brand-link gap-2">
+                            <!-- Your logo code here -->
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <h4 class="mb-2 text-center">Mass import users</h4>
+
+                    <form asp-controller="Account" asp-action="CreateUsers" method="post" role="form">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <!-- Existing registration fields -->
+                        <div class="mb-3">
+                            <label asp-for="File">File</label>
+                            <input asp-for="File" class="form-control", type="file" />
+                            @*<span asp-validation-for="ApplicationServer" class="text-danger"></span>*@
+                        </div>
+
+                        <button type="submit" class="btn btn-primary d-grid w-100">Create Users</button>
+                    </form>
+
+                    <div class="form-group m-2">
+                        <div class="col-md-2">
+                            <a asp-controller="Home" asp-action="Index"
+                                class="btn btn-success btn-outline-info form-control">Go Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Register Card -->
+            </

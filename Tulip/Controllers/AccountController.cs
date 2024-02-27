@@ -268,6 +268,36 @@ namespace Tulip.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImportUsers(string returnurl = null)
+        {
+            if (!await _roleManager.RoleExistsAsync("Admin"))
+            {
+                //create roles
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                await _roleManager.CreateAsync(new IdentityRole("User"));
+            }
+
+            List<SelectListItem> listItems = new List<SelectListItem>();
+            listItems.Add(new SelectListItem()
+            {
+                Value = "Admin",
+                Text = "Admin"
+            });
+            listItems.Add(new SelectListItem()
+            {
+                Value = "User",
+                Text = "User"
+            });
+
+
+
+            ViewData["ReturnUrl"] = returnurl;
+            ImportUsersViewModel importUsersViewModel = new ImportUsersViewModel();
+            return View(importUsersViewModel);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             var userList = await _db.ApplicationUsers.ToListAsync();
