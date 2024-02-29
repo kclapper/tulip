@@ -10,7 +10,8 @@ The SAP gamification web app.
 2. `cd` into the repository root directory
 3. Install project dependencies
 
-        dotnet restore
+       dotnet restore
+       dotnet pack
 
 4. Setup the development database using the setup tool 
 
