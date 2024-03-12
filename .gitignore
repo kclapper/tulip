@@ -483,4 +483,4 @@ $RECYCLE.BIN/
 **/.DS_Store
 
 # Development Database
-**/Tulip.db
+**/Tulip.db*
