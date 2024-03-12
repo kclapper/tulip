@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Tulip.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         public async Task SendMessage(string message)
