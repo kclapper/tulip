@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.FileIO; 
 
 
 namespace Tulip.Controllers
@@ -268,32 +269,95 @@ namespace Tulip.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ImportUsers(string returnurl = null)
+        public IActionResult ImportUsers(string returnurl = null)
         {
-            if (!await _roleManager.RoleExistsAsync("Admin"))
-            {
-                //create roles
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("User"));
-            }
-
-            List<SelectListItem> listItems = new List<SelectListItem>();
-            listItems.Add(new SelectListItem()
-            {
-                Value = "Admin",
-                Text = "Admin"
-            });
-            listItems.Add(new SelectListItem()
-            {
-                Value = "User",
-                Text = "User"
-            });
-
-
-
             ViewData["ReturnUrl"] = returnurl;
             ImportUsersViewModel importUsersViewModel = new ImportUsersViewModel();
             return View(importUsersViewModel);
+        }
+
+
+            /**
+            @brief Handles HTTP POST requests to create multiple users.*
+            This method is restricted to users with the "Admin" role.
+            *
+            @param startingIndex The starting index for generating user data.
+            @param numberOfUsersToCreate The number of users to create.
+            @param returnurl The URL to redirect to after creating users. Defaults to "/Account/GetUsers".
+            *
+            @return IActionResult representing the result of the operation.
+            */
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadUsers(IFormFile file, string returnurl = null)  
+        {
+            ViewData["ReturnUrl"] = returnurl;
+            returnurl = returnurl ?? Url.Content("/Account/GetUsers");
+
+            var commonUserData = new RegisterViewModel
+            {
+                ApplicationServer = "CommonServer",
+                RoleSelected = "User"
+            };
+
+            var parser = new TextFieldParser(file.OpenReadStream()) {
+                Delimiters = [","],
+                TextFieldType = FieldType.Delimited,
+            };
+            
+            string[] fields;
+            while ((fields = parser.ReadFields()) != null) {
+                // name, password, email
+                var userData = new RegisterViewModel {
+                    // ApplicationServer = "CommonServer",
+                    RoleSelected = "User",
+                    Username = fields[0],
+                    Password = fields[1],
+                    Email = fields[2],
+                    Name = fields[0],
+                    ClientId = 101,
+                };
+                if (ModelState.IsValid)
+                {
+                    var user = new ApplicationUser
+                    {
+                        UserName = userData.Username,
+                        Email = userData.Email,
+                        Name = userData.Name,
+                        ApplicationServer = userData.ApplicationServer,
+                        //ApplicationServer = commonUserData.ApplicationServer, // Use common data
+                        ClientId = userData.ClientId, // Use unique data
+                                                      //UserId = userData.UserId, // Use unique data
+                    };
+                    var result = await _userManager.CreateAsync(user, userData.Password);
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, commonUserData.RoleSelected); // Use common data
+                    }
+                    else
+                    {
+                        // Handle user creation errors for this specific user
+                        // You can add error messages to ModelState or log them
+                        ModelState.AddModelError(string.Empty, "User creation failed.");
+                        Console.WriteLine("User Creation failed!");
+                        foreach (var err in result.Errors) {
+                            Console.WriteLine($"Error {err.Code}: {err.Description}");
+                        }
+                    }
+                }
+                else
+                {
+                    // Handle invalid model state for this specific user
+                    // You can add error messages to ModelState or log them
+                    ModelState.AddModelError(string.Empty, "Invalid registration data.");
+                    Console.WriteLine("Invalid registration data.");
+                }
+            }
+            
+
+            // Redirect to the return URL after creating all users
+            return LocalRedirect(returnurl);
         }
 
         [HttpGet]
