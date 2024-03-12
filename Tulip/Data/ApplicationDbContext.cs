@@ -19,6 +19,8 @@ namespace Tulip.Data
     public DbSet<LeaderBoader> LeaderBoaders { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
+    public DbSet<ChatMessage> ChatMessages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);

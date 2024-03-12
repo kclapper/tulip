@@ -35,6 +35,7 @@ namespace Tulip.Controllers
         private ApplicationUser getCurrentUser()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _logger.LogInformation(userId);
             return _db.ApplicationUsers.Find(userId);
         }
 
