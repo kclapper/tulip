@@ -1,0 +1,20 @@
+# 2024-03-12 Esi Meeting
+- Attending
+    - Esi
+    - Kyle
+    - Paul
+- Showed her the chat system progress
+    - Chat popup from other screens
+        - Make the chat easy to access from anywhere
+- Highlight which tab you're on on the dashboard
+    - Just like how when you hover over it it's highlighted
+- Showed her the CSV importer
+    - Can it have columns for server and clientid too
+- Paul to work on User profile avatar
+    - User uploaded images
+    - Selection of available images also
+    - Users can pick either or
+- Leaderboard
+    - Make individual positions skinnier
+    - Or move things around to make everything fit better
+- Ramsey to make items clickable
