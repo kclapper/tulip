@@ -1,5 +1,6 @@
 using Tulip.Data;
 using Tulip.Models;
+using Tulip.Hubs;
 using Tulip.Services.Implementations;
 using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +27,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     }
 );
 
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<ISAPBuilder, SAPBuilder>();
 builder.Services.AddScoped<ITasksServices, TasksService>();
 
@@ -39,8 +39,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
-//builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSignalR();
 
 /* Configure Routes */
 var app = builder.Build();
@@ -63,14 +64,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(
-    endpoints => {
-        endpoints.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Account}/{action=Login}/{id?}"
-        );
-        endpoints.MapRazorPages();
-    }
+app.MapHub<ChatHub>("/chatHub");
+app.MapRazorPages();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Account}/{action=Login}/{id?}"
 );
 
 app.Run();
