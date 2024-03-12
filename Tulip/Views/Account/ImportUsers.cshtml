@@ -19,7 +19,7 @@
                     <!-- /Logo -->
                     <h4 class="mb-2 text-center">Mass import users</h4>
 
-                    <form asp-controller="Account" asp-action="CreateUsers" method="post" role="form">
+                    <form asp-controller="Account" asp-action="UploadUsers" method="post" role="form", enctype="multipart/form-data">
                         <div asp-validation-summary="All" class="text-danger"></div>
 
                         <!-- Existing registration fields -->
