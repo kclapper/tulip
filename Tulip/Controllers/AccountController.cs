@@ -341,6 +341,9 @@ namespace Tulip.Controllers
                         // You can add error messages to ModelState or log them
                         ModelState.AddModelError(string.Empty, "User creation failed.");
                         Console.WriteLine("User Creation failed!");
+                        foreach (var err in result.Errors) {
+                            Console.WriteLine($"Error {err.Code}: {err.Description}");
+                        }
                     }
                 }
                 else
@@ -352,55 +355,6 @@ namespace Tulip.Controllers
                 }
             }
             
-
-            // for (int i = startingIndex; i < startingIndex + numberOfUsersToCreate; i++)
-            // {
-            //     // Generate unique data for each user
-            //     var userData = new RegisterViewModel
-            //     {
-            //         Username = $"LEARN-{i:000}",
-            //         //UserId = $"LEARN-{i:000}",
-            //         Password = $"Password@{i:000}",
-            //         Email = email, //takes user input email
-            //         Name = $"LEARN-{i:000}",
-            //         ClientId = 101,
-            //         //ApplicationServer = "trek.ucc.uwm.edu"
-            //     };
-
-            //     // Create the user
-            //     if (ModelState.IsValid)
-            //     {
-            //         var user = new ApplicationUser
-            //         {
-            //             UserName = userData.Username,
-            //             Email = userData.Email,
-            //             Name = userData.Name,
-            //             ApplicationServer = userData.ApplicationServer,
-            //             //ApplicationServer = commonUserData.ApplicationServer, // Use common data
-            //             ClientId = userData.ClientId, // Use unique data
-            //                                           //UserId = userData.UserId, // Use unique data
-            //         };
-
-            //         var result = await _userManager.CreateAsync(user, userData.Password);
-
-            //         if (result.Succeeded)
-            //         {
-            //             await _userManager.AddToRoleAsync(user, commonUserData.RoleSelected); // Use common data
-            //         }
-            //         else
-            //         {
-            //             // Handle user creation errors for this specific user
-            //             // You can add error messages to ModelState or log them
-            //             // ModelState.AddModelError(string.Empty, "User creation failed.");
-            //         }
-            //     }
-            //     else
-            //     {
-            //         // Handle invalid model state for this specific user
-            //         // You can add error messages to ModelState or log them
-            //         // ModelState.AddModelError(string.Empty, "Invalid registration data.");
-            //     }
-            // }
 
             // Redirect to the return URL after creating all users
             return LocalRedirect(returnurl);
