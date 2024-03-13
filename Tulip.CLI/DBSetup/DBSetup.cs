@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Tulip.Data;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Tulip.CLI
 {
@@ -98,8 +99,23 @@ namespace Tulip.CLI
             {
                 var dbSet = getDbEntitiesOfType(entity);
 
-                if (dbSet == null)
+                /* If no records are found, the dbSet will be null and throw a null pointer exception. 
+                 * If the produciton database schema doesn't have the entity type, it will throw an
+                 * Invalid object error. In both cases we want to ignore the records. 
+                */  
+                try 
                 {
+                    dbSet.Count();
+                }
+                catch (Exception e)
+                {
+                    logger.LogWarning(
+                        $"Could not save entity type: {entity}\n"
+                        + $"The database schema may not support this\n"
+                        + $"type or it may have no entries.\n"
+                        + $"{e.GetType()}\n"
+                        + $"{e.Message}\n"
+                    );
                     continue;
                 }
 
@@ -118,7 +134,7 @@ namespace Tulip.CLI
                         logger.LogWarning(
                             $"Could not save entry: {entry} \n"
                             + $"{e.Message}\n"
-                            + $"{innerExceptionMessage}"
+                            + $"{innerExceptionMessage}\n"
                         );
                     }
                 }

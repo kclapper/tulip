@@ -1,3 +1,4 @@
+@model Tulip.Models.ChatViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 
@@ -28,8 +29,19 @@
                 </div>
             </a>
             <hr />
+            <div id="chatList" class="ps-4">
+                @foreach (var chat in Model.Chats) 
+                {
+                    ApplicationUser otherUser = chat.Key;
+                    <div class="text-start">
+                        @otherUser.UserName
+                    </div>
+                }
+            </div>
+            <div class="flex-grow-1">
+            </div>
         </div>
-        <div class="col">
+        <div class="col-9">
             @RenderBody()
         </div>
     </div>

@@ -33,10 +33,11 @@ namespace Tulip.Hubs
                 };
 
                 db.ChatMessages.Add(chatMessage);
+                db.SaveChanges();
 
                 await Clients.User(recipient).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
-                logger.LogDebug($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.Name}->{chatMessage.Receiver.Name}: {chatMessage.Message}");
+                logger.LogInformation($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.Name}->{chatMessage.Receiver.Name}: {chatMessage.Message}");
             } 
             catch (Exception e) 
             {
