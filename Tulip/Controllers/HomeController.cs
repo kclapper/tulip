@@ -35,11 +35,10 @@ namespace Tulip.Controllers
         private ApplicationUser getCurrentUser()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            _logger.LogInformation(userId);
             return _db.ApplicationUsers.Find(userId);
         }
 
-        public async Task<ActionResult> Dashboard(string caseStudy = "MM")
+        public async Task<ActionResult> Dashboard(string caseStudy = "FI")
         {
             try
             {
@@ -51,6 +50,8 @@ namespace Tulip.Controllers
                     + $"\tApplicationServer: {userInfo.ApplicationServer}\n"
                     + $"\tcaseStudy: {caseStudy}"
                 );
+
+                ViewBag.CaseStudy = caseStudy;
 
                 ISAP sap = await _sapBuilder
                     .SetUsername(userInfo.UserId)
@@ -159,7 +160,7 @@ namespace Tulip.Controllers
                 ViewBag.StepsList = sap.GetStepsList();
                 ViewBag.StepsCount = sap.GetStepsList().Count;
                 ViewBag.Badge = sap.GetBadge();
-
+                ViewBag.CaseStudy = caseStudy;
 
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == _caseStudy);
 
