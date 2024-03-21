@@ -10,7 +10,7 @@ connection.on("ReceiveMessage", function (user, message) {
     let newMessage = document.createElement("li");
     newMessage.textContent = `[${(new Date()).toLocaleString()}] ${user}: ${message}`;
 
-    let messageList = document.getElementById("messagesList");
+    let messageList = document.getElementById("messageList");
     let lastMessage = messageList.firstChild;
 
     if (lastMessage == null) {
@@ -27,9 +27,9 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendButton").addEventListener("click", function(event) {
-    let user = document.getElementById("userInput").value;
+    let recipient = document.getElementById("recipientInput").value;
     let message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", user, message)
+    connection.invoke("SendMessage", recipient, message)
               .catch(function(err) {
                 return console.error(err.toString());
               });

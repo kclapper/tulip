@@ -1,90 +1,80 @@
 ﻿@model IEnumerable<Tulip.Models.LeaderBoader>
-<div class="row">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ECPJX21DQD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+<div class="container p-5">
+  <div class="row">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ECPJX21DQD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'G-ECPJX21DQD');
-  </script>
-  <!-- Order Statistics -->
-  <div class="order-0 mb-4">
-    <div class="card h-100">
-      <div class="m-2">
-        <div class="m-0 me-2">
-          <h5>LeaderBoard Total Players: @Model.Count()</h5>
-          <small class="text-muted"></small>
-        </div>
-        @*<div class="dropdown">
-        <button class="btn p-0" type="button" id="orederStatistics" data-bs-toggle="dropdown" aria-haspopup="true"
-        aria-expanded="false">
-        <i class="bx bx-dots-vertical-rounded"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
-        <a class="dropdown-item" href="javascript:void(0);">Select All</a>
-        <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-        <a class="dropdown-item" href="javascript:void(0);">Share</a>
-        </div>
-        </div>*@
-        <div class="row">
-          <div class="row justify-content-md-center">
-            <div class="col-md-auto m-2">
-              <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="FI"
-                class="btn btn-outline-primary">
-                <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
-              </a>
-            </div>
-            <div class="col-md-auto m-2">
-              <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="FI_AR"
-                class="btn btn-outline-primary">
-                <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
-              </a>
-            </div>
-            <div class="col-md-auto m-2">
-              <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="MM"
-                class="btn btn-outline-primary">
-                <div data-i18n="Basic" id="MM">Materials Management</div>
-              </a>
-            </div>
-            <div class="col-md-auto m-2">
-              <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="PP"
-                class="btn btn-outline-primary">
-                <div data-i18n="Basic" id="PP">Production Planning</div>
-              </a>
-            </div>
-            <div class="col-md-auto m-2">
-              <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="SD"
-                class="btn btn-outline-primary">
-                <div data-i18n="Basic" id="SD">Sales and Distribution</div>
-              </a>
-            </div>
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-ECPJX21DQD');
+    </script>
+    <!-- Order Statistics -->
+    <div class="order-0 mb-4">
+      <div class="card h-100">
+        <div class="m-2">
+          <div class="m-0 me-2">
+            <h5>LeaderBoard Total Players: @Model.Count()</h5>
+            <small class="text-muted"></small>
           </div>
-          @*<div id="orderStatisticsChart"></div>*@
+          <div class="row">
+            <div class="row justify-content-md-center">
+              <div class="col-md-auto m-2">
+                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="FI"
+                  class="btn btn-outline-primary">
+                  <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
+                </a>
+              </div>
+              <div class="col-md-auto m-2">
+                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="FI_AR"
+                  class="btn btn-outline-primary">
+                  <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
+                </a>
+              </div>
+              <div class="col-md-auto m-2">
+                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="MM"
+                  class="btn btn-outline-primary">
+                  <div data-i18n="Basic" id="MM">Materials Management</div>
+                </a>
+              </div>
+              <div class="col-md-auto m-2">
+                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="PP"
+                  class="btn btn-outline-primary">
+                  <div data-i18n="Basic" id="PP">Production Planning</div>
+                </a>
+              </div>
+              <div class="col-md-auto m-2">
+                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="SD"
+                  class="btn btn-outline-primary">
+                  <div data-i18n="Basic" id="SD">Sales and Distribution</div>
+                </a>
+              </div>
+            </div>
+            @*<div id="orderStatisticsChart"></div>*@
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-sm-12 col-md-12">
-    <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
-      <strong>Leaderboard: @ViewBag.Header</strong>
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
+        <strong>Leaderboard: @ViewBag.Header</strong>
+      </div>
     </div>
-  </div>
 
-</div>
+  </div>
 @if (Model.Count() == 0 || Model == null)
 {
   <div class="row">
-  <div class="alert alert-primary alert-dismissible" role="alert">
-    Nothing found yet!
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-primary alert-dismissible" role="alert">
+      Nothing found yet!
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   </div>
-</div>
 }
 else
 {
@@ -125,68 +115,7 @@ else
   }
 
 }
-
-@*<div class="row">
-<div class="col-md-12 col-lg-12 col-xl-12 col-sm-12">
-<div class="card mt-3">
-<div class="card-body">
-<ul class="p-0 m-0">
-<li class="d-flex mb-1 pb-1">
-<div class="avatar flex-shrink-0 me-3">
-<span class="badge bg-label-info p-2">
-<i class="bx bx-medal text-primary bx-sm"></i>
-</span>
 </div>
-<div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-5">
-<div class="me-2">
-<h6 class="mb-0">Prof Ernest</h6>
-<small class="text-muted">Software Engineer</small>
-</div>
-<div class="user-progress">
-<small class="fw-semibold">
-<span class="badge rounded-pill bg-warning">81.5k</span>
-</small>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</div>
-
-<!--/ Order Statistics -->
-</div>
-</div>
-
-<div class="row">
-<div class="col-md-12 col-lg-12 col-xl-12 col-sm-12">
-<div class="card mt-3">
-<div class="card-body">
-<ul class="p-0 m-0">
-<li class="d-flex mb-1 pb-1">
-<div class="avatar flex-shrink-0 me-3">
-<span class="badge bg-label-info p-2">
-<i class="bx bx-medal text-primary bx-sm"></i>
-</span>
-</div>
-<div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-5">
-<div class="me-2">
-<h6 class="mb-0">Anonymous</h6>
-<small class="text-muted">Mobile, Earbuds, TV</small>
-</div>
-<div class="user-progress">
-<small class="fw-semibold">
-<span class="badge rounded-pill bg-danger">72.5k</span>
-</small>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</div>
-
-<!--/ Order Statistics -->
-</div>
-</div>*@
 
 @section scripts {
   <partial name="_ValidationScriptsPartial" />

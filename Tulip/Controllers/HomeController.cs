@@ -35,6 +35,7 @@ namespace Tulip.Controllers
         private ApplicationUser getCurrentUser()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _logger.LogInformation(userId);
             return _db.ApplicationUsers.Find(userId);
         }
 
@@ -651,11 +652,6 @@ namespace Tulip.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public async Task<IActionResult> Chat()
-        {
-            return View();
         }
     }
 }

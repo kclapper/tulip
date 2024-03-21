@@ -1,53 +1,55 @@
 ﻿@model IEnumerable<Tulip.Models.Badges>
-<div class="row">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ECPJX21DQD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+<div class="container p-5">
+  <div class="row">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ECPJX21DQD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'G-ECPJX21DQD');
-  </script>
-  <div class="order-0 mb-4">
-    <div class="card h-100">
-      <div class="toolbar">
-        <a href="javascript:void(0);" class="toolbar-link toolbar-toggle">
-          <div data-i18n="Authentications"></div>
-          <div class="m-2">
-            <h5>Badges</h5>
-          </div>
-        </a>
-        <div class="toolbar-sub">
-          <div class="row">
-            <div class="row justify-content-md-center">
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="FI" class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="FI_AR"
-                  class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="MM" class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="MM">Materials Management</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="PP" class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="PP">Production Planning</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="SD" class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="SD">Sales and Distribution</div>
-                </a>
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-ECPJX21DQD');
+    </script>
+    <div class="order-0 mb-4">
+      <div class="card h-100">
+        <div class="toolbar">
+          <a href="javascript:void(0);" class="toolbar-link toolbar-toggle">
+            <div data-i18n="Authentications"></div>
+            <div class="m-2">
+              <h5>Badges</h5>
+            </div>
+          </a>
+          <div class="toolbar-sub">
+            <div class="row">
+              <div class="row justify-content-md-center">
+                <div class="col-md-auto m-2">
+                  <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="FI" class="btn btn-outline-primary">
+                    <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
+                  </a>
+                </div>
+                <div class="col-md-auto m-2">
+                  <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="FI_AR"
+                    class="btn btn-outline-primary">
+                    <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
+                  </a>
+                </div>
+                <div class="col-md-auto m-2">
+                  <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="MM" class="btn btn-outline-primary">
+                    <div data-i18n="Basic" id="MM">Materials Management</div>
+                  </a>
+                </div>
+                <div class="col-md-auto m-2">
+                  <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="PP" class="btn btn-outline-primary">
+                    <div data-i18n="Basic" id="PP">Production Planning</div>
+                  </a>
+                </div>
+                <div class="col-md-auto m-2">
+                  <a asp-controller="Home" asp-action="Badges" asp-route-caseStudy="SD" class="btn btn-outline-primary">
+                    <div data-i18n="Basic" id="SD">Sales and Distribution</div>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -55,50 +57,50 @@
       </div>
     </div>
   </div>
-</div>
-@* <div class="row" style="padding-top: 10px;"></div> *@
+  @* <div class="row" style="padding-top: 10px;"></div> *@
 
-<div class="row">
-  <div class="col-sm-12 col-md-12">
-    <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
-      <strong>Badges: @ViewBag.Header</strong>
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
+        <strong>Badges: @ViewBag.Header</strong>
+      </div>
     </div>
+
   </div>
 
-</div>
-
-<div class="row"><br /><br />
-  @*<div class="col-md-12">
-  <div class="card" style="background-color: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0, 0,
-  0, 0.2); width: 100%; /* Set the width of the card */margin: 0 auto; /* Center the card horizontally */">
-  <div class="card-body">*@
-  @if (Model.Count().Equals(0))
-  {
-    <br />
-    <div class="col-sm-12 col-md-12 m-20">
-      <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        <strong>Sorry</strong> You don't have any batch at the moment.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    </div>
-  }
-  else
-  {
-    @foreach (var data in Model)
+  <div class="row"><br /><br />
+    @*<div class="col-md-12">
+    <div class="card" style="background-color: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0, 0,
+    0, 0.2); width: 100%; /* Set the width of the card */margin: 0 auto; /* Center the card horizontally */">
+    <div class="card-body">*@
+    @if (Model.Count().Equals(0))
     {
       <br />
-      <div class="col-md-2 col-sm-2 p-20" style="
-                                                                   display: flex;
-                                                                   flex-wrap: wrap;
-                                                                   justify-content: space-between;
-                                                                   align-items: center;
-                                                                   ">
-        <img class="img-thumbnail-shadow" src="@($" /assets/img/badges/{data.Badge}.png")" width="100"
-          style="background-color: rgba(255, 255, 255, 0.5); /* Use rgba to set transparency */border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); flex: 0 0 30%;
-                                                                                                                                 margin-bottom: 10px;" />
+      <div class="col-sm-12 col-md-12 m-20">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+          <strong>Sorry</strong> You don't have any batch at the moment.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
       </div>
     }
-  }
+    else
+    {
+      @foreach (var data in Model)
+      {
+        <br />
+        <div class="col-md-2 col-sm-2 p-20" style="
+                                                                    display: flex;
+                                                                    flex-wrap: wrap;
+                                                                    justify-content: space-between;
+                                                                    align-items: center;
+                                                                    ">
+          <img class="img-thumbnail-shadow" src="@($" /assets/img/badges/{data.Badge}.png")" width="100"
+            style="background-color: rgba(255, 255, 255, 0.5); /* Use rgba to set transparency */border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); flex: 0 0 30%;
+                                                                                                                                  margin-bottom: 10px;" />
+        </div>
+      }
+    }
+  </div>
 </div>
 @*
 </div>
