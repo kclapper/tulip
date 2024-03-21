@@ -1,0 +1,56 @@
+@model Tulip.Models.ChatViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    Layout = "/Views/Shared/_MiniLayout.cshtml";
+}
+
+@if (User.IsInRole("User"))
+{
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ECPJX21DQD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-ECPJX21DQD');
+  </script>
+
+    <div class="row h-100 no-gutters">
+        <div class="col-2 h-100 text-end border-end p-0 pt-5">
+            <a asp-controller="Chat" asp-action="Compose">
+                <div class="d-inline-flex align-items-center">
+                    <div data-i18n="Without menu" class="pe-1">Compose</div>
+                    <i class="menu-icon tf-icons bx bx-note"></i>
+                </div>
+            </a>
+            <hr />
+            <div id="chatList" class="ps-4">
+                @foreach (var chat in Model.Chats) 
+                {
+                    ApplicationUser otherUser = chat.Key;
+                    <div class="text-start">
+                        <a asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
+                            @otherUser.UserName
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="flex-grow-1">
+            </div>
+        </div>
+        <div class="col-9">
+            @RenderBody()
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/js/chat.js"></script>
+    @RenderSection("Scripts", required: false);
+}

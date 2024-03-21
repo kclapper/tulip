@@ -294,7 +294,6 @@ namespace Tulip.Controllers
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("/Account/GetUsers");
-
             var commonUserData = new RegisterViewModel
             {
                 ApplicationServer = "CommonServer",

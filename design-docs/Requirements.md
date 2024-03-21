@@ -35,21 +35,26 @@ describe only the features this team will work on.
 ### 1.1. [Case Study Selection](#case-study-selection)
 The user shall be able to select which case study to examine on
 the dashboard.
-### 1.1. [Points](#points)
+#### 1.1.1 [Current Case Study](#current-case-study)
+The current case study shall be highlighted at the top.
+### 1.2. [Points](#points)
 The dashboard shall show how many points the user has in
 the currently selected case study.
-### 1.2. [Badges](#badges)
+### 1.3. [Badges](#badges)
 The dashboard shall show which badges the user has earned for
 the currently selected case study.
-### 1.3. [Leveling System](#levels)
+### 1.4. [Leveling System](#levels)
 The dashboard shall show the user's level in
 the currently selected case study.
-### 1.4 [Medals](#medals)
+### 1.5 [Medals](#medals)
 The dashboard shall show the user's medal in the
 currently selected case study.
-### 1.5 [User Profile](#medals)
+### 1.6 [User Profile](#medals)
 The dashboard shall show information about the current
 user on the dashboard.
+### 1.7 [Clickable](#clickable)
+All items on the dashboard shall be clickable to get more
+information on the associated pages.
 
 ## 2. [Leaderboard](#leaderboard)
 ### 2.1. [Grouping](#leaderboard-groups)
@@ -75,6 +80,10 @@ Users shall be able to chat with each other.
 ### 3.2. [AI Chat](#ai-chat)
 Users shall be able to chat with an AI about the 
 SAP system.
+### 3.3. [Quick Access](#quick-access)
+There shall be a quick access menu available from other
+screens in the app. This quick access menu shall let users
+compose and read chats.
 
 ## 4. [Admin Panel](#admin-panel)
 ### 4.1. [User Creation](#admin-user-creation)
@@ -82,13 +91,14 @@ The admin panel shall allow admins to create individual and large groups of
 users.
 #### 4.1.1. [Individual User Creation](#individual-user-creation)
 ##### 4.1.1.1. [Manually Assigned Password](#manual-password)
-Admin's shall be able to manuall assign a password to a new user.
+Admin's shall be able to manually assign a password to a new user.
 #### 4.1.2. [Bulk User Creation](#bulk-user-creation)
 A large group of users shall be able to be created all at once.
 ##### 4.1.2.1. [CSV User Creation](#csv-user-creation)
 A CSV file can be used to bulk create users.
-##### 4.1.2.2. [Excel User Creation](#excel-user-creation)
-An Excel file can be used to bulk create users.
+###### 4.1.2.1.1. [Format](#csv-format)
+The CSV file format shall be a headerless CSV file where
+the columns are `server,clientid,username,password,email`.
 
 ## 5. [Production Deployment](#deployment)
 The application shall be deployed to the Azure cloud.
@@ -102,3 +112,12 @@ shall not connect to the production database.
 The development database shall have a copy of the production data
 ### 6.2. [Single UI Framework](#ui-framework)
 The codebase shall use a single ASP.NET UI framework (MVC, Razor pages, Blazor, etc.). 
+
+## 7. [User Profile](#user-profile)
+### 7.1. [Avatar](#avatar)
+Users shall be able to choose a custom avatar image.
+#### 7.1.1. [Stock Avatars](#stock-avatars)
+There shall be a selection of stock avatars available for
+a user to pick.
+#### 7.1.2. [Custom Avatars](#stock-avatars)
+Users shall be able to upload custom avatar images.
