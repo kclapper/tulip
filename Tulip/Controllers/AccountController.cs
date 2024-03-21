@@ -308,15 +308,20 @@ namespace Tulip.Controllers
             
             string[] fields;
             while ((fields = parser.ReadFields()) != null) {
-                // name, password, email
+                // applicationserver, clientid, name, password, email
+                const int APPLICATION_SERVER = 0;
+                const int CLIENT_ID = 1;
+                const int NAME = 2;
+                const int PASSWORD = 3;
+                const int EMAIL = 4;
                 var userData = new RegisterViewModel {
-                    // ApplicationServer = "CommonServer",
+                    ApplicationServer = fields[APPLICATION_SERVER],
                     RoleSelected = "User",
-                    Username = fields[0],
-                    Password = fields[1],
-                    Email = fields[2],
-                    Name = fields[0],
-                    ClientId = 101,
+                    Username = fields[NAME],
+                    Password = fields[PASSWORD],
+                    Email = fields[EMAIL],
+                    Name = fields[NAME],
+                    ClientId = int.Parse(fields[CLIENT_ID]),
                 };
                 if (ModelState.IsValid)
                 {
