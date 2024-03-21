@@ -4,9 +4,6 @@ using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace Tulip.Controllers
 {
@@ -30,7 +27,7 @@ namespace Tulip.Controllers
 
             IEnumerable<ChatMessage> messages = 
                 from message in _db.ChatMessages
-                where message.Sender.Equals(currentUser) || message.Receiver.Equals(currentUser)
+                where message.Sender.Id.Equals(currentUser.Id) || message.Receiver.Id.Equals(currentUser.Id)
                 orderby message.Timestamp descending
                 select message;
 
@@ -83,9 +80,17 @@ namespace Tulip.Controllers
             return View(getAllUserChats());
         }
 
-        public ActionResult Message(ApplicationUser user)
+        [Route("Chat/Message/{userId}")]
+        public ActionResult Message(string userId)
         {
-            return View(getAllUserChats());
+            ChatViewModel viewModel = getAllUserChats();
+
+            MessageHistory messages;
+            viewModel.Chats.TryGetValue(getUserFromId(userId), out messages);
+
+            viewModel.CurrentChat = messages;
+
+            return View(viewModel);
         }
 
         private ApplicationUser getCurrentUser()
@@ -94,5 +99,9 @@ namespace Tulip.Controllers
             return _db.ApplicationUsers.Find(userId);
         }
 
+        private ApplicationUser getUserFromId(string userId)
+        {
+            return _db.ApplicationUsers.Find(userId);
+        }
     }
 }

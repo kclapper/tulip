@@ -21,12 +21,16 @@ namespace Tulip.Models
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Name { get; set; }
+
         [NotMapped]
         public string RoleId { get; set; }
         [NotMapped]
         public string Role { get; set; }
         [NotMapped]
         public IEnumerable<SelectListItem> RoleList { get; set; }
+
+        public ICollection<ChatMessage> SentMessages { get; set; }
+        public ICollection<ChatMessage> ReceivedMessages { get; set; }
 
     }
 }

@@ -35,26 +35,26 @@ describe only the features this team will work on.
 ### 1.1. [Case Study Selection](#case-study-selection)
 The user shall be able to select which case study to examine on
 the dashboard.
-### 1.1. [Points](#points)
+#### 1.1.1 [Current Case Study](#current-case-study)
+The current case study shall be highlighted at the top.
+### 1.2. [Points](#points)
 The dashboard shall show how many points the user has in
 the currently selected case study.
-### 1.2. [Badges](#badges)
+### 1.3. [Badges](#badges)
 The dashboard shall show which badges the user has earned for
 the currently selected case study.
-### 1.3. [Leveling System](#levels)
+### 1.4. [Leveling System](#levels)
 The dashboard shall show the user's level in
 the currently selected case study.
-### 1.4 [Medals](#medals)
+### 1.5 [Medals](#medals)
 The dashboard shall show the user's medal in the
 currently selected case study.
-### 1.5 [User Profile](#medals)
+### 1.6 [User Profile](#medals)
 The dashboard shall show information about the current
 user on the dashboard.
-### 1.6 [Clickable](#clickable)
+### 1.7 [Clickable](#clickable)
 All items on the dashboard shall be clickable to get more
 information on the associated pages.
-### 1.7. [Current Case Study](#current-case-study)
-The current case study is highlighted at the top.
 
 ## 2. [Leaderboard](#leaderboard)
 ### 2.1. [Grouping](#leaderboard-groups)

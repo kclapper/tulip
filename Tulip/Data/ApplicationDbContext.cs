@@ -26,6 +26,25 @@ namespace Tulip.Data
       base.OnModelCreating(builder);
 
       builder.ApplyConfiguration(new RoleSeedConfiguration());
+
+      builder.Entity<ApplicationUser>()
+        .HasMany(e => e.SentMessages)
+        .WithOne(e => e.Sender)
+        .HasForeignKey(e => e.SenderId)
+        .IsRequired();
+
+      builder.Entity<ApplicationUser>()
+        .HasMany(e => e.ReceivedMessages)
+        .WithOne(e => e.Receiver)
+        .HasForeignKey(e => e.ReceiverId)
+        .IsRequired();
+
+      builder.Entity<ChatMessage>()
+        .Navigation(e => e.Sender)
+        .AutoInclude();
+      builder.Entity<ChatMessage>()
+        .Navigation(e => e.Receiver)
+        .AutoInclude();
     }
 
   }

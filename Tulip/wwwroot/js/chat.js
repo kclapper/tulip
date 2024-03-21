@@ -10,7 +10,7 @@ connection.on("ReceiveMessage", function (user, message) {
     let newMessage = document.createElement("li");
     newMessage.textContent = `[${(new Date()).toLocaleString()}] ${user}: ${message}`;
 
-    let messageList = document.getElementById("messagesList");
+    let messageList = document.getElementById("messageList");
     let lastMessage = messageList.firstChild;
 
     if (lastMessage == null) {

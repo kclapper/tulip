@@ -34,7 +34,9 @@
                 {
                     ApplicationUser otherUser = chat.Key;
                     <div class="text-start">
-                        @otherUser.UserName
+                        <a asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
+                            @otherUser.UserName
+                        </a>
                     </div>
                 }
             </div>

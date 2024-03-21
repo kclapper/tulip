@@ -32,23 +32,24 @@ namespace Tulip.Hubs
                     Message = message
                 };
 
-                db.ChatMessages.Add(chatMessage);
+                db.Add(chatMessage);
                 db.SaveChanges();
 
-                await Clients.User(recipient).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
+                string senderId = chatMessage.Sender.Id;
+                await Clients.User(senderId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
-                logger.LogInformation($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.Name}->{chatMessage.Receiver.Name}: {chatMessage.Message}");
+                logger.LogInformation($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.UserName}->{chatMessage.Receiver.UserName}: {chatMessage.Message}");
             } 
             catch (Exception e) 
             {
                 await Clients.Caller.SendAsync(SendError.Name);
                 logger.LogWarning(
                     $"Error sending message to"
-                    + $"Sender: ${Context.User.Identity.Name}"
-                    + $"Recipient: ${recipient}"
-                    + $"Message: ${message}"
-                    + $"Error Type: ${e.GetType}"
-                    + $"Error msg: ${e.Message}"
+                    + $"Sender: {Context.User.Identity.Name}"
+                    + $"Recipient: {recipient}"
+                    + $"Message: {message}"
+                    + $"Error Type: {e.GetType}"
+                    + $"Error msg: {e.Message}"
                 );
             }
         }
@@ -56,17 +57,20 @@ namespace Tulip.Hubs
         private ApplicationUser getUserFromClaimsPrincipal(ClaimsPrincipal principal)
         {
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return db.ApplicationUsers.Find(userId);
+            var user = db.ApplicationUsers.Find(userId);
+            return user;
         }
 
         private ApplicationUser getUserFromUsername(string username)
         {
             IEnumerable<ApplicationUser> userQuery = 
                 from user in db.ApplicationUsers
-                where user.UserId == username
+                where user.UserName == username
                 select user;
 
-            return userQuery.Single<ApplicationUser>();
+            var foundUser = userQuery.Single<ApplicationUser>();
+
+            return foundUser;
         }
     }
 
