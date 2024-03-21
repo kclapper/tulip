@@ -32,32 +32,47 @@
                     <div class="row">
                         <div class="row justify-content-md-center">
                             <div class="col-md-auto m-2">
+                                @{
+                                    string classString = ViewBag.caseStudy.Equals("FI") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                                }
                                 <a asp-controller="Home" asp-action="Dashboard" asp-route-caseStudy="FI"
-                                    class="btn btn-outline-primary">
+                                    class="@classString">
                                     <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
                                 </a>
                             </div>
                             <div class="col-md-auto m-2">
+                                @{
+                                    classString = ViewBag.caseStudy.Equals("FI_AR") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                                }
                                 <a asp-controller="Home" asp-action="Dashboard" asp-route-caseStudy="FI_AR"
-                                    class="btn btn-outline-primary">
+                                    class="@classString">
                                     <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
                                 </a>
                             </div>
                             <div class="col-md-auto m-2">
+                                @{
+                                    classString = ViewBag.caseStudy.Equals("MM") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                                }
                                 <a asp-controller="Home" asp-action="Dashboard" asp-route-caseStudy="MM"
-                                    class="btn btn-outline-primary">
+                                    class="@classString">
                                     <div data-i18n="Basic" id="MM">Materials Management</div>
                                 </a>
                             </div>
                             <div class="col-md-auto m-2">
+                                @{
+                                    classString = ViewBag.caseStudy.Equals("PP") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                                }
                                 <a asp-controller="Home" asp-action="Dashboard" asp-route-caseStudy="PP"
-                                    class="btn btn-outline-primary">
+                                    class="@classString">
                                     <div data-i18n="Basic" id="PP">Production Planning</div>
                                 </a>
                             </div>
                             <div class="col-md-auto m-2">
+                                @{
+                                    classString = ViewBag.caseStudy.Equals("SD") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                                }
                                 <a asp-controller="Home" asp-action="Dashboard" asp-route-caseStudy="SD"
-                                    class="btn btn-outline-primary">
+                                    class="@classString">
                                     <div data-i18n="Basic" id="SD">Sales and Distribution</div>
                                 </a>
                             </div>
