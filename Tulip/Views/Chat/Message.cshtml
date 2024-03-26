@@ -2,7 +2,24 @@
   Layout = "/Views/Chat/_ChatLayout.cshtml";
 }
 
-<div class="container bg-white m-5 p-4 rounded">
+<div class="card">
+    <ul id="messageList" class="list-group">
+        @foreach (var message in Model.CurrentChat.Messages)
+        {
+            <div class="row">
+                <div class="col-6">
+
+                </div>
+                <div class="col-6">
+                    <li class="list-group-item rounded">
+                        [@message.Timestamp] @message.Sender.UserName: @message.Message
+                    </li>
+                </div>
+            </div>
+        }
+    </ul>
+</div>
+<div class="container m-5 p-4">
     <div class="row d-none">
         <div class="col-1 pe-1">
             To:
@@ -12,24 +29,15 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-1 pe-1">
-            Message:
-        </div>
-        <div class="col-5">
-            <input type="text" id="messageInput" />
+        <div class="card">
+            <div class="card-body">
+                <input type="text" id="messageInput" />
+                <input class="btn btn-primary card-button" type="button" id="sendButton" value="Send" />
+            </div>
         </div>
     </div>
-    <input type="button" id="sendButton" value="Send" />
 
 </div>
-<ul id="messageList">
-    @foreach (var message in Model.CurrentChat.Messages)
-    {
-        <li>
-            [@message.Timestamp] @message.Sender.UserName: @message.Message
-        </li>
-    }
-</ul>
 
 @section scripts {
 
