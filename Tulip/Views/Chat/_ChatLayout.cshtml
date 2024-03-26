@@ -20,8 +20,8 @@
     gtag('config', 'G-ECPJX21DQD');
   </script>
 
-    <div class="row h-100 no-gutters">
-        <div class="col-2 h-100 border-end p-0 pt-5">
+    <div id="chatWindow" class="row no-gutters">
+        <div class="col-2 h-100 p-0 pt-5">
             <a asp-controller="Chat" asp-action="Compose">
                 <div class="card ms-4 me-3">
                     <ul class="list-group list-group-flush">
@@ -41,7 +41,7 @@
                         @if (Model.CurrentChat != null)
                         {
                             ApplicationUser currentChatUser = Model.CurrentChat.OtherUser;
-                            <li class="list-group-item shadow-sm">
+                            <li class="list-group-item shadow-sm active">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-4">
                                         <span class="badge bg-label-info">
@@ -49,7 +49,7 @@
                                         </span>
                                     </div>
                                     <div class="col-8 text-center">
-                                            <a asp-controller="Chat" asp-action="Message" asp-route-userId="@currentChatUser.Id">
+                                            <a class="text-white" asp-controller="Chat" asp-action="Message" asp-route-userId="@currentChatUser.Id">
                                                 @currentChatUser.UserName
                                             </a>
                                     </div>
@@ -87,7 +87,7 @@
             <div class="flex-grow-1">
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-9 border-start">
             @RenderBody()
         </div>
     </div>
@@ -96,5 +96,6 @@
 @section scripts {
     <script src="~/lib/signalr/signalr.js"></script>
     <script src="~/js/chat.js"></script>
+    <link rel="stylesheet" href="~/css/chat.css" />
     @RenderSection("Scripts", required: false);
 }

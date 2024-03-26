@@ -28,7 +28,7 @@ namespace Tulip.Controllers
             IEnumerable<ChatMessage> messages = 
                 from message in _db.ChatMessages
                 where message.Sender.Id.Equals(currentUser.Id) || message.Receiver.Id.Equals(currentUser.Id)
-                orderby message.Timestamp descending
+                orderby message.Timestamp ascending
                 select message;
 
             IDictionary<ApplicationUser, MessageHistory> chats = new Dictionary<ApplicationUser, MessageHistory>();

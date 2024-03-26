@@ -2,34 +2,67 @@
   Layout = "/Views/Chat/_ChatLayout.cshtml";
 }
 
-<div class="container bg-white m-5 p-4 rounded">
-    <div class="row d-none">
-        <div class="col-1 pe-1">
-            To:
+<div id="messageWindow" class="h-100 d-flex flex-column pt-4">
+    <div id="messageList" class="container pt-4">
+        @foreach (ChatMessage message in Model.CurrentChat.Messages)
+        {
+            @if (message.Sender.Equals(Model.CurrentChat.OtherUser))
+            {
+                <div class="row no-gutters">
+                    <div class="col-5">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                @message.Message
+                            </div>
+                        </div>
+                        <p class="text-muted text-start">
+                            @message.Timestamp
+                        </p>
+                    </div>
+                    <div class="col-7">
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row no-gutters">
+                    <div class="col-7">
+                    </div>
+                    <div class="col-5">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                @message.Message
+                            </div>
+                        </div>
+                        <p class="text-muted text-end">
+                            @message.Timestamp
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="flex-grow-1">
+    </div>
+    <div class="container mb-4">
+        <div class="row d-none">
+            <div class="col-1 pe-1">
+                To:
+            </div>
+            <div class="col-5">
+                <input type="text" id="recipientInput" value="@Model.CurrentChat.OtherUser.UserName" />
+            </div>
         </div>
-        <div class="col-5">
-            <input type="text" id="recipientInput" value="@Model.CurrentChat.OtherUser.UserName" />
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <input type="text" id="messageInput" />
+                    <input class="btn btn-primary card-button" type="button" id="sendButton" value="Send" />
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-1 pe-1">
-            Message:
-        </div>
-        <div class="col-5">
-            <input type="text" id="messageInput" />
-        </div>
-    </div>
-    <input type="button" id="sendButton" value="Send" />
-
 </div>
-<ul id="messageList">
-    @foreach (var message in Model.CurrentChat.Messages)
-    {
-        <li>
-            [@message.Timestamp] @message.Sender.UserName: @message.Message
-        </li>
-    }
-</ul>
 
 @section scripts {
 

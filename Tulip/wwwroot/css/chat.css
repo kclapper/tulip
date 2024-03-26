@@ -1,0 +1,25 @@
+#messageList::-webkit-scrollbar {
+    display: none;
+}
+
+#messageList {
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    overflow: scroll;
+    height: 95vh;
+    max-height: 95vh;
+}
+
+#messageWindow {
+    max-height: 95vh;
+}
+
+#chatWindow {
+    height: 95vh;
+    max-height: 95vh;
+}
+
+html {
+    max-height: 100vh;
+    overflow: hidden;
+}
