@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-
+using System.Collections; 
 namespace Tulip.Controllers
 {
     [Authorize]
@@ -74,11 +74,15 @@ namespace Tulip.Controllers
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == caseStudy);
                 var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == caseStudy);
                 var sorted = leaders.OrderByDescending(lb => lb.Point);
-                ViewBag.TopThree = sorted.Take(3);
+                var topThree = sorted.Take(3);
+          
+                ViewBag.TopThree = topThree;
                 ViewBag.LeaderTotal = sorted.Count();
-
+               
+               
+                
                 LeaderBoardText(caseStudy);//get correct casestudy text for dash leaderboard
-  
+
                 if (existingRecord != null)
                 {
                     // if record exists, update the points
@@ -99,6 +103,25 @@ namespace Tulip.Controllers
                     _db.LeaderBoaders.Add(records);
                     _db.SaveChanges();
                 }
+                var existing_count = 0;
+                foreach(var data in sorted){
+                    if(data.Username == userInfo.UserId){
+                        break;
+                    }
+                    existing_count++;
+                }
+                ViewBag.Contains_You = false;
+                if(existing_count < 3){
+                    ViewBag.Contains_You = true;
+                }else{
+                    ArrayList myAl = new ArrayList();
+                    myAl.Add(sorted.Skip(existing_count - 1).FirstOrDefault());
+                    myAl.Add(existingRecord);
+                    myAl.Add(sorted.Skip(existing_count + 1).FirstOrDefault());
+                    ViewBag.Additional = myAl;
+                }
+                ViewBag.Existing = existingRecord;
+                ViewBag.Existing_Count = existing_count + 1;
                 return View();
             }
             catch (Exception e)
