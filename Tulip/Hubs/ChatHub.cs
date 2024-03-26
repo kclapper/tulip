@@ -20,6 +20,12 @@ namespace Tulip.Hubs
             this.logger = logger;
         }
 
+        public async Task<string> GetCurrentUser()
+        {
+            ApplicationUser currentUser = getUserFromClaimsPrincipal(Context.User);
+            return currentUser.UserName;
+        }
+
         public async Task SendMessage(string recipient, string message)
         {
             try 
@@ -37,6 +43,9 @@ namespace Tulip.Hubs
 
                 string senderId = chatMessage.Sender.Id;
                 await Clients.User(senderId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
+
+                string receiverId = chatMessage.Receiver.Id;
+                await Clients.User(receiverId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
                 logger.LogInformation($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.UserName}->{chatMessage.Receiver.UserName}: {chatMessage.Message}");
             } 
@@ -78,6 +87,7 @@ namespace Tulip.Hubs
     {
         public static ChatEvent ReceiveMessage = new ChatEvent("ReceiveMessage"); 
         public static ChatEvent SendError = new ChatEvent("SendError");
+        public static ChatEvent CurrentUser = new ChatEvent("GetCurrentUser");
 
         public string Name { get; }
 
