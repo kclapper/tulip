@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-using System.Collections; 
+using System.Collections;
+using Tulip.Services.Implementations;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Tulip.Controllers
 {
     [Authorize]
@@ -122,12 +124,18 @@ namespace Tulip.Controllers
                 }
                 ViewBag.Existing = existingRecord;
                 ViewBag.Existing_Count = existing_count + 1;
+
                 return View();
+            }
+            catch (SAPException e)
+            {
+                _logger.LogError(e.Message);
+                return View("ErrorSAP");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError(e.Message);
+                return View("Error");
             }
         }
         private void LeaderBoardText(string caseStudy){
@@ -206,12 +214,18 @@ namespace Tulip.Controllers
                     _db.LeaderBoaders.Add(records);
                     _db.SaveChanges();
                 }
+
                 return View();
+            }
+            catch (SAPException e)
+            {
+                _logger.LogError(e.Message);
+                return View("ErrorSAP");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError(e.Message);
+                return View("Error");
             }
         }
 
@@ -273,6 +287,26 @@ namespace Tulip.Controllers
 
         public async Task<IActionResult> Badges(string caseStudy = "MM")
         {
+            var userInfo = getCurrentUser();
+
+            ISAP sap;
+            try 
+            {
+                sap = await _sapBuilder
+                    .SetUsername(userInfo.UserId)
+                    .SetClientId(userInfo.ClientId)
+                    .SetApplicationServer(userInfo.ApplicationServer)
+                    .SetCaseStudy(caseStudy)
+                    .Build();
+            }
+            catch (SAPException e)
+            {
+                _logger.LogError(e.Message);
+                return View("ErrorSAP");
+            }
+
+            var data = sap.GetBadge();
+
             switch (caseStudy)
             {
                 case "FI":
@@ -293,7 +327,6 @@ namespace Tulip.Controllers
                 default:
                     break;
             }
-            var data = await getBatch(caseStudy);
             var badge = new List<Badges>();
             switch (caseStudy)
             {
@@ -641,30 +674,6 @@ namespace Tulip.Controllers
             }
 
             return View(badge);
-        }
-
-        public async Task<string> getBatch(string caseStudy)
-        {
-            try
-            {
-                var userInfo = getCurrentUser();
-
-                ISAP sap = await _sapBuilder
-                    .SetUsername(userInfo.UserId)
-                    .SetClientId(userInfo.ClientId)
-                    .SetApplicationServer(userInfo.ApplicationServer)
-                    .SetCaseStudy(caseStudy)
-                    .Build();
-
-                _badge = sap.GetBadge();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return _badge;
         }
 
         public IActionResult Privacy()

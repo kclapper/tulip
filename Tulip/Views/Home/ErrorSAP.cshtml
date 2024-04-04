@@ -1,0 +1,28 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+<div class="container p-5">
+    <div class="row ">
+        <div class="col">
+        </div>
+        <div class="col-6">
+            <div class="alert alert-primary" role="alert">
+                <h4 class="alert-heading">
+                    An Error Has Occurred
+                </h4>
+                <p>
+                    An error has occurred and we could not connect to SAP. Please contact
+                    your system administrator and have them check that your SAP server 
+                    connection details are correct.
+                </p>
+            </div>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

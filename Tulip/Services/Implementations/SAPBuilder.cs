@@ -23,17 +23,6 @@ namespace Tulip.Services.Implementations
                 "Basic",
                 Convert.ToBase64String(authToken)
             );
-
-            /* Might not need */
-            // var handler = new HttpClientHandler();
-            // handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            // handler.ServerCertificateCustomValidationCallback =
-            //     (httpRequestMessage, cert, certChain, policyErrors) =>
-            //     {
-            //         return true;
-            //     };
-
-            // using var client = new HttpClient(handler);
         }
 
         private string username;
@@ -78,17 +67,27 @@ namespace Tulip.Services.Implementations
             string url = getConnectionString();
             logger.LogInformation($"SAP URL: {url}");
 
-            var result = await client.GetAsync(url);
-            logger.LogInformation($"SAP Response Code: {result.StatusCode}");
-
-            if ((int) result.StatusCode >= 400)
+            HttpResponseMessage result;
+            try 
             {
-                throw new Exception($"Could not connect to SAP, status code: {result.StatusCode}");
+                result = await client.GetAsync(url);
+                logger.LogInformation($"SAP Response Code: {result.StatusCode}");
+
+                if ((int) result.StatusCode >= 400)
+                {
+                    logger.LogError($"Bad SAP response code: {result.StatusCode}");
+                    throw new SAPException($"Could not connect to SAP, status code: {result.StatusCode}");
+                }
+
+                var body = await getBodyContent(result);
+
+                return new SAP(logger, body);
+            } 
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                throw new SAPException("SAPBuilder encountered an error while connecting to SAP", e);
             }
-
-            var body = await getBodyContent(result);
-
-            return new SAP(logger, body);
        }
 
         private string getConnectionString()
