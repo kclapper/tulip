@@ -8,14 +8,9 @@ The SAP gamification web app.
 ## Installation
 1. Clone the repository 
 2. `cd` into the repository root directory
-3. Install project dependencies
+3. Setup the development database using the setup tool 
 
-       dotnet pack
-       dotnet tool install --add-source Tulip.CLI/nupkg Tulip.CLI
-
-4. Setup the development database using the setup tool 
-
-       dotnet tulip db-setup Tulip/Tulip.db
+       dotnet run --project Tulip.CLI db-setup Tulip/Tulip.db
 
 ## Development
 1. `cd` to the repository root directory
