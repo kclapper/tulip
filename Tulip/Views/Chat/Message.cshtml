@@ -45,19 +45,13 @@
     <div class="flex-grow-1">
     </div>
     <div class="container mb-4">
-        <div class="row d-none">
-            <div class="col-1 pe-1">
-                To:
-            </div>
-            <div class="col-5">
-                <input type="text" id="recipientInput" value="@Model.CurrentChat.OtherUser.UserName" />
-            </div>
-        </div>
         <div class="row">
             <div class="card">
                 <div class="card-body">
-                    <input type="text" id="messageInput" />
-                    <input class="btn btn-primary card-button" type="button" id="sendButton" value="Send" />
+                    <form id="messageEditor">
+                        <input type="hidden" id="recipientInput" value="@Model.CurrentChat.OtherUser.UserName" readonly />
+                        <input type="text" id="messageInput" spellcheck="true" class="form-control"/>
+                    </form>
                 </div>
             </div>
         </div>

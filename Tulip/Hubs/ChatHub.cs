@@ -48,6 +48,8 @@ namespace Tulip.Hubs
                 await Clients.User(receiverId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
                 logger.LogInformation($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.UserName}->{chatMessage.Receiver.UserName}: {chatMessage.Message}");
+
+                await Clients.Caller.SendAsync(SentMessage.Name, receiverId);
             } 
             catch (Exception e) 
             {
@@ -88,6 +90,7 @@ namespace Tulip.Hubs
         public static ChatEvent ReceiveMessage = new ChatEvent("ReceiveMessage"); 
         public static ChatEvent SendError = new ChatEvent("SendError");
         public static ChatEvent CurrentUser = new ChatEvent("GetCurrentUser");
+        public static ChatEvent SentMessage = new ChatEvent("SentMessage");
 
         public string Name { get; }
 
