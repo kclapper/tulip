@@ -2,15 +2,16 @@
 
 function resetScroll() {
     const messageList = document.getElementById("messageList");
-    messageList.lastElementChild.scrollIntoView();
+    if (messageList) {
+        messageList.lastElementChild.scrollIntoView();
+    }
 }
 
 var connection = new signalR.HubConnectionBuilder()
                             .withUrl("/chatHub")
+                            .withAutomaticReconnect()
                             .build();
 var currentUser;
-
-document.getElementById("sendButton").disabled = true;
 
 connection.on("ReceiveMessage", function (user, message) {
     const isUserMessage = user === currentUser;
@@ -56,19 +57,62 @@ connection.on("ReceiveMessage", function (user, message) {
 connection
         .start()
         .then(() => {
-            document.getElementById("sendButton").disabled = false;
             resetScroll();
             return connection.invoke("GetCurrentUser");
         })
         .then((userName) => currentUser = userName)
         .catch((err) => console.error(err.toString()));
 
-document.getElementById("sendButton").addEventListener("click", function(event) {
-    let recipient = document.getElementById("recipientInput").value;
-    let message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", recipient, message)
-              .catch(function(err) {
-                return console.error(err.toString());
-              });
-    event.preventDefault();
-});
+if (document.getElementById("messageEditor")) {
+    document.getElementById("messageEditor").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const recipient = document.getElementById("recipientInput").value;
+
+        const messageBox = document.getElementById("messageInput");
+        const message = messageBox.value;
+        if (message === "") {
+            return;
+        }
+
+        connection.invoke("SendMessage", recipient, message)
+                .catch(function(err) {
+                    console.error(err.toString());
+                });
+
+        messageBox.value = "";
+        resetScroll();
+    });
+}
+
+if (document.getElementById("composeEditor")) {
+    document.getElementById("composeEditor").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const recipientBox = document.getElementById("recipientInput");
+        const recipient = recipientBox.value;
+
+        const messageBox = document.getElementById("messageInput");
+        const message = messageBox.value;
+        if (message === "") {
+            return;
+        }
+
+        connection.invoke("SendMessage", recipient, message)
+                .catch(function(err) {
+                    console.error(err.toString());
+                });
+
+        messageBox.value = "";
+        if (!recipientBox.readOnly) {
+            recipientBox.value = "";
+        }
+
+        const sendRedirect = (recipientId) => {
+            window.location.href = `/Chat/Message/${recipientId}`;
+            connection.off("SentMessage");
+        }
+
+        connection.on("SentMessage", sendRedirect);
+    });
+}
