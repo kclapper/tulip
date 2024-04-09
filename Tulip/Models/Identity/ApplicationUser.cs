@@ -32,5 +32,7 @@ namespace Tulip.Models
         public ICollection<ChatMessage> SentMessages { get; set; }
         public ICollection<ChatMessage> ReceivedMessages { get; set; }
 
+        public String AvatarUrl { get; set; }
+
     }
 }
