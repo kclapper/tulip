@@ -77,6 +77,10 @@ leaderboard positions.
 There shall be a chat system in the application.
 ### 3.1. [User Chat](#user-chat)
 Users shall be able to chat with each other.
+#### 3.1.1. [User Search](#user-chat-search)
+When a user composes a message to another user they have not chatted
+with before, as they type their username into the "To:" field, 
+suggestions shall be shown that the user can pick from.
 ### 3.2. [AI Chat](#ai-chat)
 Users shall be able to chat with an AI about the 
 SAP system.

@@ -90,7 +90,7 @@ namespace Tulip.Hubs
         public static ChatEvent ReceiveMessage = new ChatEvent("ReceiveMessage"); 
         public static ChatEvent SendError = new ChatEvent("SendError");
         public static ChatEvent CurrentUser = new ChatEvent("GetCurrentUser");
-        public static ChatEvent SentMessage = new ChatEvent("SentMessage");
+        public static ChatEvent SentMessage = new ChatEvent("MessageSent");
 
         public string Name { get; }
 
