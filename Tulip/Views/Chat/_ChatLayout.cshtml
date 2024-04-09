@@ -21,7 +21,7 @@
   </script>
 
     <div id="chatWindow" class="row no-gutters">
-        <div class="col-2 h-100 p-0 pt-5">
+        <div id="chatSidebar" class="col-2 h-100 p-0 pt-5">
             <a asp-controller="Chat" asp-action="Compose">
                 <div class="card ms-4 me-3">
                     <ul class="list-group list-group-flush">
@@ -95,7 +95,6 @@
 
 @section scripts {
     <script src="~/lib/signalr/signalr.js"></script>
-    <script src="~/js/chat.js"></script>
     <link rel="stylesheet" href="~/css/chat.css" />
     @RenderSection("Scripts", required: false);
 }

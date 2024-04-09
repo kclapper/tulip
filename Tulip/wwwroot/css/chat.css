@@ -1,3 +1,14 @@
+#chatSidebar::-webkit-scrollbar {
+    display: none;
+}
+
+#chatSidebar {
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    overflow: scroll;
+    max-height: 95vh;
+}
+
 #messageList::-webkit-scrollbar {
     display: none;
 }

@@ -4,6 +4,7 @@ using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Collections;
 
 namespace Tulip.Controllers
 {
@@ -102,6 +103,16 @@ namespace Tulip.Controllers
         private ApplicationUser getUserFromId(string userId)
         {
             return _db.ApplicationUsers.Find(userId);
+        }
+
+        [HttpGet]
+        public ActionResult<List<string>> UserSearch([FromQuery] string query) 
+        {
+            IEnumerable<string> userResults = 
+                from user in _db.ApplicationUsers
+                where user.NormalizedUserName.Contains(query.ToUpper())
+                select user.UserName;
+            return userResults.Take(5).ToList();
         }
     }
 }
