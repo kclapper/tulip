@@ -110,7 +110,8 @@ namespace Tulip.Controllers
         {
             IEnumerable<string> userResults = 
                 from user in _db.ApplicationUsers
-                where user.NormalizedUserName.Contains(query.ToUpper())
+                where user.UserName.ToUpper().Contains(query.ToUpper())
+                orderby user.UserName.ToUpper().IndexOf(query.ToUpper()), user.UserName.ToUpper() ascending
                 select user.UserName;
             return userResults.Take(5).ToList();
         }
