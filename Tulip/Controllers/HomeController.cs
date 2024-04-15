@@ -77,12 +77,19 @@ namespace Tulip.Controllers
                 var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == caseStudy);
                 var sorted = leaders.OrderByDescending(lb => lb.Point);
                 var topThree = sorted.Take(3);
-          
                 ViewBag.TopThree = topThree;
                 ViewBag.LeaderTotal = sorted.Count();
-               
-               
-                
+                ArrayList counts = new ArrayList();
+                int counter = 1;
+                int firstPoint = sorted.FirstOrDefault().Point.GetValueOrDefault();
+                foreach(var data in topThree){
+                    if(firstPoint != data.Point){
+                        counter++;
+                        firstPoint = data.Point.GetValueOrDefault();
+                    }
+                     counts.Add(counter);                
+                }
+                ViewBag.Counts = counts;
                 LeaderBoardText(caseStudy);//get correct casestudy text for dash leaderboard
 
                 if (existingRecord != null)
@@ -106,7 +113,13 @@ namespace Tulip.Controllers
                     _db.SaveChanges();
                 }
                 var existing_count = 0;
+                firstPoint = sorted.FirstOrDefault().Point.GetValueOrDefault();
+                counter = 1;
                 foreach(var data in sorted){
+                    if(firstPoint != data.Point){
+                        counter++;
+                        firstPoint = data.Point.GetValueOrDefault();
+                    }
                     if(data.Username == userInfo.UserId){
                         break;
                     }
@@ -121,6 +134,7 @@ namespace Tulip.Controllers
                     myAl.Add(existingRecord);
                     myAl.Add(sorted.Skip(existing_count + 1).FirstOrDefault());
                     ViewBag.Additional = myAl;
+                    ViewBag.AdditionalCount = counter;
                 }
                 ViewBag.Existing = existingRecord;
                 ViewBag.Existing_Count = existing_count + 1;
