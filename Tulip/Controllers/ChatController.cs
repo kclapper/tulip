@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Collections;
+using System.Data.Common;
 
 namespace Tulip.Controllers
 {
@@ -90,6 +91,22 @@ namespace Tulip.Controllers
             viewModel.Chats.TryGetValue(getUserFromId(userId), out messages);
 
             viewModel.CurrentChat = messages;
+
+            return View(viewModel);
+        }
+
+        [Route("Chat/AIMessage")]
+        public ActionResult AIMessage()
+        {
+            ChatViewModel viewModel = getAllUserChats();
+
+            IEnumerable<AIChatMessage> aiMessages = 
+                from message in _db.AIChatMessages
+                where message.User.Id.Equals(getCurrentUser().Id)
+                orderby message.Timestamp ascending
+                select message;
+
+            ViewData["AIChatMessages"] = aiMessages;
 
             return View(viewModel);
         }

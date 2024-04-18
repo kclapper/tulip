@@ -56,6 +56,8 @@ export class MessageList {
     }
 
     resetScroll() {
-        this.#element.lastElementChild.scrollIntoView();
+        if (this.#element.lastElementChild) {
+            this.#element.lastElementChild.scrollIntoView();
+        }
     }
 }

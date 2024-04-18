@@ -6,9 +6,9 @@
 
 <div id="messageWindow" class="h-100 d-flex flex-column pt-4">
     <div id="messageList" class="container pt-4">
-        @foreach (ChatMessage message in Model.CurrentChat.Messages)
+        @foreach (var message in (IEnumerable<AIChatMessage>)ViewData["AIChatMessages"])
         {
-            @if (message.Sender.Equals(Model.CurrentChat.OtherUser))
+            @if (!message.IsFromUser)
             {
                 <div class="row no-gutters">
                     <div class="col-5">
@@ -42,9 +42,9 @@
     </div>
     <div class="flex-grow-1">
     </div>
-    @await Html.PartialAsync("_MessageEditor", @Model.CurrentChat.OtherUser.UserName)
+    @await Html.PartialAsync("_MessageEditor", "Tulip Bot")
 </div>
 
 @section scripts {
-    <script src="~/js/chat/message.js" type="module"></script>
+    <script src="~/js/chat/aiMessage.js" type="module"></script>
 }
