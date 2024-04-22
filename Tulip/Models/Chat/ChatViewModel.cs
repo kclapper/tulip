@@ -8,6 +8,7 @@ namespace Tulip.Models
         public IDictionary<ApplicationUser, MessageHistory> Chats { get; set; }
 
         public MessageHistory CurrentChat { get; set; }
+        public bool AIIsEnabled { get; set;}
     }
 
     public class MessageHistory

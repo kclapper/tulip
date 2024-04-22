@@ -5,17 +5,15 @@ using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using LLama.Common;
-using LLama;
-using LLama.Abstractions;
-using LLama.Native;
-using Microsoft.Extensions.Logging.Abstractions;
-using System.Reflection;
-
 var builder = WebApplication.CreateBuilder(args);
 
 /* Configure Logging */
 builder.Logging.AddConsole();
+
+/* Add Configuration Providers */
+builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>{
+    { "AIChatModelPath", "" }
+});
 
 /* Add Services */
 builder.Services.AddDbContext<ApplicationDbContext>(
@@ -36,16 +34,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 builder.Services.AddScoped<ISAPBuilder, SAPBuilder>();
 builder.Services.AddScoped<ITasksServices, TasksService>();
 
-var assemblyPath = Assembly.GetExecutingAssembly().Location;
-var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-var modelPath = assemblyDirectory + "/Hubs/llama-2-7b-chat.gguf";
-
-NativeLibraryConfig.Instance.WithLogs(false);
-var modelParameters = new ModelParams(modelPath);
-var model = LLamaWeights.LoadFromFile(modelParameters);
-var context = model.CreateContext(modelParameters, NullLogger.Instance);
-var executor = new InteractiveExecutor(context, NullLogger.Instance);
-builder.Services.AddScoped<ILLamaExecutor, InteractiveExecutor>((serviceProvider) => executor);
+builder.Services.AddSingleton<IAIChat, LLamaChat>();
+// builder.Services.AddScoped<IAIChatSession, LLamaChatSession>();
 
 builder.Services.AddScoped(sp => new HttpClient { 
     BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIKey"))

@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Collections;
 using Tulip.Services.Implementations;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 namespace Tulip.Controllers
 {
     [Authorize]
