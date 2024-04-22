@@ -20,12 +20,15 @@ namespace Tulip.Data
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
     public DbSet<ChatMessage> ChatMessages { get; set; }
+    public DbSet<AIChatMessage> AIChatMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
 
       builder.ApplyConfiguration(new RoleSeedConfiguration());
+
+      /* User Chat Relationships */
 
       builder.Entity<ApplicationUser>()
         .HasMany(e => e.SentMessages)
@@ -45,6 +48,17 @@ namespace Tulip.Data
       builder.Entity<ChatMessage>()
         .Navigation(e => e.Receiver)
         .AutoInclude();
+
+      /* AI Chat Relationships */
+
+        builder.Entity<AIChatMessage>()
+          .HasOne(e => e.User)
+          .WithMany()
+          .HasForeignKey(e => e.UserId)
+          .IsRequired();
+        builder.Entity<AIChatMessage>()
+          .Navigation(e => e.User)
+          .AutoInclude();
     }
 
   }

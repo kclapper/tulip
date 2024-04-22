@@ -10,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 /* Configure Logging */
 builder.Logging.AddConsole();
 
+/* Add Configuration Providers */
+builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>{
+    { "AIChatModelPath", "" }
+});
+
 /* Add Services */
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => {
@@ -28,6 +33,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 
 builder.Services.AddScoped<ISAPBuilder, SAPBuilder>();
 builder.Services.AddScoped<ITasksServices, TasksService>();
+
+builder.Services.AddSingleton<IAIChat, LLamaChat>();
+// builder.Services.AddScoped<IAIChatSession, LLamaChatSession>();
 
 builder.Services.AddScoped(sp => new HttpClient { 
     BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIKey"))
@@ -64,6 +72,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<AIChatHub>("/aiChatHub");
+
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",

@@ -4,7 +4,6 @@ using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Collections;
 
 namespace Tulip.Controllers
 {
@@ -14,12 +13,14 @@ namespace Tulip.Controllers
         private readonly ILogger<ChatController> _logger;
         private readonly ITasksServices _tasksServices;
         private readonly ApplicationDbContext _db;
+        private readonly IAIChat aiChat;
 
-        public ChatController(ILogger<ChatController> logger, ITasksServices tasksServices, ApplicationDbContext db)
+        public ChatController(ILogger<ChatController> logger, ITasksServices tasksServices, ApplicationDbContext db, IAIChat aiChat)
         {
             _tasksServices = tasksServices;
             _db = db;
             _logger = logger;
+            this.aiChat = aiChat;
         }
 
         private ChatViewModel getAllUserChats() 
@@ -65,7 +66,8 @@ namespace Tulip.Controllers
 
             ChatViewModel viewModel = new ChatViewModel()
             {
-                Chats = chats
+                Chats = chats,
+                AIIsEnabled = aiChat.IsEnabled()
             };
 
             return viewModel;
@@ -90,6 +92,27 @@ namespace Tulip.Controllers
             viewModel.Chats.TryGetValue(getUserFromId(userId), out messages);
 
             viewModel.CurrentChat = messages;
+
+            return View(viewModel);
+        }
+
+        [Route("Chat/AIMessage")]
+        public ActionResult AIMessage()
+        {
+            if (!aiChat.IsEnabled())
+            {
+                return RedirectToAction("Index");
+            }
+
+            ChatViewModel viewModel = getAllUserChats();
+
+            IEnumerable<AIChatMessage> aiMessages = 
+                from message in _db.AIChatMessages
+                where message.User.Id.Equals(getCurrentUser().Id)
+                orderby message.Timestamp ascending
+                select message;
+
+            ViewData["AIChatMessages"] = aiMessages;
 
             return View(viewModel);
         }
