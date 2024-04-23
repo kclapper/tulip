@@ -290,7 +290,7 @@ namespace Tulip.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadUsers(IFormFile file, string returnurl = null)  
+        public async Task<IActionResult> UploadUsers(string ApplicationServer, int ClientId, IFormFile file, string returnurl = null)  
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("/Account/GetUsers");
@@ -308,19 +308,19 @@ namespace Tulip.Controllers
             string[] fields;
             while ((fields = parser.ReadFields()) != null) {
                 // applicationserver, clientid, name, password, email
-                const int APPLICATION_SERVER = 0;
-                const int CLIENT_ID = 1;
-                const int NAME = 2;
-                const int PASSWORD = 3;
-                const int EMAIL = 4;
+                // const int APPLICATION_SERVER = 0;
+                // const int CLIENT_ID = 1;
+                const int NAME = 0;
+                const int PASSWORD = 1;
+                const int EMAIL = 2;
                 var userData = new RegisterViewModel {
-                    ApplicationServer = fields[APPLICATION_SERVER],
+                    ApplicationServer = ApplicationServer,
                     RoleSelected = "User",
                     Username = fields[NAME],
                     Password = fields[PASSWORD],
                     Email = fields[EMAIL],
                     Name = fields[NAME],
-                    ClientId = int.Parse(fields[CLIENT_ID]),
+                    ClientId = ClientId,
                 };
                 if (ModelState.IsValid)
                 {
