@@ -12,8 +12,8 @@ namespace Tulip.Hubs
     [Authorize]
     public class ChatHub : Hub
     {
-        private ApplicationDbContext db;
-        private ILogger<ChatHub> logger;
+        protected ApplicationDbContext db;
+        protected ILogger<ChatHub> logger;
         public ChatHub(ApplicationDbContext db, ILogger<ChatHub> logger) : base()
         {
             this.db = db;
@@ -26,7 +26,7 @@ namespace Tulip.Hubs
             return currentUser.UserName;
         }
 
-        public async Task SendMessage(string recipient, string message)
+        public virtual async Task SendMessage(string recipient, string message)
         {
             try 
             {
@@ -65,14 +65,14 @@ namespace Tulip.Hubs
             }
         }
 
-        private ApplicationUser getUserFromClaimsPrincipal(ClaimsPrincipal principal)
+        protected ApplicationUser getUserFromClaimsPrincipal(ClaimsPrincipal principal)
         {
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = db.ApplicationUsers.Find(userId);
             return user;
         }
 
-        private ApplicationUser getUserFromUsername(string username)
+        protected ApplicationUser getUserFromUsername(string username)
         {
             IEnumerable<ApplicationUser> userQuery = 
                 from user in db.ApplicationUsers

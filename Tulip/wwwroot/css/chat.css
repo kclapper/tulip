@@ -21,6 +21,10 @@
     max-height: 95vh;
 }
 
+.message-text {
+    white-space: pre-line;
+}
+
 #messageWindow {
     max-height: 95vh;
 }

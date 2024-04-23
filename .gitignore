@@ -484,3 +484,6 @@ $RECYCLE.BIN/
 
 # Development Database
 **/Tulip.db*
+
+# AI Chat Model
+**/*.gguf
