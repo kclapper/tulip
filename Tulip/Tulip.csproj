@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content PublishState="Included" Include="Hubs/llama-2-7b-chat.gguf" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\assets\js\config.js" />
     <None Include="wwwroot\assets\js\dashboards-analytics.js" />
     <None Include="wwwroot\assets\js\extended-ui-perfect-scrollbar.js" />

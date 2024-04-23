@@ -1,7 +1,6 @@
 using LLama;
 using LLama.Abstractions;
 using LLama.Common;
-using LLama.Native;
 using Microsoft.Extensions.Logging.Abstractions;
 using Tulip.Models;
 using Tulip.Services.Interfaces;
@@ -10,28 +9,19 @@ namespace Tulip.Services.Implementations
 {
     public class LLamaChat: IAIChat
     {
+        private readonly IConfiguration configuration;
         private readonly ILogger<LLamaChat> logger;
-        private string modelPath;
         private InteractiveExecutor modelExecutor;
 
         public LLamaChat(ILogger<LLamaChat> logger, IConfiguration configuration)
         {
+            this.configuration = configuration; 
             this.logger = logger;
-            this.modelPath = configuration["AIChatModelPath"];
 
-            if (this.modelPath != "")
+            if (configuration["AIChatModelPath"] != "")
             {
-                instantiateModel();
+                Enable();
             }
-        }
-
-        private void instantiateModel()
-        {
-            NativeLibraryConfig.Instance.WithLogs(false);
-            var modelParams = new ModelParams(modelPath);
-            var model = LLamaWeights.LoadFromFile(modelParams);
-            var context = model.CreateContext(modelParams, NullLogger.Instance);
-            this.modelExecutor = new InteractiveExecutor(context, NullLogger.Instance);
         }
 
         public bool IsEnabled()
@@ -39,16 +29,26 @@ namespace Tulip.Services.Implementations
             return modelExecutor != null;
         }
 
-        public void Disable()
+        public void Enable()
         {
-            this.modelPath = "";
-            this.modelExecutor = null;
+            if (IsEnabled())
+            {
+                Disable();
+            }
+
+            var modelPath = configuration["AIChatModelPath"];
+
+            var modelParams = new ModelParams(modelPath);
+            var model = LLamaWeights.LoadFromFile(modelParams);
+            var context = model.CreateContext(modelParams, NullLogger.Instance);
+
+            this.modelExecutor = new InteractiveExecutor(context, NullLogger.Instance);
         }
 
-        public void Enable(string modelPath)
+        public void Disable()
         {
-            this.modelPath = modelPath;
-            this.instantiateModel();
+            this.modelExecutor = null;
+            GC.Collect();
         }
 
         public IAIChatSession GetChatSession(ApplicationUser user)

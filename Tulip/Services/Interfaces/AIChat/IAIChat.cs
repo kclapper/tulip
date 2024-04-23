@@ -6,7 +6,7 @@ namespace Tulip.Services.Interfaces
     {
         public bool IsEnabled();
         public void Disable();
-        public void Enable(string modelPath);
+        public void Enable();
         public IAIChatSession GetChatSession(ApplicationUser user);
     }
 }
