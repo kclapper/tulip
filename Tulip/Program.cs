@@ -4,6 +4,7 @@ using Tulip.Services.Implementations;
 using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,15 @@ builder.Logging.AddConsole();
 /* Add Configuration Providers */
 builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>{
     { "AIChatModelPath", "" }
+});
+
+/* Increase max upload size for AI model upload */
+const long maxUploadSize = 1024L * 1024L * 1024L * 5L; // 5GB max upload limit
+builder.Services.Configure<FormOptions>(options => {
+    options.MultipartBodyLengthLimit = maxUploadSize; 
+});
+builder.WebHost.ConfigureKestrel(serverOptions => {
+    serverOptions.Limits.MaxRequestBodySize = maxUploadSize;
 });
 
 /* Add Services */
@@ -35,7 +45,6 @@ builder.Services.AddScoped<ISAPBuilder, SAPBuilder>();
 builder.Services.AddScoped<ITasksServices, TasksService>();
 
 builder.Services.AddSingleton<IAIChat, LLamaChat>();
-// builder.Services.AddScoped<IAIChatSession, LLamaChatSession>();
 
 builder.Services.AddScoped(sp => new HttpClient { 
     BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIKey"))
