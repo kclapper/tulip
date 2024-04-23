@@ -62,30 +62,25 @@
             <div id="chatList" class="ps-4 pe-3">
                 <div class="card">
                     <ul class="list-group list-group-flush">
-                        @if (Model.CurrentChat != null)
-                        {
-                            ApplicationUser currentChatUser = Model.CurrentChat.OtherUser;
-                            <li class="list-group-item shadow-sm active">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col-4">
-                                        <span class="badge bg-label-info">
-                                            <i class="bx bx-medal text-primary bx-sm"></i>
-                                        </span>
-                                    </div>
-                                    <div class="col-8 text-center">
-                                            <a class="text-white" asp-controller="Chat" asp-action="Message" asp-route-userId="@currentChatUser.Id">
-                                                @currentChatUser.UserName
-                                            </a>
-                                    </div>
-                                </div>
-                            </li>
-                        }
                         @foreach (var chat in Model.Chats) 
                         {
                             ApplicationUser otherUser = chat.Key;
                             @if (Model.CurrentChat != null && otherUser.Equals(Model.CurrentChat.OtherUser))
                             {
-                                continue;
+                                <li class="list-group-item shadow-sm active">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                                <a class="text-white" asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
+                                                    @otherUser.UserName
+                                                </a>
+                                        </div>
+                                    </div>
+                                </li>
                             }
                             else 
                             {

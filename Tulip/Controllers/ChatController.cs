@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Reflection;
 using System.Net;
+using System.Collections.Immutable;
+using System.Collections.Specialized;
 
 namespace Tulip.Controllers
 {
@@ -37,7 +39,7 @@ namespace Tulip.Controllers
                 orderby message.Timestamp ascending
                 select message;
 
-            IDictionary<ApplicationUser, MessageHistory> chats = new Dictionary<ApplicationUser, MessageHistory>();
+            ChatList chats = new ChatList();
 
             foreach (ChatMessage message in messages)
             {
@@ -51,7 +53,7 @@ namespace Tulip.Controllers
                     otherUser = message.Sender;
                 }
 
-                if (!chats.ContainsKey(otherUser))
+                if (!chats.ContainsUser(otherUser))
                 {
                     var messageHistory = new MessageHistory()
                     {
@@ -62,8 +64,7 @@ namespace Tulip.Controllers
                 }
                 else 
                 {
-                    MessageHistory messageHistory;
-                    chats.TryGetValue(otherUser, out messageHistory);
+                    MessageHistory messageHistory = chats.GetMessageHistory(otherUser);
                     messageHistory.Messages.Add(message);
                 }
             }
@@ -79,7 +80,16 @@ namespace Tulip.Controllers
 
         public ActionResult Index()
         {
-            return View(getAllUserChats());
+            ChatViewModel viewModel = getAllUserChats();
+
+            if (viewModel.Chats.Count() == 0)
+            {
+                return RedirectToAction("Compose");
+            }
+
+            var mostRecentChat = viewModel.Chats.MostRecentChat();
+
+            return RedirectToAction("Message", new { userId = mostRecentChat.OtherUser.Id });
         }
 
         public ActionResult Compose()
@@ -92,8 +102,7 @@ namespace Tulip.Controllers
         {
             ChatViewModel viewModel = getAllUserChats();
 
-            MessageHistory messages;
-            viewModel.Chats.TryGetValue(getUserFromId(userId), out messages);
+            MessageHistory messages = viewModel.Chats.GetMessageHistory(getUserFromId(userId));
 
             viewModel.CurrentChat = messages;
 
