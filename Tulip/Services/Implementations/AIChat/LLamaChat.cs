@@ -62,7 +62,7 @@ namespace Tulip.Services.Implementations
 
             builder.setOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(
                 new string[] { "User:", "Assistant:", "SAP:", "SAP System:", "Bot:", "Expert:" },
-                redundancyLength: 8
+                redundancyLength: 10
             ));
 
             builder.setInferenceParams(new InferenceParams() 

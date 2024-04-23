@@ -118,6 +118,7 @@ namespace Tulip.Controllers
             }
 
             ChatViewModel viewModel = getAllUserChats();
+            viewModel.AIIsCurrentChat = true;
 
             IEnumerable<AIChatMessage> aiMessages = 
                 from message in db.AIChatMessages
@@ -162,8 +163,6 @@ namespace Tulip.Controllers
                 AIIsEnabled = aiChat.IsEnabled(),
                 AIModelFileName = modelName
             };
-
-            logger.LogDebug($"{model.AIModelFileName}");
 
             return View(model);
         }

@@ -31,6 +31,14 @@ class Editor {
 
         this.messageBox.value = "";
     }
+
+    disable() {
+        this.messageBox.setAttribute("disabled", true);
+    }
+
+    enable() {
+        this.messageBox.removeAttribute("disabled");
+    }
 }
 
 class MessageEditor extends Editor {
