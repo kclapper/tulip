@@ -10,6 +10,7 @@ namespace Tulip.Models
 
         public MessageHistory CurrentChat { get; set; }
         public bool AIIsEnabled { get; set;}
+        public bool AIIsCurrentChat { get; set;} = false;
     }
 
     public class ChatList : IEnumerable<KeyValuePair<ApplicationUser, MessageHistory>> {

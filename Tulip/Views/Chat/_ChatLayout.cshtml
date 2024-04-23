@@ -37,26 +37,52 @@
             <hr />
             @if (Model.AIIsEnabled)
             {
-                <div class="ps-4 pe-3">
-                    <div class="card">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col-4">
-                                        <span class="badge bg-label-info">
-                                            <i class="bx bx-medal text-primary bx-sm"></i>
-                                        </span>
+                @if (Model.AIIsCurrentChat)
+                {
+                    <div class="ps-4 pe-3">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item shadow-sm active">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                                <a class="text-white" asp-controller="Chat" asp-action="AIMessage">
+                                                    Tulip Bot
+                                                </a>
+                                        </div>
                                     </div>
-                                    <div class="col-8 text-center">
-                                            <a asp-controller="Chat" asp-action="AIMessage">
-                                                Tulip Bot
-                                            </a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                }
+                else 
+                {
+                    <div class="ps-4 pe-3">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                                <a asp-controller="Chat" asp-action="AIMessage">
+                                                    Tulip Bot
+                                                </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
                 <hr />
             }
             <div id="chatList" class="ps-4 pe-3">
