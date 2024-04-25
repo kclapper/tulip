@@ -40,6 +40,18 @@
             }
         }
     </div>
+    <div id="typingIndicator" class="container pb-4" hidden>
+        <div class="row">
+            <div class="col-5">
+                <button class="btn btn-outline-primary w-100" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Typing...</span>
+                </button>
+            </div>
+            <div class="col-7">
+            </div>
+        </div>
+    </div>
     <div class="flex-grow-1">
     </div>
     @await Html.PartialAsync("_MessageEditor", "Tulip Bot")
