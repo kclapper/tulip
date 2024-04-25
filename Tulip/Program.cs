@@ -13,7 +13,9 @@ builder.Logging.AddConsole();
 
 /* Add Configuration Providers */
 builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>{
-    { "AIChatModelPath", "" }
+    { "AIChatModelPath", "" },
+    { "AIChatSystem", "None" },
+    { "ChatGPTAPIKey", "" },
 });
 
 /* Increase max upload size for AI model upload */
@@ -44,7 +46,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 builder.Services.AddScoped<ISAPBuilder, SAPBuilder>();
 builder.Services.AddScoped<ITasksServices, TasksService>();
 
-builder.Services.AddSingleton<IAIChat, LLamaChat>();
+builder.Services.AddSingleton<IAIChatFactory, AIChatFactory>();
 
 builder.Services.AddScoped(sp => new HttpClient { 
     BaseAddress = new Uri(builder.Configuration.GetValue<string>("APIKey"))

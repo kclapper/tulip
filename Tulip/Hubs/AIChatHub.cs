@@ -12,10 +12,10 @@ namespace Tulip.Hubs
     [Authorize]
     public class AIChatHub : ChatHub
     {
-        private IAIChat chat;
-        public AIChatHub(IAIChat chat, ApplicationDbContext db, ILogger<ChatHub> logger) : base(db, logger)
+        private IAIChatFactory chatFactory;
+        public AIChatHub(IAIChatFactory chatFactory, ApplicationDbContext db, ILogger<ChatHub> logger) : base(db, logger)
         {
-            this.chat = chat;
+            this.chatFactory = chatFactory;
         }
         
         override public async Task SendMessage(string recipient, string message)
@@ -43,6 +43,7 @@ namespace Tulip.Hubs
 
                 await Clients.Caller.SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
+                IAIChat chat = chatFactory.GetAIChat();
                 string response = await chat.GetChatSession(currentUser).SendMessage(message);
 
                 AIChatMessage aiReponse = new AIChatMessage()
