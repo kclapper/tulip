@@ -10,8 +10,8 @@ namespace Tulip.Models
         [Required]
         public string Username { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        // [Required]
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         public string UserId => Username;
@@ -36,14 +36,5 @@ namespace Tulip.Models
 
         public IEnumerable<SelectListItem> RoleList { get; set; }
         public string RoleSelected { get; set; }
-
-        // New properties for user creation
-        [Required]
-        [DisplayName("Starting Index")]
-        public int StartingIndex { get; set; }
-
-        [Required]
-        [DisplayName("Number of Users to Create")]
-        public int NumberOfUsersToCreate { get; set; }
     }
 }
