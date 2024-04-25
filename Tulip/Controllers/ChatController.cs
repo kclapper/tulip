@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Reflection;
 using System.Net;
-using System.Collections.Immutable;
-using System.Collections.Specialized;
+using Tulip.Services.Implementations;
 
 namespace Tulip.Controllers
 {
@@ -17,15 +16,15 @@ namespace Tulip.Controllers
         private readonly ILogger<ChatController> logger;
         private readonly ITasksServices tasksServices;
         private readonly ApplicationDbContext db;
-        private readonly IAIChat aiChat;
+        private readonly IAIChatFactory aiChatFactory;
         private readonly IConfiguration configuration;
 
-        public ChatController(ILogger<ChatController> logger, ITasksServices tasksServices, ApplicationDbContext db, IAIChat aiChat, IConfiguration configuration)
+        public ChatController(ILogger<ChatController> logger, ITasksServices tasksServices, ApplicationDbContext db, IAIChatFactory aiChatFactory, IConfiguration configuration)
         {
             this.tasksServices = tasksServices;
             this.db = db;
             this.logger = logger;
-            this.aiChat = aiChat;
+            this.aiChatFactory = aiChatFactory;
             this.configuration = configuration;
         }
 
@@ -72,7 +71,7 @@ namespace Tulip.Controllers
             ChatViewModel viewModel = new ChatViewModel()
             {
                 Chats = chats,
-                AIIsEnabled = aiChat.IsEnabled()
+                AIIsEnabled = aiChatFactory.GetAIChat().IsEnabled()
             };
 
             return viewModel;
@@ -112,6 +111,8 @@ namespace Tulip.Controllers
         [Route("Chat/AIMessage")]
         public ActionResult AIMessage()
         {
+            IAIChat aiChat = aiChatFactory.GetAIChat();
+
             if (!aiChat.IsEnabled())
             {
                 return RedirectToAction("Index");
@@ -156,56 +157,104 @@ namespace Tulip.Controllers
         [HttpGet]
         public ActionResult Settings()
         {
-            var modelName = Path.GetFileName(configuration["AIChatModelPath"]);
-
             ChatSettingsViewModel model = new ChatSettingsViewModel()
             {
-                AIIsEnabled = aiChat.IsEnabled(),
-                AIModelFileName = modelName
+                AIChatSystemSelection = getAIChatSystemSelection(),
+                AIIsEnabled = aiChatFactory.GetAIChat().IsEnabled()
             };
 
+            switch(model.AIChatSystemSelection)
+            {
+                case AIChatSystemSelection.LLaMaModelUpload:
+                    model.AIModelFileName = Path.GetFileName(configuration["AIChatModelPath"]); 
+                    break;
+                case AIChatSystemSelection.ChatGPTAPI:
+                    var apiKey = configuration["ChatGPTAPIKey"]; 
+                    if (apiKey != "")
+                    {
+                        model.ChatGPTAPIKey = new String('*', 16);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
             return View(model);
+        }
+
+        private AIChatSystemSelection getAIChatSystemSelection()
+        {
+            var selectionName = configuration["AIChatSystem"];
+
+            AIChatSystemSelection selection;
+            bool selectionIsValid = Enum.TryParse<AIChatSystemSelection>(selectionName, out selection);
+
+            if (!selectionIsValid)
+            {
+                logger.LogWarning($"Invalid chat system saved to configuration: {selectionName}");
+                selection = AIChatSystemSelection.None;
+            }
+
+            return selection;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SelectChatSystem(ChatSettingsViewModel settings)
+        {
+            AIChatSystemSelection selection = settings.AIChatSystemSelection;
+
+            var selectionName = selection.ToString("G");
+            configuration["AIChatSystem"] = selectionName;
+
+            return RedirectToAction("Settings");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SaveSettings(IFormFile modelUpload, ChatSettingsViewModel settings)
         {
-            if (settings.AIIsEnabled)
+            AIChatSystemSelection chatSystem = getAIChatSystemSelection();
+
+            switch (chatSystem)
             {
-                if (modelUpload == null && configuration["AIChatModelPath"] == "")
-                {
-                    logger.LogWarning($"Request to Enable AI Chat without providing a model");
-                    return RedirectToAction("Settings");
-                }
-
-                if (modelUpload != null)
-                {
-                    var modelFileName = Path.GetFileName(modelUpload.FileName);
-                    modelFileName = WebUtility.HtmlEncode(modelFileName);
-
-                    var assemblyPath = Assembly.GetExecutingAssembly().Location;
-                    var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-                    var modelPath = $"{assemblyDirectory}/{modelFileName}";
-
-                    using (var stream = System.IO.File.Create(modelPath))
+                case AIChatSystemSelection.LLaMaModelUpload:
+                    if (modelUpload != null)
                     {
-                        await modelUpload.CopyToAsync(stream);
+                        var modelFileName = Path.GetFileName(modelUpload.FileName);
+                        modelFileName = WebUtility.HtmlEncode(modelFileName);
+
+                        var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                        var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+                        var modelPath = $"{assemblyDirectory}/{modelFileName}";
+
+                        using (var stream = System.IO.File.Create(modelPath))
+                        {
+                            await modelUpload.CopyToAsync(stream);
+                        }
+
+                        configuration["AIChatModelPath"] = modelPath;
                     }
+                    break;
+                case AIChatSystemSelection.ChatGPTAPI:
+                    configuration["ChatGPTAPIKey"] = settings.ChatGPTAPIKey;
+                    break;
+                default:
+                    break;
+            }
 
-                    configuration["AIChatModelPath"] = modelPath;
-                }
-
+            IAIChat aiChat = aiChatFactory.GetAIChat();
+            if (settings.AIIsEnabled && aiChat.CanBeEnabled())
+            {
                 aiChat.Enable();
-                logger.LogInformation($"Enabled AI chat system with model at: {configuration["AIChatModelPath"]}");
             }
             else 
             {
                 aiChat.Disable();
-                logger.LogInformation("Disabled AI chat system");
             }
 
-            logger.LogInformation($"{modelUpload}\n{settings}");
+            settings.AIIsEnabled = aiChat.IsEnabled();
+
             return RedirectToAction("Settings");
         }
     }
