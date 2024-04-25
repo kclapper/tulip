@@ -29,11 +29,12 @@ namespace Tulip.Services.Implementations
                 return aiChat;
             }
 
-            if (selection == aiSelection)
+            if (selection.Equals(aiSelection))
             {
-                logger.LogInformation("Reselected active AI Chat system");
                 return aiChat;
             }
+
+            selection = aiSelection;
 
             bool wasEnabled = aiChat.IsEnabled();
             aiChat.Disable();
@@ -58,7 +59,7 @@ namespace Tulip.Services.Implementations
                     throw new Exception($"Attempted to select invalid AI Chat system: {configuredAISystem}");
             }
 
-            if (wasEnabled)
+            if (wasEnabled && aiChat.CanBeEnabled())
             {
                 aiChat.Enable();
             }
@@ -98,6 +99,11 @@ namespace Tulip.Services.Implementations
         public IAIChatSession GetChatSession(ApplicationUser user)
         {
             throw new NotImplementedException("No AI Chat system has been selected");
+        }
+
+        public bool CanBeEnabled()
+        {
+            return true;
         }
 
         public bool IsEnabled()

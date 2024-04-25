@@ -17,11 +17,6 @@ namespace Tulip.Services.Implementations
         {
             this.configuration = configuration; 
             this.logger = logger;
-
-            // if (configuration["AIChatModelPath"] != "")
-            // {
-            //     Enable();
-            // }
         }
 
         public bool CanBeEnabled()

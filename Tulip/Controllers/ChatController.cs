@@ -7,7 +7,6 @@ using System.Security.Claims;
 using System.Reflection;
 using System.Net;
 using Tulip.Services.Implementations;
-using Microsoft.Identity.Client;
 
 namespace Tulip.Controllers
 {
@@ -199,7 +198,6 @@ namespace Tulip.Controllers
             return selection;
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SelectChatSystem(ChatSettingsViewModel settings)
@@ -239,44 +237,25 @@ namespace Tulip.Controllers
                     }
                     break;
                 case AIChatSystemSelection.ChatGPTAPI:
-                    logger.LogInformation("Saving chat gpt api key settings");
-                    logger.LogInformation($"{settings.ChatGPTAPIKey}");
                     configuration["ChatGPTAPIKey"] = settings.ChatGPTAPIKey;
                     break;
                 default:
                     break;
             }
 
-            if (settings.AIIsEnabled)
+            IAIChat aiChat = aiChatFactory.GetAIChat();
+            if (settings.AIIsEnabled && aiChat.CanBeEnabled())
             {
-                aiChatFactory.GetAIChat().Enable();
+                aiChat.Enable();
             }
             else 
             {
-                aiChatFactory.GetAIChat().Disable();
+                aiChat.Disable();
             }
+
+            settings.AIIsEnabled = aiChat.IsEnabled();
 
             return RedirectToAction("Settings");
         }
-
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<ActionResult> SaveSettings(ChatSettingsViewModel settings)
-        // {
-        //     configuration["AIChatSystem"] = settings.AIChatSystemSelection.ToString("G");
-
-        //     switch (settings.AIChatSystemSelection)
-        //     {
-        //         case AIChatSystemSelection.ChatGPTAPI:
-        //             logger.LogInformation("Saving chat gpt api key settings");
-        //             logger.LogInformation($"{settings.ChatGPTAPIKey}");
-        //             configuration["ChatGPTAPIKey"] = settings.ChatGPTAPIKey;
-        //             break;
-        //         default:
-        //             break;
-        //     }
-
-        //     return RedirectToAction("Settings");
-        // }
     }
 }
