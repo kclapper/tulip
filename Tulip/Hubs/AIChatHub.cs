@@ -43,7 +43,6 @@ namespace Tulip.Hubs
 
                 await Clients.Caller.SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
-
                 string response = await chat.GetChatSession(currentUser).SendMessage(message);
 
                 AIChatMessage aiReponse = new AIChatMessage()
