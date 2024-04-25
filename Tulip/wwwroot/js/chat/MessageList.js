@@ -3,6 +3,12 @@ import { ReceiveMessage } from "./Connection.js";
 export class MessageList {
     #element;
     #connection;
+
+    #lastMessageTimestamp;
+    #lastMessageUser;
+    #lastMessageTextElement;
+    #lastMessageTimestampElement;
+
     constructor(connection) {
         this.#element = document.getElementById("messageList");
         if (!this.#element) {
@@ -16,6 +22,11 @@ export class MessageList {
     }
 
     #addMessage(user, message) {
+        if (this.#messageIsUpdate(user)) {
+            this.#updateMessage(message);
+            return;
+        }
+
         const isUserMessage = user === this.#connection.currentUser;
 
         const newMessage = document.createElement("div");
@@ -34,6 +45,7 @@ export class MessageList {
         messageText.className = "card-body p-3";
         messageText.textContent = message;
 
+        const timestamp = new Date(); 
         const messageTimestamp = document.createElement("p")
         messageTimestamp.className = isUserMessage ? "text-muted text-end" : "text-muted text-start";
         messageTimestamp.textContent = `${(new Date()).toLocaleString()}`;
@@ -52,10 +64,31 @@ export class MessageList {
 
         this.#element.appendChild(newMessage);
 
+        this.#lastMessageTimestamp = timestamp;
+        this.#lastMessageUser = user;
+        this.#lastMessageTextElement = messageText; 
+        this.#lastMessageTimestampElement = messageTimestamp;
+
+        this.resetScroll();
+    }
+
+    #messageIsUpdate(user) {
+        const isWithin10Seconds = new Date() - this.#lastMessageTimestamp <= 10000;
+        const isSameUser = user == this.#lastMessageUser;
+        return isWithin10Seconds && isSameUser;
+    }
+
+    #updateMessage(message) {
+        this.#lastMessageTimestamp = new Date();
+        this.#lastMessageTextElement.innerText += `\n\n${message}`;
+        this.#lastMessageTimestampElement.textContent = `${this.#lastMessageTimestamp.toLocaleString()}`;
+
         this.resetScroll();
     }
 
     resetScroll() {
-        this.#element.lastElementChild.scrollIntoView();
+        if (this.#element.lastElementChild) {
+            this.#element.lastElementChild.scrollIntoView();
+        }
     }
 }

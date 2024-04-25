@@ -11,6 +11,9 @@ The SAP gamification web app.
 3. Setup the development database using the setup tool 
 
        dotnet run --project Tulip.CLI db-setup Tulip/Tulip.db
+4. Get the AI Chatbot model from Professor Fletcher, it should be
+named `llama-2-7b-chat.gguf`. Then place it in the directory 
+`Tulip/Hubs/llama-2-7b-chat.gguf`
 
 ## Development
 1. `cd` to the repository root directory

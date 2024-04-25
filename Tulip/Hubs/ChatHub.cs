@@ -12,8 +12,8 @@ namespace Tulip.Hubs
     [Authorize]
     public class ChatHub : Hub
     {
-        private ApplicationDbContext db;
-        private ILogger<ChatHub> logger;
+        protected ApplicationDbContext db;
+        protected ILogger<ChatHub> logger;
         public ChatHub(ApplicationDbContext db, ILogger<ChatHub> logger) : base()
         {
             this.db = db;
@@ -26,28 +26,52 @@ namespace Tulip.Hubs
             return currentUser.UserName;
         }
 
-        public async Task SendMessage(string recipient, string message)
+        public virtual async Task SendMessage(string recipient, string message)
         {
             try 
             {
-                ChatMessage chatMessage = new ChatMessage
-                {
-                    Timestamp = DateTime.Now,
-                    Sender = getUserFromClaimsPrincipal(Context.User),
-                    Receiver = getUserFromUsername(recipient),
-                    Message = message
-                };
+                ApplicationUser sender = getUserFromClaimsPrincipal(Context.User);
+                ApplicationUser receiver = getUserFromUsername(recipient);
 
-                db.Add(chatMessage);
+                IEnumerable<ChatMessage> messages = 
+                    from chatMessage in db.ChatMessages 
+                    where chatMessage.Sender.Id.Equals(sender.Id) || chatMessage.Receiver.Id.Equals(sender.Id)
+                    orderby chatMessage.Timestamp descending
+                    select chatMessage;
+
+                if (messages.Count() > 0 
+                    && messages.First().Timestamp.AddSeconds(10) >= DateTime.Now
+                    && messages.First().Sender.Equals(sender))
+                {
+                    var lastMessage = messages.First();
+
+                    lastMessage.Message += $"\n\n{message}";
+                    lastMessage.Timestamp = DateTime.Now;
+
+                    db.Update(lastMessage);
+                }
+                else 
+                {
+                    ChatMessage newMessage = new ChatMessage
+                    {
+                        Timestamp = DateTime.Now,
+                        Sender = sender,
+                        Receiver = receiver,
+                        Message = message
+                    };
+
+                    db.Add(newMessage);
+                }
+
                 db.SaveChanges();
 
-                string senderId = chatMessage.Sender.Id;
+                string senderId = sender.Id;
                 await Clients.User(senderId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
-                string receiverId = chatMessage.Receiver.Id;
+                string receiverId = receiver.Id;
                 await Clients.User(receiverId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
-                logger.LogInformation($"[{chatMessage.Timestamp.ToLocalTime()}] {chatMessage.Sender.UserName}->{chatMessage.Receiver.UserName}: {chatMessage.Message}");
+                logger.LogInformation($"[{DateTime.Now.ToLocalTime()}] {sender.UserName}->{receiver.UserName}: {message}");
 
                 await Clients.Caller.SendAsync(SentMessage.Name, receiverId);
             } 
@@ -65,14 +89,14 @@ namespace Tulip.Hubs
             }
         }
 
-        private ApplicationUser getUserFromClaimsPrincipal(ClaimsPrincipal principal)
+        protected ApplicationUser getUserFromClaimsPrincipal(ClaimsPrincipal principal)
         {
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = db.ApplicationUsers.Find(userId);
             return user;
         }
 
-        private ApplicationUser getUserFromUsername(string username)
+        protected ApplicationUser getUserFromUsername(string username)
         {
             IEnumerable<ApplicationUser> userQuery = 
                 from user in db.ApplicationUsers
