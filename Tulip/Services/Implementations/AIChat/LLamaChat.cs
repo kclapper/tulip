@@ -10,18 +10,18 @@ namespace Tulip.Services.Implementations
     public class LLamaChat: IAIChat
     {
         private readonly IConfiguration configuration;
-        private readonly ILogger<LLamaChat> logger;
+        private readonly ILogger logger;
         private InteractiveExecutor modelExecutor;
 
-        public LLamaChat(ILogger<LLamaChat> logger, IConfiguration configuration)
+        public LLamaChat(ILogger logger, IConfiguration configuration)
         {
             this.configuration = configuration; 
             this.logger = logger;
+        }
 
-            if (configuration["AIChatModelPath"] != "")
-            {
-                Enable();
-            }
+        public bool CanBeEnabled()
+        {
+            return configuration["AIChatModelPath"] != "";
         }
 
         public bool IsEnabled()
