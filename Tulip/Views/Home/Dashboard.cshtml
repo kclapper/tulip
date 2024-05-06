@@ -84,10 +84,9 @@
     </div>
     <!-- Case Studies Toolbar ends -->
 
-    <div class="row">
         <!-- Congratulations Card -->
-        <div class="col-lg-8 mb-4">
-            <div class="card h-100">
+        <div class="col-lg-12 mb-4">
+            <div class="card">
                 <div class="d-flex align-items-end row">
                     <div class="col-sm-7">
                         <div class="card-body">
@@ -106,6 +105,9 @@
                                 </p>
                                 <a href="javascript:;" class="btn btn-sm btn-outline-primary">Back to SAP</a>
                             </div>
+                            
+                            
+               
                         </div>
                         <div class="col-sm-5 text-center text-sm-left">
                             <div class="card-body pb-0 px-0 px-md-4">
@@ -117,36 +119,27 @@
                     </div>
                 </div>
         </div>
-
-            <!-- Cards for Points, Levels, Medals, and Badges -->
-
-            <div class="col-lg-4 col-md-4 order-0">
-                <div class="row">
-                    <!-- Points Card -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100" style="max-width: 200px; max-height: 135px;">
-                            <div class="card-body text-center d-flex flex-column align-items-center">
-                                <div class="avatar flex-shrink-0 mb-3">
-                                    <span class="badge bg-label-info p-2">
-                                        <i class="bx bxs-star-half text-primary bx-md"></i>
-                                    </span>
-                                </div>
-                                <div class="ms-3">
-                                    <span class="d-block mb-1">Points</span>
-                                    <h3 class="card-title mb-2 text-wrap">
-                                        <span id="pPoints" class="text-break d-inline-block"
-                                            style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 22px; white-space: normal;">@ViewBag.Point</span>
-                                    </h3>
-                                </div>
+                <div class="col-sm-2 ">
+                    <div class="card h-100" >
+                        <div class="card-body text-center d-flex flex-column align-items-center">
+                            <div class="avatar flex-shrink-0 mb-3">
+                                <span class="badge bg-label-info p-2">
+                                    <i class="bx bxs-star-half text-primary bx-md"></i>
+                                </span>
+                            </div>
+                            <div class="ms-3">
+                                <span class="d-block mb-1">Points</span>
+                                <h3 class="card-title mb-2 text-wrap">
+                                    <span id="pPoints" class="text-break d-inline-block"
+                                        style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 22px; white-space: normal;">@ViewBag.Point</span>
+                                </h3>
                             </div>
                         </div>
                     </div>
-
-
-
-                    <!-- Levels Card -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100" style="max-width: 200px; max-height: 135px;">
+                </div>
+               <!-- Levels Card -->
+                    <div class="col-sm-2 ">
+                        <div class="card h-100" >
                             <div class="card-body text-center d-flex flex-column align-items-center">
                                 <div class="avatar flex-shrink-0 mb-3">
                                     <span class="badge bg-label-info p-2">
@@ -163,12 +156,9 @@
                             </div>
                         </div>
                     </div>
-
-
-
-                    <!-- Medals Card -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100" style="max-width: 200px; max-height: 160px;">
+                     <!-- Medals Card -->
+                    <div class="col-sm-2 ">
+                        <div class="card h-100" >
                             <div class="card-body text-center d-flex flex-column align-items-center">
                                 <div class="avatar flex-shrink-0 mb-3">
                                     <span class="badge bg-label-info p-2">
@@ -185,12 +175,11 @@
                             </div>
                         </div>
                     </div>
+                     <!-- Badges Card -->
+                     <div class="col-sm-2 ">
+                     <a href = "/home/Badges?caseStudy=@ViewBag.CaseStudy" style="color : inherit">
 
-
-
-                    <!-- Badges Card -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100" style="max-width: 200px; max-height: 160px;">
+                        <div class="card h-100" >
                             <div class="card-body text-center d-flex flex-column align-items-center">
                                 <div class="avatar flex-shrink-0 mb-3">
                                     @if (ViewBag.Badge == "FI Badge")
@@ -286,26 +275,50 @@
                                 </div>
                                 <div class="ms-3 text-center">
                                     <span class="d-block mb-1 fs-6 fs-md-5 fs-lg-4">Badges</span>
-                                    <h5 class="card-title text-wrap mb-2 p-2 fs-5 fs-md-4 fs-lg-3">
-                                        <span id="pBadges" class="fs-5 fs-md-4 fs-lg-3"
-                                            style="white-space: normal; font-size: 22px">@ViewBag.Badge</span>
+                                    <h5 class="fs-5 ">
+                                    @ViewBag.Badge
                                     </h5>
-                                </div>
+                                </div>  
                             </div>
                         </div>
+                        </a>
+                    </div>
+                   
+                    <div class="col-sm-4">
+                        <div class="card h-100 ">
+                            <a href="/Home/LeaderBoard" style="color:inherit">
+                            <div class="card-body text-center">
+                             @{int counter = 1;}
+                             <div style="text-align:left">
+                            <span  style="text-align:center" id = "leaderboard" class="d-block fs-5  fw-bold "></span>
+                            
+                             @foreach (var data in ViewBag.TopThree){      
+                               
+                                if(data.Username == ViewBag.Existing.Username){
+                                <span  class="mt-3 text-primary d-block fs-6  fw-bold ">@ViewBag.Counts[counter - 1]. @data.Username : @data.Point points</span>
+                                }else{
+                                    <span class="mt-3 d-block">@ViewBag.Counts[counter - 1]. @data.Username : @data.Point points</span>
+                                }
+                                counter++;
+                                
+                             }
+                            
+                            @if(!ViewBag.Contains_You){ 
+                            <b><span class="text-primary mt-3 d-block">@ViewBag.AdditionalCount @ViewBag.Existing.Username : @ViewBag.Existing.Point points</span> </b>
+                            }
+                            </div>
+                            </div>
+                                            </a>
+                        </div>
+
                     </div>
 
-
-
-                </div>
-            </div>
-
+    
             <!-- Steps Report Card (Right Side) -->
         
 
-
             <!-- Growth Chart Card -->
-            <div class="col-lg-8 md-4">
+            <div class="col-lg-8 md-4 mt-4">
                 <div class="card">
                     <div class="row row-bordered g-0">
                         <div class="col-md-8">
@@ -324,105 +337,7 @@
                 </div>
             </div>
 
-            
-        <div class="col-lg-4 col-md-4 order-0">
-                <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
-                        <strong>Leaderboard: @ViewBag.LeaderBoardText</strong>
-                    </div>
-                </div>
-                </div>      
-        <div class="card">
-            <div class="row row-bordered g-0">
-                <div class="col-md-8">
-               
-                
-                <!-- commence loop --!>
-                @{int count = 1;}
-                @foreach (var data in ViewBag.TopThree){               
-                <div class="card mt-3">
-                <div class="card-body">
-                    <ul class="p-0 m-0">
-                    <li class="d-flex mb-1 pb-1">
-                        <div class="avatar flex-shrink-0 me-3">
-                        <span class="badge bg-label-info p-2">
-                            <i class="bx bx-medal text-primary bx-sm"></i>
-                        </span>
-                        </div>
-                        <div class="d-flex w-100 flex-wrap align-items-center justify-content-between ">
-                        <div class="me-2">
-                            @if(@data.Username == @ViewBag.Existing.Username ){
-                                <h6 class="mb-0 fw-bold"> @count.@data.Username</h6>
-                            }
-                            else{
-                                <h6 class="mb-0"> @count.@data.Username</h6>
-                            }
-                           
-                        </div>
-                        <div class="user-progress">
-                            <small class="fw-semibold">
-                            <span class="badge rounded-pill bg-primary">@data.Point</span>
-                            </small>
-                        </div>
-                        </div>
-                    </li>
-                    </ul>
-                </div>
-                  
-                </div>
-                count++;
-                  }
-                
-                @if(ViewBag.Contains_You == false){
-                    <div class="alert alert-primary alert-dismissible fade show text-center" role="alert"> </div>        
-                    count = ViewBag.Existing_Count - 1;
-                 @foreach (var data in ViewBag.Additional){       
-
-                <div class="card mt-3">
-                <div class="card-body">
-                    <ul class="p-0 m-0">
-                    <li class="d-flex mb-1 pb-1">
-                        <div class="avatar flex-shrink-0 me-3">
-                        <span class="badge bg-label-info p-2">
-                            <i class="bx bx-medal text-primary bx-sm"></i>
-                        </span>
-                        </div>
-                        <div class="d-flex w-100 flex-wrap align-items-center justify-content-between ">
-                        <div class="me-2">
-                            @if(@data.Username == @ViewBag.Existing.Username ){
-                                <h6 class="mb-0 fw-bold"> @count.@data.Username</h6>
-                            }
-                            else{
-                                <h6 class="mb-0"> @count.@data.Username</h6>
-                            }
-                           
-                        </div>
-                        <div class="user-progress">
-                            <small class="fw-semibold">
-                            <span class="badge rounded-pill bg-primary">@data.Point</span>
-                            </small>
-                        </div>
-                        </div>
-                    </li>
-                    </ul>
-                </div>
-                  
-                </div>
-                  count++;}}
-                </div>
-                <div class="col-md-4">
-                    <div class="card-body"></div>
-                    <div id="growthChart"></div>
-                    <div class="d-flex flex-column align-items-center mt-4">
-                        <span class="badge bg-label-warning rounded-pill mb-2"> Total Players 
-                            <span>@ViewBag.LeaderTotal</span></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-
+        
             @*<!-- Steps Report Card -->
         <div class="col-lg-4 col-md-4 order-last">
         <div class="row">
@@ -445,7 +360,6 @@
         </div>
 
 
-    </div>
 </div>
 
 }
@@ -469,6 +383,8 @@ else
     <partial name="_ValidationScriptsPartial" />
     <script type="text/javascript">
         $("#process").text(returnProcess(firstValue)); //for case study name change on congratulation card
+        var leaderboard = document.getElementById("leaderboard");
+        leaderboard.innerHTML = "Leaderboard : " + returnProcess(firstValue)    ;
         localStorage.clear();
         $(document).ready(function () {
             setData($("#pPoints").text(), $("#pLevels").text(), $("#pBadges").text());

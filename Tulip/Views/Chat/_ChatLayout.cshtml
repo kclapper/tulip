@@ -20,30 +20,119 @@
     gtag('config', 'G-ECPJX21DQD');
   </script>
 
-    <div class="row h-100 no-gutters">
-        <div class="col-2 h-100 text-end border-end p-0 pt-5">
+    <div id="chatWindow" class="row no-gutters">
+        <div id="chatSidebar" class="col-2 h-100 p-0 pt-5">
             <a asp-controller="Chat" asp-action="Compose">
-                <div class="d-inline-flex align-items-center">
-                    <div data-i18n="Without menu" class="pe-1">Compose</div>
-                    <i class="menu-icon tf-icons bx bx-note"></i>
+                <div class="card ms-4 me-3">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center text-primary">
+                            <div class="d-inline-flex align-items-center">
+                                <div data-i18n="Without menu" class="pe-1">Compose</div>
+                                <i class="menu-icon tf-icons bx bx-note"></i>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </a>
             <hr />
-            <div id="chatList" class="ps-4">
-                @foreach (var chat in Model.Chats) 
+            @if (Model.AIIsEnabled)
+            {
+                @if (Model.AIIsCurrentChat)
                 {
-                    ApplicationUser otherUser = chat.Key;
-                    <div class="text-start">
-                        <a asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
-                            @otherUser.UserName
-                        </a>
+                    <div class="ps-4 pe-3">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item shadow-sm active">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                                <a class="text-white" asp-controller="Chat" asp-action="AIMessage">
+                                                    Tulip Bot
+                                                </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 }
+                else 
+                {
+                    <div class="ps-4 pe-3">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                                <a asp-controller="Chat" asp-action="AIMessage">
+                                                    Tulip Bot
+                                                </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                <hr />
+            }
+            <div id="chatList" class="ps-4 pe-3">
+                <div class="card">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var chat in Model.Chats) 
+                        {
+                            ApplicationUser otherUser = chat.Key;
+                            @if (Model.CurrentChat != null && otherUser.Equals(Model.CurrentChat.OtherUser))
+                            {
+                                <li class="list-group-item shadow-sm active">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                                <a class="text-white" asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
+                                                    @otherUser.UserName
+                                                </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            else 
+                            {
+                                <li class="list-group-item">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-4">
+                                            <span class="badge bg-label-info">
+                                                <i class="bx bx-medal text-primary bx-sm"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col-8 text-center">
+                                            <a asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
+                                                @otherUser.UserName
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
             </div>
             <div class="flex-grow-1">
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-9 border-start">
             @RenderBody()
         </div>
     </div>
@@ -51,6 +140,6 @@
 
 @section scripts {
     <script src="~/lib/signalr/signalr.js"></script>
-    <script src="~/js/chat.js"></script>
+    <link rel="stylesheet" href="~/css/chat.css" />
     @RenderSection("Scripts", required: false);
 }

@@ -1,0 +1,40 @@
+#chatSidebar::-webkit-scrollbar {
+    display: none;
+}
+
+#chatSidebar {
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    overflow: scroll;
+    max-height: 95vh;
+}
+
+#messageList::-webkit-scrollbar {
+    display: none;
+}
+
+#messageList {
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    overflow: scroll;
+    height: 95vh;
+    max-height: 95vh;
+}
+
+.message-text {
+    white-space: pre-line;
+}
+
+#messageWindow {
+    max-height: 95vh;
+}
+
+#chatWindow {
+    height: 95vh;
+    max-height: 95vh;
+}
+
+html {
+    max-height: 100vh;
+    overflow: hidden;
+}

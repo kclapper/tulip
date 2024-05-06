@@ -22,37 +22,53 @@
           </div>
           <div class="row">
             <div class="row justify-content-md-center">
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="FI"
-                  class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="FI_AR"
-                  class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="MM"
-                  class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="MM">Materials Management</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="PP"
-                  class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="PP">Production Planning</div>
-                </a>
-              </div>
-              <div class="col-md-auto m-2">
-                <a asp-controller="Home" asp-action="LeaderBoard" asp-route-caseStudy="SD"
-                  class="btn btn-outline-primary">
-                  <div data-i18n="Basic" id="SD">Sales and Distribution</div>
-                </a>
-              </div>
+                <div class="col-md-auto m-2">
+                    @{
+                        string classString = ViewBag.Case.Equals("FI") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                    }
+                    <a asp-controller="Home" asp-action="Leaderboard" asp-route-caseStudy="FI"
+                        class="@classString">
+                        <div data-i18n="Basic" id="FI">FI - Accounts Payable</div>
+                    </a>
+                </div>
+                <div class="col-md-auto m-2">
+                    @{
+                        classString = ViewBag.Case.Equals("FI_AR") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                    }
+                    <a asp-controller="Home" asp-action="Leaderboard" asp-route-caseStudy="FI_AR"
+                        class="@classString">
+                        <div data-i18n="Basic" id="FI_AR">FI - Accounts Receivable</div>
+                    </a>
+                </div>
+                <div class="col-md-auto m-2">
+                    @{
+                        classString = ViewBag.Case.Equals("MM") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                    }
+                    <a asp-controller="Home" asp-action="Leaderboard" asp-route-caseStudy="MM"
+                        class="@classString">
+                        <div data-i18n="Basic" id="MM">Materials Management</div>
+                    </a>
+                </div>
+                <div class="col-md-auto m-2">
+                    @{
+                        classString = ViewBag.Case.Equals("PP") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                    }
+                    <a asp-controller="Home" asp-action="Leaderboard" asp-route-caseStudy="PP"
+                        class="@classString">
+                        <div data-i18n="Basic" id="PP">Production Planning</div>
+                    </a>
+                </div>
+                <div class="col-md-auto m-2">
+                    @{
+                        classString = ViewBag.Case.Equals("SD") ? "btn btn-primary" : "btn btn-outline-primary"; 
+                    }
+                    <a asp-controller="Home" asp-action="Leaderboard" asp-route-caseStudy="SD"
+                        class="@classString">
+                        <div data-i18n="Basic" id="SD">Sales and Distribution</div>
+                    </a>
+                </div>
             </div>
+      
             @*<div id="orderStatisticsChart"></div>*@
           </div>
         </div>

@@ -21,12 +21,22 @@
 
                     <form asp-controller="Account" asp-action="UploadUsers" method="post" role="form", enctype="multipart/form-data">
                         <div asp-validation-summary="All" class="text-danger"></div>
-                        <p>File should be a CSV without a header row, with fields in order of <tt>server,clientId,username,password,email</tt>.</p>
+                        <p>File should be a CSV without a header row, with fields in order of <tt>username,password,email</tt>.</p>
                         <!-- Existing registration fields -->
+                        <div class="mb-3">
+                            <label asp-for="ApplicationServer">Application Server</label>
+                            <input asp-for="ApplicationServer" class="form-control", type="text" />
+                            @* <span asp-validation-for="ApplicationServer" class="text-danger"></span> *@
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ClientId">Client ID</label>
+                            <input asp-for="ClientId" class="form-control", type="number" />
+                            @* <span asp-validation-for="ClientId" class="text-danger"></span> *@
+                        </div>
                         <div class="mb-3">
                             <label asp-for="File">File</label>
                             <input asp-for="File" class="form-control", type="file" />
-                            @*<span asp-validation-for="ApplicationServer" class="text-danger"></span>*@
+                            @* <span asp-validation-for="File" class="text-danger"></span> *@
                         </div>
 
                         <button type="submit" class="btn btn-primary d-grid w-100">Create Users</button>

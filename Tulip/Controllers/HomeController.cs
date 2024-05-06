@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-using System.Collections; 
+using System.Collections;
+using Tulip.Services.Implementations;
+
 namespace Tulip.Controllers
 {
     [Authorize]
@@ -75,12 +77,19 @@ namespace Tulip.Controllers
                 var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == caseStudy);
                 var sorted = leaders.OrderByDescending(lb => lb.Point);
                 var topThree = sorted.Take(3);
-          
                 ViewBag.TopThree = topThree;
                 ViewBag.LeaderTotal = sorted.Count();
-               
-               
-                
+                ArrayList counts = new ArrayList();
+                int counter = 1;
+                int firstPoint = sorted.FirstOrDefault().Point.GetValueOrDefault();
+                foreach(var data in topThree){
+                    if(firstPoint != data.Point){
+                        counter++;
+                        firstPoint = data.Point.GetValueOrDefault();
+                    }
+                     counts.Add(counter);                
+                }
+                ViewBag.Counts = counts;
                 LeaderBoardText(caseStudy);//get correct casestudy text for dash leaderboard
 
                 if (existingRecord != null)
@@ -104,7 +113,13 @@ namespace Tulip.Controllers
                     _db.SaveChanges();
                 }
                 var existing_count = 0;
+                firstPoint = sorted.FirstOrDefault().Point.GetValueOrDefault();
+                counter = 1;
                 foreach(var data in sorted){
+                    if(firstPoint != data.Point){
+                        counter++;
+                        firstPoint = data.Point.GetValueOrDefault();
+                    }
                     if(data.Username == userInfo.UserId){
                         break;
                     }
@@ -119,15 +134,22 @@ namespace Tulip.Controllers
                     myAl.Add(existingRecord);
                     myAl.Add(sorted.Skip(existing_count + 1).FirstOrDefault());
                     ViewBag.Additional = myAl;
+                    ViewBag.AdditionalCount = counter;
                 }
                 ViewBag.Existing = existingRecord;
                 ViewBag.Existing_Count = existing_count + 1;
+
                 return View();
+            }
+            catch (SAPException e)
+            {
+                _logger.LogError(e.Message);
+                return View("ErrorSAP");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError(e.Message);
+                return View("Error");
             }
         }
         private void LeaderBoardText(string caseStudy){
@@ -206,12 +228,18 @@ namespace Tulip.Controllers
                     _db.LeaderBoaders.Add(records);
                     _db.SaveChanges();
                 }
+
                 return View();
+            }
+            catch (SAPException e)
+            {
+                _logger.LogError(e.Message);
+                return View("ErrorSAP");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError(e.Message);
+                return View("Error");
             }
         }
 
@@ -222,18 +250,23 @@ namespace Tulip.Controllers
             {
                 case "FI":
                     ViewBag.Header = "FI - Accounts Payable";
+                    ViewBag.Case = "FI";
                     break;
                 case "FI_AR":
                     ViewBag.Header = "FI - Accounts Receivable";
+                    ViewBag.Case = "FI_AR";
                     break;
                 case "MM":
                     ViewBag.Header = "Material Management";
+                    ViewBag.Case = "MM";
                     break;
                 case "SD":
                     ViewBag.Header = "Sales and Distribution";
+                    ViewBag.Case = "SD";
                     break;
                 case "PP":
                     ViewBag.Header = "Production Planning";
+                    ViewBag.Case = "PP";
                     break;
                 default:
                     break;
@@ -273,27 +306,51 @@ namespace Tulip.Controllers
 
         public async Task<IActionResult> Badges(string caseStudy = "MM")
         {
+            var userInfo = getCurrentUser();
+
+            ISAP sap;
+            try 
+            {
+                sap = await _sapBuilder
+                    .SetUsername(userInfo.UserId)
+                    .SetClientId(userInfo.ClientId)
+                    .SetApplicationServer(userInfo.ApplicationServer)
+                    .SetCaseStudy(caseStudy)
+                    .Build();
+            }
+            catch (SAPException e)
+            {
+                _logger.LogError(e.Message);
+                return View("ErrorSAP");
+            }
+
+            var data = sap.GetBadge();
+
             switch (caseStudy)
             {
                 case "FI":
                     ViewBag.Header = "FI - Accounts Payable";
+                    ViewBag.Case = "FI";
                     break;
                 case "FI_AR":
                     ViewBag.Header = "FI - Accounts Receivable";
+                    ViewBag.Case = "FI_AR";
                     break;
                 case "MM":
                     ViewBag.Header = "Material Management";
+                    ViewBag.Case = "MM";
                     break;
                 case "SD":
                     ViewBag.Header = "Sales and Distribution";
+                    ViewBag.Case = "SD";
                     break;
                 case "PP":
                     ViewBag.Header = "Production Planning";
+                    ViewBag.Case = "PP";
                     break;
                 default:
                     break;
             }
-            var data = await getBatch(caseStudy);
             var badge = new List<Badges>();
             switch (caseStudy)
             {
@@ -641,30 +698,6 @@ namespace Tulip.Controllers
             }
 
             return View(badge);
-        }
-
-        public async Task<string> getBatch(string caseStudy)
-        {
-            try
-            {
-                var userInfo = getCurrentUser();
-
-                ISAP sap = await _sapBuilder
-                    .SetUsername(userInfo.UserId)
-                    .SetClientId(userInfo.ClientId)
-                    .SetApplicationServer(userInfo.ApplicationServer)
-                    .SetCaseStudy(caseStudy)
-                    .Build();
-
-                _badge = sap.GetBadge();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return _badge;
         }
 
         public IActionResult Privacy()

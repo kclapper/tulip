@@ -25,4 +25,25 @@ namespace Tulip.Models
         [Required]
         public string Message { get; set; }
     }
+
+    public class AIChatMessage
+    {
+        [Key]
+        public int Id { get; set; }
+        
+        [Required]
+        public DateTime Timestamp { get; set; }
+
+        [Required]
+        public string Message { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
+
+        [Required]
+        public ApplicationUser User { get; set; }
+
+        [Required]
+        public bool IsFromUser { get; set; }
+    }
 }

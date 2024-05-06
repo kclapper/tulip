@@ -201,65 +201,77 @@ namespace Tulip.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUsers(int startingIndex, int numberOfUsersToCreate, string email, string returnurl = null)  
+        public async Task<IActionResult> CreateUsers(RegisterViewModel userData, string returnurl = null)  
         {
             ViewData["ReturnUrl"] = returnurl;
-            returnurl = returnurl ?? Url.Content("/Account/GetUsers");
+            returnurl ??= Url.Content("/Account/GetUsers");
 
-            // Common data for all users
-            var commonUserData = new RegisterViewModel
-            {
-                ApplicationServer = "CommonServer",
-                RoleSelected = "User"
-            };
+            Console.WriteLine("Creating user...");
 
-            for (int i = startingIndex; i < startingIndex + numberOfUsersToCreate; i++)
+            // if (userData.Name == string.Empty) {
+                Console.WriteLine("filling default name");
+                userData.Name = userData.Username;
+            // }
+
+
+            Console.WriteLine($"Username: {userData.Username}");
+            Console.WriteLine($"Name: {userData.Name}");
+            Console.WriteLine($"UserId: {userData.UserId}");
+            Console.WriteLine($"ApplicationServer: {userData.ApplicationServer}");
+            Console.WriteLine($"ClientId: {userData.ClientId}");
+            Console.WriteLine($"Email: {userData.Email}");
+            Console.WriteLine($"Password: {userData.Password}");
+            Console.WriteLine($"ConfirmPassword: {userData.ConfirmPassword}");
+            Console.WriteLine($"RoleList: {userData.RoleList}");
+            Console.WriteLine($"RoleSelected: {userData.RoleSelected}");
+
+            // Create the user
+            if (ModelState.IsValid)
             {
-                // Generate unique data for each user
-                var userData = new RegisterViewModel
+                var user = new ApplicationUser
                 {
-                    Username = $"LEARN-{i:000}",
-                    //UserId = $"LEARN-{i:000}",
-                    Password = $"Password@{i:000}",
-                    Email = email, //takes user input email
-                    Name = $"LEARN-{i:000}",
-                    ClientId = 101,
-                    //ApplicationServer = "trek.ucc.uwm.edu"
+                    UserName = userData.Username,
+                    Name = userData.Username,
+                    Email = userData.Email,
+                    ApplicationServer = userData.ApplicationServer,
+                    //ApplicationServer = commonUserData.ApplicationServer, // Use common data
+                    ClientId = userData.ClientId, // Use unique data
+                    UserId = userData.UserId, // Use unique data
                 };
+                
 
-                // Create the user
-                if (ModelState.IsValid)
+                var result = await _userManager.CreateAsync(user, userData.Password);
+
+                if (result.Succeeded)
                 {
-                    var user = new ApplicationUser
-                    {
-                        UserName = userData.Username,
-                        Email = userData.Email,
-                        Name = userData.Name,
-                        ApplicationServer = userData.ApplicationServer,
-                        //ApplicationServer = commonUserData.ApplicationServer, // Use common data
-                        ClientId = userData.ClientId, // Use unique data
-                                                      //UserId = userData.UserId, // Use unique data
-                    };
-
-                    var result = await _userManager.CreateAsync(user, userData.Password);
-
-                    if (result.Succeeded)
-                    {
-                        await _userManager.AddToRoleAsync(user, commonUserData.RoleSelected); // Use common data
-                    }
-                    else
-                    {
-                        // Handle user creation errors for this specific user
-                        // You can add error messages to ModelState or log them
-                        // ModelState.AddModelError(string.Empty, "User creation failed.");
-                    }
+                    await _userManager.AddToRoleAsync(user, userData.RoleSelected); // Use common data
                 }
                 else
                 {
-                    // Handle invalid model state for this specific user
+                    // Handle user creation errors for this specific user
                     // You can add error messages to ModelState or log them
-                    // ModelState.AddModelError(string.Empty, "Invalid registration data.");
+                    ModelState.AddModelError(string.Empty, "User creation failed.");
+                    Console.WriteLine("User Creation failed!");
+                    foreach (var err in result.Errors) {
+                        Console.WriteLine($"Error {err.Code}: {err.Description}");
+                    }
                 }
+            }
+            else
+            {
+                Console.WriteLine("Invalid registration data.");
+                // Handle invalid model state for this specific user
+                // You can add error messages to ModelState or log them
+                var errors = ModelState.Select(x => x.Value.Errors)
+                        .Where(y=>y.Count>0)
+                        .ToList();
+                foreach (var errorc in errors) {
+                    foreach (var error in errorc) {
+                        Console.WriteLine(error.ErrorMessage);
+                        Console.WriteLine(error.Exception);
+                    }
+                }
+                ModelState.AddModelError(string.Empty, "Invalid registration data.");
             }
 
             // Redirect to the return URL after creating all users
@@ -290,7 +302,7 @@ namespace Tulip.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadUsers(IFormFile file, string returnurl = null)  
+        public async Task<IActionResult> UploadUsers(string ApplicationServer, int ClientId, IFormFile file, string returnurl = null)  
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("/Account/GetUsers");
@@ -308,19 +320,19 @@ namespace Tulip.Controllers
             string[] fields;
             while ((fields = parser.ReadFields()) != null) {
                 // applicationserver, clientid, name, password, email
-                const int APPLICATION_SERVER = 0;
-                const int CLIENT_ID = 1;
-                const int NAME = 2;
-                const int PASSWORD = 3;
-                const int EMAIL = 4;
+                // const int APPLICATION_SERVER = 0;
+                // const int CLIENT_ID = 1;
+                const int NAME = 0;
+                const int PASSWORD = 1;
+                const int EMAIL = 2;
                 var userData = new RegisterViewModel {
-                    ApplicationServer = fields[APPLICATION_SERVER],
+                    ApplicationServer = ApplicationServer,
                     RoleSelected = "User",
                     Username = fields[NAME],
                     Password = fields[PASSWORD],
                     Email = fields[EMAIL],
                     Name = fields[NAME],
-                    ClientId = int.Parse(fields[CLIENT_ID]),
+                    ClientId = ClientId,
                 };
                 if (ModelState.IsValid)
                 {
@@ -478,6 +490,17 @@ namespace Tulip.Controllers
         {
             return View();
         }
+
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Authorize(Roles = "Admin,User")]
+        public IActionResult EditProfile()
+        {
+            return View();
+        }
+
 
         /**
         @brief Handles HTTP GET requests to display the reset password confirmation view.*

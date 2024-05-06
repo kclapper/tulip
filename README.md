@@ -8,14 +8,12 @@ The SAP gamification web app.
 ## Installation
 1. Clone the repository 
 2. `cd` into the repository root directory
-3. Install project dependencies
+3. Setup the development database using the setup tool 
 
-       dotnet restore
-       dotnet pack
-
-4. Setup the development database using the setup tool 
-
-       dotnet tulip db-setup Tulip/Tulip.db
+       dotnet run --project Tulip.CLI db-setup Tulip/Tulip.db
+4. Get the AI Chatbot model from Professor Fletcher, it should be
+named `llama-2-7b-chat.gguf`. Then place it in the directory 
+`Tulip/Hubs/llama-2-7b-chat.gguf`
 
 ## Development
 1. `cd` to the repository root directory

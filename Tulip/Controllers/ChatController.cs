@@ -4,21 +4,28 @@ using Tulip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Reflection;
+using System.Net;
+using Tulip.Services.Implementations;
 
 namespace Tulip.Controllers
 {
     [Authorize]
     public class ChatController : Controller
     {
-        private readonly ILogger<ChatController> _logger;
-        private readonly ITasksServices _tasksServices;
-        private readonly ApplicationDbContext _db;
+        private readonly ILogger<ChatController> logger;
+        private readonly ITasksServices tasksServices;
+        private readonly ApplicationDbContext db;
+        private readonly IAIChatFactory aiChatFactory;
+        private readonly IConfiguration configuration;
 
-        public ChatController(ILogger<ChatController> logger, ITasksServices tasksServices, ApplicationDbContext db)
+        public ChatController(ILogger<ChatController> logger, ITasksServices tasksServices, ApplicationDbContext db, IAIChatFactory aiChatFactory, IConfiguration configuration)
         {
-            _tasksServices = tasksServices;
-            _db = db;
-            _logger = logger;
+            this.tasksServices = tasksServices;
+            this.db = db;
+            this.logger = logger;
+            this.aiChatFactory = aiChatFactory;
+            this.configuration = configuration;
         }
 
         private ChatViewModel getAllUserChats() 
@@ -26,12 +33,12 @@ namespace Tulip.Controllers
             ApplicationUser currentUser = getCurrentUser();
 
             IEnumerable<ChatMessage> messages = 
-                from message in _db.ChatMessages
+                from message in db.ChatMessages
                 where message.Sender.Id.Equals(currentUser.Id) || message.Receiver.Id.Equals(currentUser.Id)
-                orderby message.Timestamp descending
+                orderby message.Timestamp ascending
                 select message;
 
-            IDictionary<ApplicationUser, MessageHistory> chats = new Dictionary<ApplicationUser, MessageHistory>();
+            ChatList chats = new ChatList();
 
             foreach (ChatMessage message in messages)
             {
@@ -45,7 +52,7 @@ namespace Tulip.Controllers
                     otherUser = message.Sender;
                 }
 
-                if (!chats.ContainsKey(otherUser))
+                if (!chats.ContainsUser(otherUser))
                 {
                     var messageHistory = new MessageHistory()
                     {
@@ -56,15 +63,15 @@ namespace Tulip.Controllers
                 }
                 else 
                 {
-                    MessageHistory messageHistory;
-                    chats.TryGetValue(otherUser, out messageHistory);
+                    MessageHistory messageHistory = chats.GetMessageHistory(otherUser);
                     messageHistory.Messages.Add(message);
                 }
             }
 
             ChatViewModel viewModel = new ChatViewModel()
             {
-                Chats = chats
+                Chats = chats,
+                AIIsEnabled = aiChatFactory.GetAIChat().IsEnabled()
             };
 
             return viewModel;
@@ -72,7 +79,16 @@ namespace Tulip.Controllers
 
         public ActionResult Index()
         {
-            return View(getAllUserChats());
+            ChatViewModel viewModel = getAllUserChats();
+
+            if (viewModel.Chats.Count() == 0)
+            {
+                return RedirectToAction("Compose");
+            }
+
+            var mostRecentChat = viewModel.Chats.MostRecentChat();
+
+            return RedirectToAction("Message", new { userId = mostRecentChat.OtherUser.Id });
         }
 
         public ActionResult Compose()
@@ -85,10 +101,33 @@ namespace Tulip.Controllers
         {
             ChatViewModel viewModel = getAllUserChats();
 
-            MessageHistory messages;
-            viewModel.Chats.TryGetValue(getUserFromId(userId), out messages);
+            MessageHistory messages = viewModel.Chats.GetMessageHistory(getUserFromId(userId));
 
             viewModel.CurrentChat = messages;
+
+            return View(viewModel);
+        }
+
+        [Route("Chat/AIMessage")]
+        public ActionResult AIMessage()
+        {
+            IAIChat aiChat = aiChatFactory.GetAIChat();
+
+            if (!aiChat.IsEnabled())
+            {
+                return RedirectToAction("Index");
+            }
+
+            ChatViewModel viewModel = getAllUserChats();
+            viewModel.AIIsCurrentChat = true;
+
+            IEnumerable<AIChatMessage> aiMessages = 
+                from message in db.AIChatMessages
+                where message.User.Id.Equals(getCurrentUser().Id)
+                orderby message.Timestamp ascending
+                select message;
+
+            ViewData["AIChatMessages"] = aiMessages;
 
             return View(viewModel);
         }
@@ -96,12 +135,127 @@ namespace Tulip.Controllers
         private ApplicationUser getCurrentUser()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return _db.ApplicationUsers.Find(userId);
+            return db.ApplicationUsers.Find(userId);
         }
 
         private ApplicationUser getUserFromId(string userId)
         {
-            return _db.ApplicationUsers.Find(userId);
+            return db.ApplicationUsers.Find(userId);
+        }
+
+        [HttpGet]
+        public ActionResult<List<string>> UserSearch([FromQuery] string query) 
+        {
+            IEnumerable<string> userResults = 
+                from user in db.ApplicationUsers
+                where user.UserName.ToUpper().Contains(query.ToUpper())
+                orderby user.UserName.ToUpper().IndexOf(query.ToUpper()), user.UserName.ToUpper() ascending
+                select user.UserName;
+            return userResults.Take(5).ToList();
+        }
+
+        [HttpGet]
+        public ActionResult Settings()
+        {
+            ChatSettingsViewModel model = new ChatSettingsViewModel()
+            {
+                AIChatSystemSelection = getAIChatSystemSelection(),
+                AIIsEnabled = aiChatFactory.GetAIChat().IsEnabled()
+            };
+
+            switch(model.AIChatSystemSelection)
+            {
+                case AIChatSystemSelection.LLaMaModelUpload:
+                    model.AIModelFileName = Path.GetFileName(configuration["AIChatModelPath"]); 
+                    break;
+                case AIChatSystemSelection.ChatGPTAPI:
+                    var apiKey = configuration["ChatGPTAPIKey"]; 
+                    if (apiKey != "")
+                    {
+                        model.ChatGPTAPIKey = new String('*', 16);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return View(model);
+        }
+
+        private AIChatSystemSelection getAIChatSystemSelection()
+        {
+            var selectionName = configuration["AIChatSystem"];
+
+            AIChatSystemSelection selection;
+            bool selectionIsValid = Enum.TryParse<AIChatSystemSelection>(selectionName, out selection);
+
+            if (!selectionIsValid)
+            {
+                logger.LogWarning($"Invalid chat system saved to configuration: {selectionName}");
+                selection = AIChatSystemSelection.None;
+            }
+
+            return selection;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SelectChatSystem(ChatSettingsViewModel settings)
+        {
+            AIChatSystemSelection selection = settings.AIChatSystemSelection;
+
+            var selectionName = selection.ToString("G");
+            configuration["AIChatSystem"] = selectionName;
+
+            return RedirectToAction("Settings");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SaveSettings(IFormFile modelUpload, ChatSettingsViewModel settings)
+        {
+            AIChatSystemSelection chatSystem = getAIChatSystemSelection();
+
+            switch (chatSystem)
+            {
+                case AIChatSystemSelection.LLaMaModelUpload:
+                    if (modelUpload != null)
+                    {
+                        var modelFileName = Path.GetFileName(modelUpload.FileName);
+                        modelFileName = WebUtility.HtmlEncode(modelFileName);
+
+                        var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                        var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+                        var modelPath = $"{assemblyDirectory}/{modelFileName}";
+
+                        using (var stream = System.IO.File.Create(modelPath))
+                        {
+                            await modelUpload.CopyToAsync(stream);
+                        }
+
+                        configuration["AIChatModelPath"] = modelPath;
+                    }
+                    break;
+                case AIChatSystemSelection.ChatGPTAPI:
+                    configuration["ChatGPTAPIKey"] = settings.ChatGPTAPIKey;
+                    break;
+                default:
+                    break;
+            }
+
+            IAIChat aiChat = aiChatFactory.GetAIChat();
+            if (settings.AIIsEnabled && aiChat.CanBeEnabled())
+            {
+                aiChat.Enable();
+            }
+            else 
+            {
+                aiChat.Disable();
+            }
+
+            settings.AIIsEnabled = aiChat.IsEnabled();
+
+            return RedirectToAction("Settings");
         }
     }
 }

@@ -77,6 +77,10 @@ leaderboard positions.
 There shall be a chat system in the application.
 ### 3.1. [User Chat](#user-chat)
 Users shall be able to chat with each other.
+#### 3.1.1. [User Search](#user-chat-search)
+When a user composes a message to another user they have not chatted
+with before, as they type their username into the "To:" field, 
+suggestions shall be shown that the user can pick from.
 ### 3.2. [AI Chat](#ai-chat)
 Users shall be able to chat with an AI about the 
 SAP system.
@@ -99,6 +103,14 @@ A CSV file can be used to bulk create users.
 ###### 4.1.2.1.1. [Format](#csv-format)
 The CSV file format shall be a headerless CSV file where
 the columns are `server,clientid,username,password,email`.
+### 4.2. [User Deletion](#admin-user-deletion)
+The admin panel shall allow administrators to delete users.
+#### 4.2.1. [Mass User Deletion](#admin-mass-user-deletion)
+The admin panel shall allow administrators to delete multiple
+users at once. They shall be able to view the users, then select
+them by clicking check-boxes next to their username. After selecting
+users, they shall be able to delete selected users by pressing a delete
+button.
 
 ## 5. [Production Deployment](#deployment)
 The application shall be deployed to the Azure cloud.
