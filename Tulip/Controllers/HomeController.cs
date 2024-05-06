@@ -250,18 +250,23 @@ namespace Tulip.Controllers
             {
                 case "FI":
                     ViewBag.Header = "FI - Accounts Payable";
+                    ViewBag.Case = "FI";
                     break;
                 case "FI_AR":
                     ViewBag.Header = "FI - Accounts Receivable";
+                    ViewBag.Case = "FI_AR";
                     break;
                 case "MM":
                     ViewBag.Header = "Material Management";
+                    ViewBag.Case = "MM";
                     break;
                 case "SD":
                     ViewBag.Header = "Sales and Distribution";
+                    ViewBag.Case = "SD";
                     break;
                 case "PP":
                     ViewBag.Header = "Production Planning";
+                    ViewBag.Case = "PP";
                     break;
                 default:
                     break;
@@ -325,18 +330,23 @@ namespace Tulip.Controllers
             {
                 case "FI":
                     ViewBag.Header = "FI - Accounts Payable";
+                    ViewBag.Case = "FI";
                     break;
                 case "FI_AR":
                     ViewBag.Header = "FI - Accounts Receivable";
+                    ViewBag.Case = "FI_AR";
                     break;
                 case "MM":
                     ViewBag.Header = "Material Management";
+                    ViewBag.Case = "MM";
                     break;
                 case "SD":
                     ViewBag.Header = "Sales and Distribution";
+                    ViewBag.Case = "SD";
                     break;
                 case "PP":
                     ViewBag.Header = "Production Planning";
+                    ViewBag.Case = "PP";
                     break;
                 default:
                     break;
