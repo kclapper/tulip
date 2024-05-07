@@ -446,6 +446,7 @@ namespace Tulip.Controllers
                 //add new role
                 await _userManager.AddToRoleAsync(objFromDb, _db.Roles.FirstOrDefault(u => u.Id == user.RoleId).Name);
                 objFromDb.Name = user.Name;
+                objFromDb.AvatarUrl = user.AvatarUrl;
                 _db.SaveChanges();
                 TempData[SD.Success] = "User has been edited successfully.";
                 return RedirectToAction(nameof(GetUsers));
@@ -494,7 +495,6 @@ namespace Tulip.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
         [Authorize(Roles = "Admin,User")]
         public IActionResult EditProfile()
         {
