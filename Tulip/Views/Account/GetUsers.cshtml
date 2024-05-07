@@ -32,6 +32,13 @@
                     {
                         <tr>
                             <td>
+                                @{
+                                    if (item.AvatarUrl != null) {
+                                        <div class="avatar flex-shrink-0 me-3">
+                                            <img src=@($"../assets/img/avatars/{item.AvatarUrl}")>
+                                        </div>
+                                    }
+                                }
                                 @item.UserName
                             </td>
                             <td>

@@ -446,6 +446,7 @@ namespace Tulip.Controllers
                 //add new role
                 await _userManager.AddToRoleAsync(objFromDb, _db.Roles.FirstOrDefault(u => u.Id == user.RoleId).Name);
                 objFromDb.Name = user.Name;
+                objFromDb.AvatarUrl = user.AvatarUrl;
                 _db.SaveChanges();
                 TempData[SD.Success] = "User has been edited successfully.";
                 return RedirectToAction(nameof(GetUsers));
@@ -494,11 +495,41 @@ namespace Tulip.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
         [Authorize(Roles = "Admin,User")]
         public IActionResult EditProfile()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> EditProfile(ApplicationUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == user.Id);
+                if (objFromDb == null)
+                {
+                    return NotFound();
+                }
+                var userRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
+                if (userRole != null)
+                {
+                    var previousRoleName = _db.Roles.Where(u => u.Id == userRole.RoleId).Select(e => e.Name).FirstOrDefault();
+                    //removing the old role
+                    await _userManager.RemoveFromRoleAsync(objFromDb, previousRoleName);
+
+                }
+
+                //add new role
+                await _userManager.AddToRoleAsync(objFromDb, _db.Roles.FirstOrDefault(u => u.Id == user.RoleId).Name);
+                objFromDb.AvatarUrl = user.AvatarUrl;
+                _db.SaveChanges();
+                TempData[SD.Success] = "User has been edited successfully.";
+                // return Ok();
+            }
+            return RedirectToAction(nameof(EditProfile));
         }
 
 
