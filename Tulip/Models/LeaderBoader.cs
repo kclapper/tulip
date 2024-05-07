@@ -11,6 +11,6 @@ namespace Tulip.Models
 		public int? Point { get; set; }
 		public string? CaseStudy { get; set; }
 		// [NotMapped]
-		public string AvatarUrl { get; set; }
+		// public string AvatarUrl { get; set; }
 	}
 }
