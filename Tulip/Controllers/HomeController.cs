@@ -45,7 +45,7 @@ namespace Tulip.Controllers
             try
             {
                 var userInfo = getCurrentUser();
-                ViewBag.CurrentUser = userInfo;
+
                 _logger.LogInformation($"Dashboard for user: {userInfo.UserName}\n" 
                     + $"\tUserId: {userInfo.UserId}\n"
                     + $"\tClientId: {userInfo.ClientId}\n"
@@ -62,48 +62,9 @@ namespace Tulip.Controllers
                     .SetCaseStudy(caseStudy)
                     .Build();
 
-            
-                IEnumerable<ChatMessage> messages = 
-                from message in _db.ChatMessages
-                where message.Sender.Id.Equals(userInfo.Id) || message.Receiver.Id.Equals(userInfo.Id)
-                orderby message.Timestamp ascending
-                select message;
+
                 ViewBag.Fulfillment = sap.GetFulfillment();
 
-                ChatList chats = new ChatList();
-                
-                foreach (ChatMessage message in messages)
-                    {
-                ApplicationUser otherUser;
-                if (message.Sender.Equals(userInfo))
-                {
-                    otherUser = message.Receiver;
-                }
-                else 
-                {
-                    otherUser = message.Sender;
-                }
-
-                if (!chats.ContainsUser(otherUser))
-                {
-                    var messageHistory = new MessageHistory()
-                    {
-                        OtherUser = otherUser,
-                        Messages = [ message ]
-                    };
-                    chats.Add(otherUser, messageHistory);
-                }
-                else 
-                {
-                    
-                    MessageHistory messageHistory = chats.GetMessageHistory(otherUser);
-                    messageHistory.Messages.Add(message);
-                }
-                }
-
-                ViewBag.FirstChat = chats.MostRecentChat();
-
-                ViewBag.Chats = chats;
                 ViewBag.Point = sap.GetPoint();
                 ViewBag.Levels = sap.GetLevel();
                 ViewBag.Badge = sap.GetBadge();
