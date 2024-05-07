@@ -1,0 +1,49 @@
+﻿@model ApplicationUser
+@{
+    Layout = "_MiniLayoutTwo";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="alert alert-primary alert-dismissible" role="alert">
+                    Message: <span>@TempData[SD.Success]</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-controller="Account" asp-action="EditProfile">
+                    <input asp-for="@Model.Id" hidden />
+                    <hr />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    @* <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div> *@
+                    <div class="form-group">
+                        <label asp-for="AvatarUrl"></label>
+                        <input asp-for="AvatarUrl" class="form-control" />
+                        <span asp-validation-for="AvatarUrl" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary btn-md">Update</button>
+                        <a asp-action="GetUsers" class="btn btn-success btn-sm" style="width: auto"><i
+                                class='bx bx-arrow-back'></i>Back</a>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+} *@

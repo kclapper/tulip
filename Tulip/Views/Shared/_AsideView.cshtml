@@ -83,6 +83,16 @@
                         </li>
 
                         <li class="menu-item">
+                            <a asp-controller="Account" asp-action="EditProfile" asp-route-caseStudy="MM" class="menu-link">
+                                @* <i class="menu-icon tf-icons bx bx-edit"></i> *@
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <img src=@($"../assets/img/avatars/{((ApplicationUser) await UserManager.GetUserAsync(User)).AvatarUrl}")>
+                                </div>
+                                <div data-i18n="Analytics">Edit Profile</div>
+                            </a>
+                        </li>
+
+                        <li class="menu-item">
                             <a asp-controller="Home" asp-action="LeaderBoard" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-trophy"></i>
                                 <div data-i18n="Without menu">Leaderboard</div>
