@@ -345,41 +345,42 @@
             <div class="card">
             <button type="button" style="width:150px;" onclick="displayChatList()" class="mt-2 ml-2 btn btn-primary" >See Chats</button>
             <div id="messageList" class="container pt-4" style="overflow: scroll; height:350px; scrollbar-width: none; -ms-overflow-style: none; flex-direction: column-reverse; ">
-                
-                @foreach (ChatMessage message in ViewBag.FirstChat.Messages)
+                @if (ViewBag.FirstChat != null)
                 {
-                    @if (!message.Sender.Equals(ViewBag.CurrentUser))
+                    @foreach (ChatMessage message in ViewBag.FirstChat.Messages)
                     {
-                        <div class="row no-gutters">
-                            <div class="col-5">
-                                <div class="card">
-                                    <div class="message-text card-body p-3">@message.Message</div>
+                        @if (!message.Sender.Equals(ViewBag.CurrentUser))
+                        {
+                            <div class="row no-gutters">
+                                <div class="col-5">
+                                    <div class="card">
+                                        <div class="message-text card-body p-3">@message.Message</div>
+                                    </div>
+                                    <p class="text-muted text-start">
+                                        @message.Timestamp
+                                    </p>
                                 </div>
-                                <p class="text-muted text-start">
-                                    @message.Timestamp
-                                </p>
-                            </div>
-                            <div class="col-7">
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="row no-gutters">
-                            <div class="col-7">
-                            </div>
-                            <div class="col-5">
-                                <div class="card">
-                                    <div class="message-text card-body p-3">@message.Message</div>
+                                <div class="col-7">
                                 </div>
-                                <p class="text-muted text-end">
-                                    @message.Timestamp
-                                </p>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="row no-gutters">
+                                <div class="col-7">
+                                </div>
+                                <div class="col-5">
+                                    <div class="card">
+                                        <div class="message-text card-body p-3">@message.Message</div>
+                                    </div>
+                                    <p class="text-muted text-end">
+                                        @message.Timestamp
+                                    </p>
+                                </div>
+                            </div>
+                        }
                     }
                 }
-                
 
                 </div>
                 </div>
