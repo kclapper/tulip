@@ -1,4 +1,7 @@
-﻿@model ApplicationUser
+﻿@using System.IO;
+@using IOPath = System.IO.Path;
+
+@model ApplicationUser
 @{
     Layout = "_MiniLayoutTwo";
 }
@@ -31,6 +34,15 @@
                         <input asp-for="AvatarUrl" class="form-control" />
                         <span asp-validation-for="AvatarUrl" class="text-danger"></span>
                     </div>
+                    @{
+                        var avatarPath = "../assets/img/avatars";
+                        var wwwAvatarPath = "wwwroot/assets/img/avatars";
+                    }
+                    @foreach (var file in new DirectoryInfo(wwwAvatarPath).GetFiles())
+                    {
+                        // TODO: pretty this up with css - make it flexbox
+                        <img src=@(IOPath.Join(avatarPath, file.Name)) width="128" height="128" />
+                    }
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary btn-md">Update</button>
                         <a asp-action="GetUsers" class="btn btn-success btn-sm" style="width: auto"><i
