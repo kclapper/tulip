@@ -16,6 +16,8 @@
             <div class="card-body">
                 <form method="post" asp-controller="Account" asp-action="EditProfile">
                     <input asp-for="@Model.Id" hidden />
+                    <input asp-for="@Model.UserId" hidden />
+                    <input asp-for="@Model.ApplicationServer" hidden />
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
 

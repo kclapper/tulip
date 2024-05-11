@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.FileIO; 
+using Microsoft.VisualBasic.FileIO;
+using System.Security.Claims;
 
 
 namespace Tulip.Controllers
@@ -498,7 +499,8 @@ namespace Tulip.Controllers
         [Authorize(Roles = "Admin,User")]
         public IActionResult EditProfile()
         {
-            return View();
+            var user = getCurrentUser();
+            return View(user);
         }
 
         [HttpPost]
@@ -513,21 +515,24 @@ namespace Tulip.Controllers
                 {
                     return NotFound();
                 }
-                var userRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
-                if (userRole != null)
-                {
-                    var previousRoleName = _db.Roles.Where(u => u.Id == userRole.RoleId).Select(e => e.Name).FirstOrDefault();
-                    //removing the old role
-                    await _userManager.RemoveFromRoleAsync(objFromDb, previousRoleName);
 
-                }
-
-                //add new role
-                await _userManager.AddToRoleAsync(objFromDb, _db.Roles.FirstOrDefault(u => u.Id == user.RoleId).Name);
                 objFromDb.AvatarUrl = user.AvatarUrl;
                 _db.SaveChanges();
                 TempData[SD.Success] = "User has been edited successfully.";
                 // return Ok();
+            } else {
+                ModelState.AddModelError(string.Empty, "User edit failed.");
+                Console.WriteLine("User Edit failed!");
+                var errors = ModelState.Select(x => x.Value.Errors)
+                        .Where(y=>y.Count>0)
+                        .ToList();
+                foreach (var errorc in errors) {
+                    foreach (var error in errorc) {
+                        Console.WriteLine(error.ErrorMessage);
+                        Console.WriteLine(error.Exception);
+                    }
+                }
+                
             }
             return RedirectToAction(nameof(EditProfile));
         }
@@ -593,6 +598,12 @@ namespace Tulip.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+        }
+
+        private ApplicationUser getCurrentUser()
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return _db.ApplicationUsers.Find(userId);
         }
     }
 }
