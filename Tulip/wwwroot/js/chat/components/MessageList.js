@@ -1,4 +1,4 @@
-import { ReceiveMessage } from "./Connection.js";
+import { ReceiveMessage } from "./connection/Connection.js";
 
 export class MessageList {
     #element;
@@ -9,8 +9,9 @@ export class MessageList {
     #lastMessageTextElement;
     #lastMessageTimestampElement;
 
-    constructor(connection) {
-        this.#element = document.getElementById("messageList");
+    constructor(connection, element) {
+        // this.#element = document.getElementById("messageList");
+        this.#element = element;
         if (!this.#element) {
             throw new Error("Element with id 'messageList' not found");
         }
