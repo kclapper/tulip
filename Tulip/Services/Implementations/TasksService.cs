@@ -75,7 +75,18 @@ namespace Tulip.Services.Implementations
 
 		public async Task<IEnumerable<LeaderBoader>> GetLeaders(string caseStudy)
 		{
-			var data = await _db.LeaderBoaders.OrderByDescending(s => s.Point).Where(c => c.CaseStudy == caseStudy).ToListAsync();
+			var data = await _db.LeaderBoaders
+				.OrderByDescending(s => s.Point)
+				.Where(c => c.CaseStudy == caseStudy)
+				.Select(s => new LeaderBoader
+				{
+					Username = s.Username,
+					Point = s.Point,
+					CaseStudy = s.CaseStudy,
+					// look up the user and get the avatar
+					AvatarUrl = _db.ApplicationUsers.Where(u => u.UserName == s.Username).Select(u => u.AvatarUrl).FirstOrDefault()
+				})
+				.ToListAsync();
 			return data;
 		}
 
