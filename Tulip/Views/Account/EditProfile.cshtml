@@ -41,7 +41,7 @@
                     @foreach (var file in new DirectoryInfo(wwwAvatarPath).GetFiles())
                     {
                         // TODO: pretty this up with css - make it flexbox
-                        <img src=@(IOPath.Join(avatarPath, file.Name)) width="128" height="128" />
+                        <img src=@(IOPath.Join(avatarPath, file.Name)) width="128" height="128" data-name=@(file.Name) onclick="setAvatar(event)" />
                     }
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary btn-md">Update</button>
@@ -61,3 +61,17 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 } *@
+
+
+@section scripts{
+    <script type="text/javascript">
+        /**
+        * @@param {Event} e
+        */
+        function setAvatar(e) {
+            console.log("Setting avatar to ", e.target.getAttribute("data-name"));
+            var avatarUrl = document.getElementById("AvatarUrl");
+            avatarUrl.value = e.target.getAttribute("data-name");
+        }
+    </script>
+}
