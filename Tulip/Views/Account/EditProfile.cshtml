@@ -1,4 +1,7 @@
-﻿@model ApplicationUser
+﻿@using System.IO;
+@using IOPath = System.IO.Path;
+
+@model ApplicationUser
 @{
     Layout = "_MiniLayoutTwo";
 }
@@ -16,6 +19,8 @@
             <div class="card-body">
                 <form method="post" asp-controller="Account" asp-action="EditProfile">
                     <input asp-for="@Model.Id" hidden />
+                    <input asp-for="@Model.UserId" hidden />
+                    <input asp-for="@Model.ApplicationServer" hidden />
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -29,6 +34,15 @@
                         <input asp-for="AvatarUrl" class="form-control" />
                         <span asp-validation-for="AvatarUrl" class="text-danger"></span>
                     </div>
+                    @{
+                        var avatarPath = "../assets/img/avatars";
+                        var wwwAvatarPath = "wwwroot/assets/img/avatars";
+                    }
+                    @foreach (var file in new DirectoryInfo(wwwAvatarPath).GetFiles())
+                    {
+                        // TODO: pretty this up with css - make it flexbox
+                        <img src=@(IOPath.Join(avatarPath, file.Name)) width="128" height="128" data-name=@(file.Name) onclick="setAvatar(event)" />
+                    }
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary btn-md">Update</button>
                         <a asp-action="GetUsers" class="btn btn-success btn-sm" style="width: auto"><i
@@ -47,3 +61,17 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 } *@
+
+
+@section scripts{
+    <script type="text/javascript">
+        /**
+        * @@param {Event} e
+        */
+        function setAvatar(e) {
+            console.log("Setting avatar to ", e.target.getAttribute("data-name"));
+            var avatarUrl = document.getElementById("AvatarUrl");
+            avatarUrl.value = e.target.getAttribute("data-name");
+        }
+    </script>
+}
