@@ -17,12 +17,12 @@ export class MessageList {
         }
 
         this.#connection = connection;
-        this.#connection.on(ReceiveMessage, this.#addMessage.bind(this));
+        this.#connection.on(ReceiveMessage, this.addMessage.bind(this));
 
         this.resetScroll();
     }
 
-    #addMessage(user, message) {
+    addMessage(user, message, timestamp = new Date()) {
         if (this.#messageIsUpdate(user)) {
             this.#updateMessage(message);
             return;
@@ -46,10 +46,9 @@ export class MessageList {
         messageText.className = "card-body p-3";
         messageText.textContent = message;
 
-        const timestamp = new Date(); 
         const messageTimestamp = document.createElement("p")
         messageTimestamp.className = isUserMessage ? "text-muted text-end" : "text-muted text-start";
-        messageTimestamp.textContent = `${(new Date()).toLocaleString()}`;
+        messageTimestamp.textContent = `${timestamp.toLocaleString()}`;
 
         messageCard.appendChild(messageText);
         messageRow.appendChild(messageCard);

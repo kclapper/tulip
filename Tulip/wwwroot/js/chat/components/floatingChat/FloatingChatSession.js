@@ -6,6 +6,7 @@ const ChatSessionWindowHeight = "500px";
 
 export class FloatingChatSession {
     #connection;
+    #otherUserName;
 
     #element;
     #chatSessionTab;
@@ -18,6 +19,7 @@ export class FloatingChatSession {
 
     constructor(connection, userName) {
         this.#connection = connection;
+        this.#otherUserName = userName;
 
         this.#element = document.createElement("div");
         this.#element.className = "me-3 d-flex flex-column justify-content-end";
@@ -27,6 +29,7 @@ export class FloatingChatSession {
 
         const messageListElement = makeMessageList();
         this.#messageList = new MessageList(connection, messageListElement);
+        this.addPreviousMessages();
 
         const spacer = document.createElement("div");
         spacer.className = "flex-grow-1";
@@ -49,6 +52,23 @@ export class FloatingChatSession {
         /* Add to floating chats */
         const floatingChatSessionList = document.getElementById("floating-chat-sessions");
         floatingChatSessionList.appendChild(this.#element);
+    }
+
+    addPreviousMessages() {
+        let result = fetch(`/Chat/ChatHistory?otherUserName=${this.#otherUserName}`);
+        result
+            .then((response) => {
+                if (response.status != 200) {
+                    return Promise.resolve([]);
+                }
+
+                return response.json();
+            })
+            .then((result) => {
+                for (const message of result) {
+                    this.#messageList.addMessage(message["sender"], message["message"], new Date(message["timestamp"]));
+                }
+            });
     }
 
     toggleDisplay() {
@@ -107,7 +127,7 @@ function makeMessageWindow() {
 
 function makeMessageList() {
     const messageList = document.createElement("div");
-    messageList.className = "container pt-4";
+    messageList.className = "container pt-4 message-list";
     return messageList;
 }
 

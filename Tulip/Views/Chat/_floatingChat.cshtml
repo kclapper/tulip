@@ -8,6 +8,14 @@
     #floating-chat-sessions button:focus:not(:hover) {
         color: var(--bs-primary);
     }
+    .message-list {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        overflow: scroll;
+    }
+    .message-list::-webkit-scrollbar {
+        display: none;
+    }
 </style>
 
 <div id="floating-chat" class="fixed-bottom d-flex align-items-end" style="z-index: 5000; margin: 50px">

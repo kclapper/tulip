@@ -143,6 +143,18 @@ namespace Tulip.Controllers
             return db.ApplicationUsers.Find(userId);
         }
 
+        private ApplicationUser getUserFromUsername(string username)
+        {
+            IEnumerable<ApplicationUser> userQuery = 
+                from user in db.ApplicationUsers
+                where user.UserName == username
+                select user;
+
+            var foundUser = userQuery.Single<ApplicationUser>();
+
+            return foundUser;
+        }
+
         [HttpGet]
         public ActionResult<List<string>> UserSearch([FromQuery] string query) 
         {
@@ -152,6 +164,31 @@ namespace Tulip.Controllers
                 orderby user.UserName.ToUpper().IndexOf(query.ToUpper()), user.UserName.ToUpper() ascending
                 select user.UserName;
             return userResults.Take(5).ToList();
+        }
+
+        [HttpGet]
+        public ActionResult<List<object>> ChatHistory([FromQuery] string otherUserName) 
+        {
+            ChatViewModel model = getAllUserChats();
+            ApplicationUser otherUser = getUserFromUsername(otherUserName);
+            var history = model.Chats.GetMessageHistory(otherUser);
+
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<object> messages =
+                from message in history.Messages 
+                orderby message.Timestamp ascending
+                select new {
+                    Sender = message.Sender.UserName,
+                    Receiver = message.Receiver.UserName,
+                    Timestamp = message.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    Message = message.Message
+                };
+
+            return messages.ToList();
         }
 
         [HttpGet]
