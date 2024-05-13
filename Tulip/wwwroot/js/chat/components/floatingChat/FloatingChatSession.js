@@ -17,7 +17,7 @@ export class FloatingChatSession {
 
     #windowIsVisible = false;
 
-    constructor(connection, userName) {
+    constructor(connection, userName, loadChats=true) {
         this.#connection = connection;
         this.#otherUserName = userName;
 
@@ -29,7 +29,9 @@ export class FloatingChatSession {
 
         const messageListElement = makeMessageList();
         this.#messageList = new MessageList(connection, messageListElement);
-        this.addPreviousMessages();
+        if (loadChats) {
+            this.addPreviousMessages();
+        }
 
         const spacer = document.createElement("div");
         spacer.className = "flex-grow-1";

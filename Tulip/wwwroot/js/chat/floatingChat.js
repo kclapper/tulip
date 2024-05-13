@@ -1,3 +1,4 @@
+import { AiConnection } from "./components/connection/AiConnection.js";
 import { Connection } from "./components/connection/Connection.js";
 import { FloatingChatSelector } from "./components/floatingChat/FloatingChatSelector.js";
 import { FloatingChatSession } from "./components/floatingChat/FloatingChatSession.js";
@@ -19,6 +20,10 @@ connection.onStarted(() => {
         })
         .then((result) => {
             for (const chat of result) {
+                if (chat["otherUserName"] == "Tulip Bot") {
+                    continue;
+                }
+
                 const floatingChat = new FloatingChatSession(connection, chat["otherUserName"]);
                 if (chat["isActive"]) {
                     floatingChat.show();
@@ -28,3 +33,18 @@ connection.onStarted(() => {
             }
         });
 });
+
+let aiConnection = new AiConnection();
+
+aiConnection
+    .onStarted(() => {
+    aiConnection
+        .invoke("AISystemStatus")
+        .then((aiIsEnabled) => {
+            if (aiIsEnabled) {
+                new FloatingChatSession(aiConnection, "Tulip Bot", false);
+            } else {
+                aiConnection = undefined;
+            }
+        });
+    });
