@@ -10,7 +10,7 @@ namespace Tulip.Models
 		public string? Username { get; set; }
 		public int? Point { get; set; }
 		public string? CaseStudy { get; set; }
-		// [NotMapped]
-		// public string AvatarUrl { get; set; }
+		[NotMapped]
+		public string AvatarUrl { get; set; }
 	}
 }

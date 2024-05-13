@@ -1,5 +1,6 @@
 ﻿@model Tulip.Models.SapViewModel
 @using Microsoft.AspNetCore.Identity
+@using IOPath = System.IO.Path;
 @inject SignInManager<IdentityUser> SignInManager
 
 
@@ -294,18 +295,41 @@
                             <span  style="text-align:center" id = "leaderboard" class="d-block fs-5  fw-bold "></span>
                             
                              @foreach (var data in ViewBag.TopThree){      
-                               
-                                if(data.Username == ViewBag.Existing.Username){
-                                <span  class="mt-3 text-primary d-block fs-6  fw-bold ">@ViewBag.Counts[counter - 1]. @data.Username : @data.Point points</span>
-                                }else{
-                                    <span class="mt-3 d-block">@ViewBag.Counts[counter - 1]. @data.Username : @data.Point points</span>
+                                if(data.Username == ViewBag.Existing.Username)
+                                {
+                                    <span class="mt-3 text-primary d-block fs-6 fw-bold ">
+                                        @ViewBag.Counts[counter - 1].
+                                        @if (data.AvatarUrl != null)
+                                        {
+                                            <img src=@(IOPath.Join("../assets/img/avatars/", @data.AvatarUrl)) style="height: 2em; width: 2em">
+                                        }
+                                        @data.Username : @data.Point points
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="mt-3 d-block">
+                                        @ViewBag.Counts[counter - 1].
+                                        @if (data.AvatarUrl != null)
+                                        {
+                                            <img src=@(IOPath.Join("../assets/img/avatars/", @data.AvatarUrl)) style="height: 2em; width: 2em">
+                                        }
+                                        @data.Username : @data.Point points
+                                    </span>
                                 }
                                 counter++;
                                 
                              }
                             
                             @if(!ViewBag.Contains_You){ 
-                            <b><span class="text-primary mt-3 d-block">@ViewBag.AdditionalCount. @ViewBag.Existing.Username : @ViewBag.Existing.Point points</span> </b>
+                            <b><span class="text-primary mt-3 d-block">
+                                @ViewBag.AdditionalCount.
+                                @if (ViewBag.Existing.AvatarUrl != null)
+                                {
+                                    <img src=@(IOPath.Join("../assets/img/avatars/", @ViewBag.Existing.AvatarUrl)) style="height: 2em; width: 2em">
+                                }
+                                @ViewBag.Existing.Username : @ViewBag.Existing.Point points</span>
+                                </b>
                             }
                             </div>
                             </div>
