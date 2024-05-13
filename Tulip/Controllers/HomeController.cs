@@ -115,7 +115,14 @@ namespace Tulip.Controllers
                 var existingRecord = _db.LeaderBoaders.SingleOrDefault(m => m.Username == userInfo.UserId && m.CaseStudy == caseStudy);
                 var leaders = _db.LeaderBoaders.Where(lb => lb.CaseStudy == caseStudy);
                 var sorted = leaders.OrderByDescending(lb => lb.Point);
-                var topThree = sorted.Take(3);
+                var withAvatars = sorted.Select(lb => new LeaderBoader
+                {
+                    Username = lb.Username,
+                    Point = lb.Point,
+                    CaseStudy = lb.CaseStudy,
+                    AvatarUrl = _db.ApplicationUsers.Where(u => u.UserName == lb.Username).Select(u => u.AvatarUrl).FirstOrDefault()
+                });
+                var topThree = withAvatars.Take(3);
                 ViewBag.TopThree = topThree;
                 ViewBag.LeaderTotal = sorted.Count();
                 ArrayList counts = new ArrayList();
@@ -164,6 +171,9 @@ namespace Tulip.Controllers
                     }
                     existing_count++;
                 }
+                existingRecord.AvatarUrl = userInfo.AvatarUrl;
+                Console.WriteLine(existingRecord.Username);
+                Console.WriteLine(existingRecord.AvatarUrl);
                 ViewBag.Contains_You = false;
                 if(existing_count < 3){
                     ViewBag.Contains_You = true;
