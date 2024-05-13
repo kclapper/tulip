@@ -21,7 +21,13 @@ export class Connection {
             .start()
             .then(() => {
                     return this.#connection.invoke(GetCurrentUser);
-            }).then((currentUser) => this.#currentUser = currentUser);
+            })
+            .then((currentUser) => {
+                this.#currentUser = currentUser;
+                for (const callback of this.#onStartedCallbacks) {
+                    callback();
+                }
+            });
     }
 
     get currentUser() {
@@ -38,5 +44,10 @@ export class Connection {
 
     invoke(event, ...args) {
         return this.#connection.invoke(event, ...args);
+    }
+
+    #onStartedCallbacks = [];
+    onStarted(callback) {
+        this.#onStartedCallbacks.push(callback);
     }
 }

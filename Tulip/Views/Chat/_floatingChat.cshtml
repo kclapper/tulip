@@ -1,0 +1,45 @@
+<style>
+    #floating-chat {
+        pointer-events: none;
+    }
+    .touchable {
+        pointer-events: initial;
+    }
+    #floating-chat-sessions button:not(:hover) {
+        background-color: white;
+    }
+    #floating-chat-sessions button:active:not(:hover) {
+        color: var(--bs-primary);
+    }
+    #floating-chat-sessions button:focus:not(:hover) {
+        color: var(--bs-primary);
+    }
+    .message-list {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        overflow: scroll;
+    }
+    .message-list::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<div id="floating-chat" class="fixed-bottom d-flex align-items-end" style="z-index: 5000; margin: 50px">
+    <div class="flex-grow-1">
+    </div>
+
+    <div id="floating-chat-sessions" class="d-flex touchable">
+    </div>
+
+    <div class="d-flex flex-column align-items-end touchable">
+        <div id="floating-chat-selector"></div>
+        <button id="floating-chat-selection-button" type="button" class="btn btn-primary" style="padding-left: 5px; width: 60px; height: 60px">
+            <i class="menu-icon tf-icons bx bx-chat text-white" style="font-size: 3rem"></i>
+        </button>
+    </div>
+</div>
+
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/chat/floatingChat.js" type="module"></script>
+<script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>

@@ -26,6 +26,12 @@ namespace Tulip.Hubs
             return currentUser.UserName;
         }
 
+        public virtual async Task<bool> AISystemStatus()
+        {
+            return false;
+        }
+        
+
         public virtual async Task SendMessage(string recipient, string message)
         {
             try 
@@ -115,6 +121,7 @@ namespace Tulip.Hubs
         public static ChatEvent SendError = new ChatEvent("SendError");
         public static ChatEvent CurrentUser = new ChatEvent("GetCurrentUser");
         public static ChatEvent SentMessage = new ChatEvent("MessageSent");
+        public static ChatEvent AISystemStatus = new ChatEvent("AISystemStatus");
 
         public string Name { get; }
 

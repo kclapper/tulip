@@ -17,6 +17,11 @@ namespace Tulip.Hubs
         {
             this.chatFactory = chatFactory;
         }
+
+        override public async Task<bool> AISystemStatus()
+        {
+            return chatFactory.GetAIChat().IsEnabled();
+        }
         
         override public async Task SendMessage(string recipient, string message)
         {

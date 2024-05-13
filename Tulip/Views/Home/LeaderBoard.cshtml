@@ -136,6 +136,8 @@ else
 }
 </div>
 
+@await Html.PartialAsync("../Chat/_floatingChat")
+
 @section scripts {
   <partial name="_ValidationScriptsPartial" />
   <script type="text/javascript">

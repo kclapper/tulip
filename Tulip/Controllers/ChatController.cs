@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Reflection;
 using System.Net;
 using Tulip.Services.Implementations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tulip.Controllers
 {
@@ -135,12 +136,26 @@ namespace Tulip.Controllers
         private ApplicationUser getCurrentUser()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return db.ApplicationUsers.Find(userId);
+            var users = db.ApplicationUsers.Include(e => e.FloatingChats);
+            return users.Where(e => e.Id.Equals(userId)).First();
+            // return db.ApplicationUsers.Include(e => e.FloatingChats).Find(userId);
         }
 
         private ApplicationUser getUserFromId(string userId)
         {
             return db.ApplicationUsers.Find(userId);
+        }
+
+        private ApplicationUser getUserFromUsername(string username)
+        {
+            IEnumerable<ApplicationUser> userQuery = 
+                from user in db.ApplicationUsers
+                where user.UserName == username
+                select user;
+
+            var foundUser = userQuery.Single<ApplicationUser>();
+
+            return foundUser;
         }
 
         [HttpGet]
@@ -152,6 +167,97 @@ namespace Tulip.Controllers
                 orderby user.UserName.ToUpper().IndexOf(query.ToUpper()), user.UserName.ToUpper() ascending
                 select user.UserName;
             return userResults.Take(5).ToList();
+        }
+
+        [HttpGet]
+        public ActionResult<List<object>> ChatHistory([FromQuery] string otherUserName) 
+        {
+            ChatViewModel model = getAllUserChats();
+            ApplicationUser otherUser = getUserFromUsername(otherUserName);
+            var history = model.Chats.GetMessageHistory(otherUser);
+
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<object> messages =
+                from message in history.Messages 
+                orderby message.Timestamp ascending
+                select new {
+                    Sender = message.Sender.UserName,
+                    Receiver = message.Receiver.UserName,
+                    Timestamp = message.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    Message = message.Message
+                };
+
+            return messages.ToList();
+        }
+
+        [HttpGet]
+        public ActionResult<List<object>> GetFloatingChats()
+        {
+            ApplicationUser currentUser = getCurrentUser(); 
+
+            if (currentUser.FloatingChats == null) {
+                return new List<object>();
+            }
+
+            IEnumerable<object> floatingChats = 
+                from chat in currentUser.FloatingChats
+                select new {
+                    otherUserName = chat.OtherUserName,
+                    isActive = chat.IsActive
+                }; 
+
+            return floatingChats.ToList();
+        }
+
+        [HttpPost]
+        public ActionResult OpenFloatingChat([FromBody] FloatingChat floatingChat)
+        {
+            ApplicationUser currentUser = getCurrentUser(); 
+            floatingChat.User = currentUser;
+
+            if (currentUser.FloatingChats == null) {
+                db.FloatingChats.Add(floatingChat);
+                db.SaveChanges();
+                return NoContent();
+            }
+
+            foreach (FloatingChat chat in currentUser.FloatingChats)
+            {
+                if (chat.OtherUserName.Equals(floatingChat.OtherUserName))
+                {
+                    chat.IsActive = floatingChat.IsActive;
+                    db.FloatingChats.Update(chat);
+                    db.SaveChanges();
+                    return NoContent();
+                }
+            }
+
+            db.FloatingChats.Add(floatingChat);
+            db.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPost]
+        public ActionResult RemoveFloatingChat([FromBody] FloatingChat floatingChat)
+        {
+            ApplicationUser currentUser = getCurrentUser(); 
+
+            foreach (FloatingChat chat in currentUser.FloatingChats)
+            {
+                if (chat.OtherUserName.Equals(floatingChat.OtherUserName))
+                {
+                    currentUser.FloatingChats.Remove(chat);
+                }
+            }
+
+            db.SaveChanges();
+            
+            return NoContent();
         }
 
         [HttpGet]

@@ -96,9 +96,18 @@
                                 <li class="list-group-item shadow-sm active">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col-4">
-                                            <span class="badge bg-label-info">
-                                                <i class="bx bx-medal text-primary bx-sm"></i>
-                                            </span>
+                                            @if (Model.CurrentChat.OtherUser.AvatarUrl != null && Model.CurrentChat.OtherUser.AvatarUrl != "")
+                                            {
+                                                <div class="avatar flex-shrink-0 me-3">
+                                                    <img class="rounded" src="/assets/img/avatars/@Model.CurrentChat.OtherUser.AvatarUrl">
+                                                </div>
+                                            }
+                                            else 
+                                            {
+                                                <span class="badge bg-label-info">
+                                                    <i class="bx bx-medal text-primary bx-sm"></i>
+                                                </span>
+                                            }
                                         </div>
                                         <div class="col-8 text-center">
                                                 <a class="text-white" asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">
@@ -113,9 +122,18 @@
                                 <li class="list-group-item">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col-4">
-                                            <span class="badge bg-label-info">
-                                                <i class="bx bx-medal text-primary bx-sm"></i>
-                                            </span>
+                                            @if (otherUser.AvatarUrl != null && otherUser.AvatarUrl != "")
+                                            {
+                                                <div class="avatar flex-shrink-0 me-3">
+                                                    <img class="rounded" src="/assets/img/avatars/@otherUser.AvatarUrl">
+                                                </div>
+                                            }
+                                            else 
+                                            {
+                                                <span class="badge bg-label-info">
+                                                    <i class="bx bx-medal text-primary bx-sm"></i>
+                                                </span>
+                                            }
                                         </div>
                                         <div class="col-8 text-center">
                                             <a asp-controller="Chat" asp-action="Message" asp-route-userId="@otherUser.Id">

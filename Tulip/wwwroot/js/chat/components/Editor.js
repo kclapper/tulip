@@ -1,16 +1,16 @@
-import { SendMessage, MessageSent } from "./Connection.js";
-import { UserSearch } from "./userSearch.js";
+import { SendMessage, MessageSent } from "./connection/Connection.js";
+import { UserSearch } from "./UserSearch.js";
 
 class Editor {
     #element;
-    constructor(connection, element) {
+    constructor(connection, element, messageBox, recipientBox) {
         this.connection = connection;
 
         this.#element = element;
         this.#element.addEventListener("submit", this.#submitHandler.bind(this));
 
-        this.messageBox = document.getElementById("messageInput");
-        this.recipientBox = document.getElementById("recipientInput");
+        this.messageBox = messageBox;
+        this.recipientBox = recipientBox;
     }
 
     #submitHandler(event) {
@@ -41,17 +41,17 @@ class Editor {
     }
 }
 
-class MessageEditor extends Editor {
-    constructor(connection) {
-        super(connection, document.getElementById("messageEditor"));
+export class MessageEditor extends Editor {
+    constructor(connection, element, messageBox, recipientBox) {
+        super(connection, element, messageBox, recipientBox);
     }
 }
 
-class ComposeEditor extends Editor {
-    constructor(connection) {
-        super(connection, document.getElementById("composeEditor"));
+export class ComposeEditor extends Editor {
+    constructor(connection, element, userSearch, messageBox, recipientBox) {
+        super(connection, element, messageBox, recipientBox);
 
-        this.userSearch = new UserSearch(document.getElementById("userSearch"));
+        this.userSearch = new UserSearch(userSearch);
         this.userSearch.onSelect((userName) => {
             this.recipientBox.value = userName;
         });
@@ -69,14 +69,4 @@ class ComposeEditor extends Editor {
             window.location.href = `/Chat/Message/${recipientId}`;
         });
     }
-}
-
-export function getEditor(connection) {
-    if (document.getElementById("messageEditor")) {
-        return new MessageEditor(connection);
-    }
-    if (document.getElementById("composeEditor")) {
-        return new ComposeEditor(connection);
-    }
-    throw new Error("No element with an editor id was found");
 }
