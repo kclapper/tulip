@@ -9,8 +9,6 @@ class Editor {
         this.#element = element;
         this.#element.addEventListener("submit", this.#submitHandler.bind(this));
 
-        // this.messageBox = document.getElementById("messageInput");
-        // this.recipientBox = document.getElementById("recipientInput");
         this.messageBox = messageBox;
         this.recipientBox = recipientBox;
     }
@@ -45,17 +43,14 @@ class Editor {
 
 export class MessageEditor extends Editor {
     constructor(connection, element, messageBox, recipientBox) {
-        // super(connection, document.getElementById("messageEditor"));
         super(connection, element, messageBox, recipientBox);
     }
 }
 
 export class ComposeEditor extends Editor {
     constructor(connection, element, userSearch, messageBox, recipientBox) {
-        // super(connection, document.getElementById("composeEditor"));
         super(connection, element, messageBox, recipientBox);
 
-        // this.userSearch = new UserSearch(document.getElementById("userSearch"));
         this.userSearch = new UserSearch(userSearch);
         this.userSearch.onSelect((userName) => {
             this.recipientBox.value = userName;
@@ -75,16 +70,3 @@ export class ComposeEditor extends Editor {
         });
     }
 }
-
-// export function getEditor(connection) {
-//     const messageBox = document.getEle
-
-//     if (document.getElementById("messageEditor")) {
-//         return new MessageEditor(connection, document.getElementById("messageEditor"));
-//     }
-
-//     if (document.getElementById("composeEditor")) {
-//         return new ComposeEditor(connection, document.getElementById("composeEditor"));
-//     }
-//     throw new Error("No element with an editor id was found");
-// }

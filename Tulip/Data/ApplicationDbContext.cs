@@ -21,6 +21,7 @@ namespace Tulip.Data
 
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<AIChatMessage> AIChatMessages { get; set; }
+    public DbSet<FloatingChat> FloatingChats { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -59,6 +60,18 @@ namespace Tulip.Data
         builder.Entity<AIChatMessage>()
           .Navigation(e => e.User)
           .AutoInclude();
+
+      /* User FloatingChat Relationships */
+
+      builder.Entity<ApplicationUser>()
+        .HasMany(e => e.FloatingChats)
+        .WithOne(e => e.User)
+        .HasForeignKey(e => e.UserId)
+        .IsRequired();
+
+      builder.Entity<FloatingChat>()
+        .Navigation(e => e.User)
+        .AutoInclude();
     }
 
   }

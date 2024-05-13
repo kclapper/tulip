@@ -80,19 +80,55 @@ export class FloatingChatSession {
     }
 
     show() {
+        if (this.#windowIsVisible) {
+            return;
+        }
+
         const classToHide = " d-none"
         this.#chatSessionWindow.className = this.#chatSessionWindow.className.replace(classToHide, "");
         this.#windowIsVisible = true;
+        this.updateFloatingChatState();
     }
 
     hide() {
+        if (!this.#windowIsVisible) {
+            return;
+        }
+
         const classToHide = " d-none"
         this.#chatSessionWindow.className += classToHide;
         this.#windowIsVisible = false;
+        this.updateFloatingChatState();
+    }
+
+    updateFloatingChatState() {
+        const item = {
+                otherUserName: this.#otherUserName,
+                isActive: this.#windowIsVisible
+        };
+        const request = fetch(`/Chat/OpenFloatingChat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(item)
+        });
     }
 
     close() {
         this.#element.remove();
+
+        const item = {
+                otherUserName: this.#otherUserName,
+                isActive: this.#windowIsVisible
+        };
+        const request = fetch(`/Chat/RemoveFloatingChat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(item)
+        });
     }
 }
 

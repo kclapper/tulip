@@ -33,5 +33,7 @@ namespace Tulip.Models
         public ICollection<ChatMessage> ReceivedMessages { get; set; }
 
         public string AvatarUrl { get; set; }
+
+        public ICollection<FloatingChat> FloatingChats { get; set; }
     }
 }

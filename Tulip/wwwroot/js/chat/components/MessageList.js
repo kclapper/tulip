@@ -10,7 +10,6 @@ export class MessageList {
     #lastMessageTimestampElement;
 
     constructor(connection, element) {
-        // this.#element = document.getElementById("messageList");
         this.#element = element;
         if (!this.#element) {
             throw new Error("Element with id 'messageList' not found");
