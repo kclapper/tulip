@@ -75,7 +75,10 @@ namespace Tulip.Hubs
                 await Clients.User(senderId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
 
                 string receiverId = receiver.Id;
-                await Clients.User(receiverId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
+                if (senderId != receiverId)
+                {
+                    await Clients.User(receiverId).SendAsync(ReceiveMessage.Name, Context.User.Identity.Name, message);
+                }
 
                 logger.LogInformation($"[{DateTime.Now.ToLocalTime()}] {sender.UserName}->{receiver.UserName}: {message}");
 
