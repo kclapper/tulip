@@ -1,5 +1,7 @@
 # CS682 Development Process
 
+[kclapper](https://github.com/kclapper)
+
 Hey folks, I have some ideas about the process
 we could use to build our CS682 project and I was
 hoping to get some feedback from you both. Would you
@@ -156,3 +158,77 @@ we should follow when it comes to unit tests?
 - **CI/CD**: I'm a big fan of GitHub Actions for CI/CD and I've used it a lot. I'd be happy to 
 set up a CI/CD pipeline. I think it would be useful to have automated tests/linting run for each
 PR we create and for each accepted PR into main. What do you guys think?
+
+# Retrospective at Semester's End
+
+We ended up going with codename Tulip for the project. The folder and file 
+names were updated to use this new codename. 
+
+We didn't end up using a lot of the process described above. I thought I'd
+describe how we ended up doing things.
+
+## GitHub Issues / Project
+
+We used GitHub issues extensively to track the work we did. Each issue was mapped
+to a requirement or task that needed to be completed and we used GitHub projects 
+to track who should work on which issues during each sprint. Using GitHub projects,
+we could plan ahead and assign issues to sprints in the future too.
+
+## Git Strategy
+
+We locked the main branch in GitHub. This way, it was much harder to accidentally 
+mess it up. All code contributions were through PRs. We had originally set out to 
+do PR reviews, where each memeber of the group would review each PR. This ended up
+being slower than we wanted though. The lag time from submitting a PR to it being 
+reviewed meant that code wasn't integrated quickly, and with upcoming meetings it
+meant more work at the last minute. Instead, we submitted PRs then squash merged them
+immediately. We would still assign each person on the team to review the PR and send 
+the link to it in the chat, but this was mostly to keep everyone updated with what 
+was happening in the codebase. 
+
+## Testing and CI
+
+We found that the structure of the project made it difficult to write unit tests.
+Especially with regards to the UI, it wasn't exactly clear how to go about it. 
+Between that and the time pressure to get features implemented, we didn't end up
+writing any tests. Since there were no tests to run, we never setup a CI pipeline
+to ensure that all code contributions were working properly.
+
+Instead of having a dedicated testing plan, we tested the application continuously 
+as we developed it. When we would have bi-weekly meetings with the client or 
+professor Fletcher, we would demonstrate the application to them. This also served
+as a form of acceptance test.
+
+## Weekly Releases
+
+At our bi-weekly meetings with the client, we would show them our work and explain 
+what we'd accomplished. The client didn't seem interested in running it locally to
+test themselves. Since there were only three people in the group, we didn't find 
+a lot of use in having versioned releases. We could continuously check and test
+the behavior of the project as we built it. As a result, we didn't do weekly
+releases.
+
+## Sprint Timeline
+
+We had two week sprints and they rougly corresponded with our bi-weekly meetings 
+with professor Fletcher. At one point, we had a three week sprint to account for
+spring break. Our bi-weekly meetings with the client also roughly corresponded 
+with the sprint start/end, though for part of the semester the client and
+professor Fletcher meetings were offset by a week, meaning we met with the client
+in the middle of the sprint.
+
+## Requirements Document
+
+Our client had their own detailed requirements document which was very useful. 
+We keep our requirements document but only updated it sparingly. Ideally, it 
+would have gone into more detail and been updated as new requirements came to 
+light. While we did try to label GitHub issues with the associated requirement,
+not all group members adhered to this. Between the existence of the client's
+requirements document and low adoption and maintenance of the group's requirements
+document, the group's requirements document was underutilized.
+
+## Meeting Notes
+
+We took meeting notes at several of the meetings, but not all of them. Over
+the course of the semester, the meeting notes became more free form and didn't
+have the structure laid out above.

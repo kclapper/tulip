@@ -39,29 +39,29 @@ the dashboard.
 The current case study shall be highlighted at the top.
 ### 1.2. [Points](#points)
 The dashboard shall show how many points the user has in
-the currently selected case study.
+the currently selected case study. This feature existed before project Tulip.
 ### 1.3. [Badges](#badges)
 The dashboard shall show which badges the user has earned for
 the currently selected case study.
 ### 1.4. [Leveling System](#levels)
 The dashboard shall show the user's level in
-the currently selected case study.
+the currently selected case study. This feature existed before project Tulip.
 ### 1.5 [Medals](#medals)
 The dashboard shall show the user's medal in the
-currently selected case study.
-### 1.6 [User Profile](#medals)
+currently selected case study. This feature existed before project Tulip.
+<!-- ### 1.6 [User Profile](#medals)
 The dashboard shall show information about the current
-user on the dashboard.
+user on the dashboard. -->
 ### 1.7 [Clickable](#clickable)
 All items on the dashboard shall be clickable to get more
 information on the associated pages.
 
 ## 2. [Leaderboard](#leaderboard)
-### 2.1. [Grouping](#leaderboard-groups)
+<!-- ### 2.1. [Grouping](#leaderboard-groups)
 The leaderboard shall be able to display users
 ranked within user specified groups.
 ### 2.1.2. [Class Group](#leaderboard-class-groups)
-The leaderboard shall be able to be grouped by class.
+The leaderboard shall be able to be grouped by class. -->
 ## 2.2. [Leaderboard Summary](#leaderboard-summary)
 There shall be a leaderboard summary on each user's 
 dashboard.
@@ -105,15 +105,15 @@ The CSV file format shall be a headerless CSV file where
 the columns are `server,clientid,username,password,email`.
 ### 4.2. [User Deletion](#admin-user-deletion)
 The admin panel shall allow administrators to delete users.
-#### 4.2.1. [Mass User Deletion](#admin-mass-user-deletion)
+<!-- #### 4.2.1. [Mass User Deletion](#admin-mass-user-deletion)
 The admin panel shall allow administrators to delete multiple
 users at once. They shall be able to view the users, then select
 them by clicking check-boxes next to their username. After selecting
 users, they shall be able to delete selected users by pressing a delete
-button.
+button. -->
 
 ## 5. [Production Deployment](#deployment)
-The application shall be deployed to the Azure cloud.
+<!-- The application shall be deployed to the Azure cloud. -->
 
 ## 6. [Development Environment](#dev-environment)
 ### 6.1. [Local Database](#dev-db)
@@ -122,8 +122,8 @@ used by the app during development. The development environment
 shall not connect to the production database.
 ### 6.1.1. [Local Data Replica](#local-data)
 The development database shall have a copy of the production data
-### 6.2. [Single UI Framework](#ui-framework)
-The codebase shall use a single ASP.NET UI framework (MVC, Razor pages, Blazor, etc.). 
+<!-- ### 6.2. [Single UI Framework](#ui-framework)
+The codebase shall use a single ASP.NET UI framework (MVC, Razor pages, Blazor, etc.).  -->
 
 ## 7. [User Profile](#user-profile)
 ### 7.1. [Avatar](#avatar)
@@ -131,5 +131,5 @@ Users shall be able to choose a custom avatar image.
 #### 7.1.1. [Stock Avatars](#stock-avatars)
 There shall be a selection of stock avatars available for
 a user to pick.
-#### 7.1.2. [Custom Avatars](#stock-avatars)
-Users shall be able to upload custom avatar images.
+<!-- #### 7.1.2. [Custom Avatars](#stock-avatars)
+Users shall be able to upload custom avatar images. -->

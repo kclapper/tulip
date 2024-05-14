@@ -49,10 +49,3 @@ logging in and out might live in one Area, while the dashboard might live
 in another. Right now the only Area that exists is for `Identity`, logging
 users in and out. Under the `Identity` Area are the Razor Pages our 
 application uses.
-
-## Consolidation
-
-At some point we should consolidate the app to using only one View 
-framework. This makes the app simpler and easier to maintain. It also
-lowers the burden on new developers working on the project because they
-will only need to learn one UI framework.
