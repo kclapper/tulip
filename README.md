@@ -8,12 +8,17 @@ The SAP gamification web app.
 ## Installation
 1. Clone the repository 
 2. `cd` into the repository root directory
-3. Setup the development database using the setup tool 
+3. Install project dependencies
+
+       dotnet restore
+
+4. Setup the development database using the setup tool 
 
        dotnet run --project Tulip.CLI db-setup Tulip/Tulip.db
-4. Get the AI Chatbot model from Professor Fletcher, it should be
-named `llama-2-7b-chat.gguf`. Then place it in the directory 
-`Tulip/Hubs/llama-2-7b-chat.gguf`
+
+5. (Optional) Log in to the admin panel and enable an AI Chat
+system. You can either enter a ChatGPT API key, or generate and
+upload a LLaMa 2 model (see [ai model generation documentation](Tulip/Hubs/Generating%20an%20AI%20model.md)).
 
 ## Development
 1. `cd` to the repository root directory
@@ -30,12 +35,34 @@ named `llama-2-7b-chat.gguf`. Then place it in the directory
    operating system/terminal).
 
 # Deployment
-When this application is deployed to production, it should be started 
-with the `Production` environment. This can be achieved with the
-command `dotnet run --environment Production --project Tulip`.
+1. Generate new database migrations (if the database was changed).
 
-Some systems may do this automatically. The default environment is
-`Production`. 
+       dotnet ef migrations add [migration name] --project Tulip -- --environment Production
 
-> NOTE: Any time the .Net data models change, the production database will need
-> to be updated to reflect the new schema. Use .NET EF Core Migrations for this.
+2. Generate a migration bundle (if the database was changed). This will generate an executable located at `tulip/efbundle`.
+
+       dotnet ef migrations bundle --project Tulip -- --environment Production --target-runtime win-x86
+
+3. Create the new application executable. This will create a `publish` folder containing the executable located at `tulip/Tulip/bin/Release/net8.0/publish/`
+
+       dotnet publish 
+
+4. Upload the migration bundle (the `efbundle` file) and the new application code to the server (the `publish` folder).
+5. Stop the production server.
+6. Run the migration bundle excutable (if the database was changed).
+
+       ./efbundle
+
+7. From the `publish` folder, run the new application executable.
+
+       cd path/to/the/folder/publish
+       dotnet Tulip.dll --environment Production
+
+8. Remove the old application code.
+9. Verify the application is running properly.
+
+## Useful deployment links
+
+- [Host and deploy ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/?view=aspnetcore-8.0)
+- [Migrations Overview](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
+- [Applying Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli)

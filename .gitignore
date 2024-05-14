@@ -487,3 +487,6 @@ $RECYCLE.BIN/
 
 # AI Chat Model
 **/*.gguf
+
+# Database migration bundle
+efbundle*

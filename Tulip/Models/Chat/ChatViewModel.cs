@@ -48,7 +48,7 @@ namespace Tulip.Models
         public IEnumerator<KeyValuePair<ApplicationUser, MessageHistory>> GetEnumerator()
         {
             List<KeyValuePair<ApplicationUser, MessageHistory>> chatList = chatsByUser.ToList();
-            chatList.Sort((first, second) => second.Value.Messages.First().Timestamp.CompareTo(first.Value.Messages.First().Timestamp));
+            chatList.Sort((first, second) => second.Value.Messages.Last().Timestamp.CompareTo(first.Value.Messages.Last().Timestamp));
             return chatList.GetEnumerator();
         }
 
