@@ -53,9 +53,10 @@ upload a LLaMa 2 model (see [ai model generation documentation](Tulip/Hubs/Gener
 
        ./efbundle
 
-7. Run the new application executable.
+7. From the `publish` folder, run the new application executable.
 
-       dotnet path/to/publish/Tulip.dll --environment Production
+       cd path/to/the/folder/publish
+       dotnet Tulip.dll --environment Production
 
 8. Remove the old application code.
 9. Verify the application is running properly.
