@@ -6,17 +6,21 @@ update the development environment.
 
 ## Usage
 
-## Development
-
-To run the project in development mode, from the repository root run:
+To use the Tulip CLI, from the repository root run:
 
     dotnet run --project Tulip.CLI <arguments>
 
-To integrate the tool after development, from the repository root run:
+### Commands
 
-    dotnet pack
-    dotnet tool uninstall Tulip.CLI
-    dotnet tool install --add-source ./Tulip.CLI/nupkg Tulip.CLI
+Only a single command exists at the moment:
+
+#### db-setup
+
+    dotnet run --project Tulip.CLI db-setup <path to output SQLite3 file>
+
+For example:
+
+    dotnet run --project Tulip.CLI db-setup Tulip/Tulip.db
 
 ## Tests
 
