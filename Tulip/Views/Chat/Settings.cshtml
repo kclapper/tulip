@@ -25,7 +25,7 @@
                     @switch(Model.AIChatSystemSelection)
                     {
                         case AIChatSystemSelection.LLaMaModelUpload:
-                            <form enctype="multipart/form-data" asp-controller="Chat" asp-action="SaveSettings" >
+                            <form asp-controller="Chat" asp-action="SaveSettings" >
                                 <div class="form-group row pb-2">
                                     <div class="col-5">Enable AI Chat</div>
                                     <div class="col-7">
@@ -35,30 +35,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row pb-2">
-                                    <label class="col-5" for="aiModelFile">AI Chat Model</label>
-                                    <div class="col-7">
-                                        @if (Model.AIModelFileName != "")
-                                        {
-                                            <p>@Model.AIModelFileName</p>
-                                        }
-                                        else 
-                                        {
-                                            <p>No model has been uploaded yet</p>
-                                        }
-                                    </div>
-                                </div>
                                 <div class="form-group row pb-4">
-                                    <label class="col-5" for="aiModelFile">Upload New AI Chat Model</label>
+                                    <label class="col-5" for="aiModelFile">AI Chat Model Path</label>
                                     <div class="col-7">
-                                        <input class="form-control" 
-                                            type="file" 
-                                            name="modelUpload"
-                                            id="aiModelFile" 
-                                            accept=".gguf" />
+                                        <input asp-for="AIModelFilePath" class="form-control" />
                                     </div>
                                     <p class="card-text pt-4">
-                                        Note: Uploading a new AI Chat model may take a few minutes.
+                                        Note: The AI model must be uploaded separately, this settings tells the application where
+                                        to find it. It's a path relative to the application executable.
                                     </p>
                                 </div>
                                 <div class="form-group row justify-content-center">

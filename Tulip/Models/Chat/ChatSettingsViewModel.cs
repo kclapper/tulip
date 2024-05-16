@@ -8,7 +8,7 @@ namespace Tulip.Models
 
         public bool AIIsEnabled { get; set;}
 
-        public string AIModelFileName { get; set; }
+        public string AIModelFilePath { get; set; }
 
         public string ChatGPTAPIKey { get; set; }
     }
