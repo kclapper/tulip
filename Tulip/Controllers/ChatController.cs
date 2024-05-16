@@ -272,7 +272,7 @@ namespace Tulip.Controllers
             switch(model.AIChatSystemSelection)
             {
                 case AIChatSystemSelection.LLaMaModelUpload:
-                    model.AIModelFilePath = Path.GetFileName(configuration["AIChatModelPath"]); 
+                    model.AIModelFileName = Path.GetFileName(configuration["AIChatModelPath"]); 
                     break;
                 case AIChatSystemSelection.ChatGPTAPI:
                     var apiKey = configuration["ChatGPTAPIKey"]; 
@@ -318,18 +318,26 @@ namespace Tulip.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SaveSettings(ChatSettingsViewModel settings)
+        public async Task<ActionResult> SaveSettings(IFormFile modelUpload, ChatSettingsViewModel settings)
         {
             AIChatSystemSelection chatSystem = getAIChatSystemSelection();
 
             switch (chatSystem)
             {
                 case AIChatSystemSelection.LLaMaModelUpload:
-                    if (settings.AIModelFilePath != null)
+                    if (modelUpload != null)
                     {
+                        var modelFileName = Path.GetFileName(modelUpload.FileName);
+                        modelFileName = WebUtility.HtmlEncode(modelFileName);
+
                         var assemblyPath = Assembly.GetExecutingAssembly().Location;
                         var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-                        var modelPath = $"{assemblyDirectory}/{settings.AIModelFilePath}";
+                        var modelPath = $"{assemblyDirectory}/{modelFileName}";
+
+                        using (var stream = System.IO.File.Create(modelPath))
+                        {
+                            await modelUpload.CopyToAsync(stream);
+                        }
 
                         configuration["AIChatModelPath"] = modelPath;
                     }
