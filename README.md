@@ -39,26 +39,19 @@ upload a LLaMa 2 model (see [ai model generation documentation](Tulip/Hubs/Gener
 
        dotnet ef migrations add [migration name] --project Tulip -- --environment Production
 
-2. Generate a migration bundle (if the database was changed). This will generate an executable located at `tulip/efbundle`.
+2. Generate a migration script (if the database was changed). This will create a file called `db-migration.sql`.
 
-       dotnet ef migrations bundle --project Tulip -- --environment Production --target-runtime win-x86
+       dotnet ef migrations script --idempotent --project Tulip -o db-migration.sql -- --environment Production
 
 3. Create the new application executable. This will create a `publish` folder containing the executable located at `tulip/Tulip/bin/Release/net8.0/publish/`
 
        dotnet publish 
 
-4. Upload the migration bundle (the `efbundle` file) and the new application code to the server (the `publish` folder).
-5. Stop the production server.
-6. Run the migration bundle excutable (if the database was changed).
-
-       ./efbundle
-
-7. From the `publish` folder, run the new application executable.
-
-       cd path/to/the/folder/publish
-       dotnet Tulip.dll --environment Production
-
-8. Remove the old application code.
+4. Stop the production server.
+5. Remove the old application code.
+6. Upload the new application code to the server (the files inside the `publish` folder).
+7. Run the migration SQL script on the database (if the database was changed).
+8. Run the new application executable.
 9. Verify the application is running properly.
 
 ## Useful deployment links

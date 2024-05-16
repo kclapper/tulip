@@ -222,6 +222,18 @@ namespace Tulip.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            RoleId = "cbc43a8e-f7bb-4445-baaf-1add431ffbbf"
+                        },
+                        new
+                        {
+                            UserId = "9e224968-33e4-4652-b7b7-8574d048cdb9",
+                            RoleId = "cac43a6e-f7bb-4448-baaf-1add431ccbbf"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -450,6 +462,50 @@ namespace Tulip.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fcb62756-4d1f-419b-8375-4099279b67fb",
+                            Email = "admin@localhost.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEp/GOnv/QhDSIDlyMrPurWe7r4L+nDn3ZJHxScXHuKY8d4a/SvmVkiCLH/v/7lV1A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "50c42ab0-fa69-4e6e-ad6b-0a15f309c1b4",
+                            TwoFactorEnabled = false,
+                            UserName = "admin",
+                            ApplicationServer = "trek.ucc.uwm.edu",
+                            ClientId = 101,
+                            FirstName = "System",
+                            LastName = "Admin",
+                            UserId = "Learn-031"
+                        },
+                        new
+                        {
+                            Id = "9e224968-33e4-4652-b7b7-8574d048cdb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a6d0a9e6-fbf3-47ef-985b-91caa9c3f27b",
+                            Email = "user@localhost.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER@LOCALHOST.COM",
+                            NormalizedUserName = "USER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM/mnkvr83VpIOT7yyCs8S/GKWqIePkmox0dzzHZRhrzfeEPdfdLiSpzrDsKCWSn9g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "1f76cede-c2b8-43f0-aa4f-7d95813f69ec",
+                            TwoFactorEnabled = false,
+                            UserName = "user",
+                            ApplicationServer = "trek.ucc.uwm.edu",
+                            ClientId = 101,
+                            FirstName = "System",
+                            LastName = "User",
+                            UserId = "Learn-031"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -526,7 +582,7 @@ namespace Tulip.Migrations
                     b.HasOne("Tulip.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -537,13 +593,13 @@ namespace Tulip.Migrations
                     b.HasOne("Tulip.Models.ApplicationUser", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Tulip.Models.ApplicationUser", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Receiver");

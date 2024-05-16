@@ -28,6 +28,8 @@ namespace Tulip.Data
       base.OnModelCreating(builder);
 
       builder.ApplyConfiguration(new RoleSeedConfiguration());
+      builder.ApplyConfiguration(new UserSeedConfiguration());
+      builder.ApplyConfiguration(new UserRoleSeedConfiguration());
 
       /* User Chat Relationships */
 
@@ -35,13 +37,13 @@ namespace Tulip.Data
         .HasMany(e => e.SentMessages)
         .WithOne(e => e.Sender)
         .HasForeignKey(e => e.SenderId)
-        .IsRequired();
+        .OnDelete(DeleteBehavior.ClientCascade);
 
       builder.Entity<ApplicationUser>()
         .HasMany(e => e.ReceivedMessages)
         .WithOne(e => e.Receiver)
         .HasForeignKey(e => e.ReceiverId)
-        .IsRequired();
+        .OnDelete(DeleteBehavior.ClientCascade);
 
       builder.Entity<ChatMessage>()
         .Navigation(e => e.Sender)
@@ -56,6 +58,7 @@ namespace Tulip.Data
           .HasOne(e => e.User)
           .WithMany()
           .HasForeignKey(e => e.UserId)
+          .OnDelete(DeleteBehavior.NoAction)
           .IsRequired();
         builder.Entity<AIChatMessage>()
           .Navigation(e => e.User)
