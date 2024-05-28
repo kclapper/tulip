@@ -154,6 +154,8 @@ namespace Tulip.Controllers
                         Point = sap.GetPoint()
                     };
 
+                    existingRecord = records;
+
                     // add the record to the database
                     _db.LeaderBoaders.Add(records);
                     _db.SaveChanges();
@@ -172,8 +174,6 @@ namespace Tulip.Controllers
                     existing_count++;
                 }
                 existingRecord.AvatarUrl = userInfo.AvatarUrl;
-                Console.WriteLine(existingRecord.Username);
-                Console.WriteLine(existingRecord.AvatarUrl);
                 ViewBag.Contains_You = false;
                 if(existing_count < 3){
                     ViewBag.Contains_You = true;
